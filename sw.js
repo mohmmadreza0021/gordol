@@ -15,6 +15,7 @@ const CORE_ASSETS = [
   './js/gemini.js',
   './js/pose-engine.js',
   './js/app.js',
+  './js/sw-register.js',
   './assets/icons/favicon.svg',
   './assets/icons/icon-192.svg',
   './assets/icons/icon-512.svg',

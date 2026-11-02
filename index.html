@@ -4,8 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 
-  <!-- امنیت: فقط اسکریپت‌های همین دامنه؛ اتصال شبکه فقط به سرور رسمی گوگل برای کلید API کاربر -->
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; media-src 'self' blob:; font-src 'self'; connect-src 'self' https://generativelanguage.googleapis.com; worker-src 'self' blob:; object-src 'none'; base-uri 'self'">
+  <!-- امنیت: فقط اسکریپت‌های همین دامنه (بدون unsafe-inline)؛ اتصال شبکه فقط به سرور رسمی گوگل برای کلید API کاربر -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'wasm-unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; media-src 'self' blob:; font-src 'self'; connect-src 'self' https://generativelanguage.googleapis.com; worker-src 'self' blob:; form-action 'self'; object-src 'none'; base-uri 'self'">
 
   <title>گردول — برنامه هوشمند تمرین، چشم گردول و تغذیه</title>
   <meta name="description" content="گردول؛ مربی هوش مصنوعی ورزش و تغذیه با چشم گردول (شمارش هوشمند حرکات)، اسکن غذای ایرانی و برنامه تمرینی شخصی — تمام داده‌ها فقط روی دستگاه شما.">
@@ -92,15 +92,7 @@
   <script src="js/pose-engine.js"></script>
   <script src="js/app.js"></script>
 
-  <!-- Service Worker برای کش آفلاین (GitHub Pages) -->
-  <script>
-    if ('serviceWorker' in navigator) {
-      window.addEventListener('load', () => {
-        navigator.serviceWorker.register('sw.js').catch(err => {
-          console.warn('[Gordol PWA] SW registration notice', err);
-        });
-      });
-    }
-  </script>
+  <!-- Service Worker برای کش آفلاین (GitHub Pages) — فایل خارجی، بدون اسکریپت inline -->
+  <script src="js/sw-register.js"></script>
 </body>
 </html>

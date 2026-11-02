@@ -16,7 +16,10 @@
 
   const FA_DIGITS = ['۰', '۱', '۲', '۳', '۴', '۵', '۶', '۷', '۸', '۹'];
   function faNum(n) {
-    return String(n).replace(/[0-9]/g, d => FA_DIGITS[+d]);
+    // سخت‌سازی امنیتی: ورودی غیرعددی (مثلاً از پاسخ AI یا بکاپ دستکاری‌شده) escape می‌شود
+    const s = String(n === null || n === undefined ? '' : n).trim();
+    if (/^-?\d+(\.\d+)?$/.test(s)) return s.replace(/[0-9]/g, d => FA_DIGITS[+d]);
+    return esc(s);
   }
 
   function esc(s) {
@@ -280,7 +283,9 @@
         if (banner) {
           banner.style.display = 'flex';
           banner.innerHTML = `<span>📲 نصب در آیفون: دکمه Share (⎋) و سپس Add to Home Screen (➕)</span>
-            <button onclick="document.getElementById('pwa-install-banner').style.display='none'">باشه</button>`;
+            <button id="pwa-ios-dismiss">باشه</button>`;
+          const dismissBtn = document.getElementById('pwa-ios-dismiss');
+          if (dismissBtn) dismissBtn.addEventListener('click', () => { banner.style.display = 'none'; });
         }
       }
     },
@@ -850,7 +855,7 @@
       const deltaKg = Math.abs(d.weightKg - d.goalWeightKg);
       let weeklyRateKg = 0.7;
 
-      if (p.primaryGoal === 'lose_weight' || p.goalWeightKg < p.weightKg) {
+      if (d.primaryGoal === 'lose_weight' || d.goalWeightKg < d.weightKg) {
         targetKcal = Math.max(1350, tdee - 500);
         weeklyRateKg = d.weeklyCadence >= 4 ? 0.75 : 0.6;
       } else if (d.primaryGoal === 'gain_muscle' || d.goalWeightKg > d.weightKg) {
@@ -1100,7 +1105,8 @@
 [قانون سخت]: نرخ کاهش وزن هرگز از ۱ کیلوگرم در هفته بیشتر نشود و کالری از ۱۳۵۰ کمتر نشود. اگر رکورد خالی است اهداف فعلی را حفظ کن.
 فقط JSON برگردان با کلیدها: targetKcal, proteinG, carbsG, fatG, waterMl (همه عدد), note (یک جمله انگیزشی فارسی).`;
       try {
-        const res = await GordolAI.generateJSON(prompt, ['targetKcal', 'proteinG', 'carbsG', 'fatG', 'waterMl', 'note']);
+        const res = await GordolAI.generateJSON(prompt, ['targetKcal', 'proteinG', 'carbsG', 'fatG', 'waterMl', 'note'],
+          { numericKeys: ['targetKcal', 'proteinG', 'carbsG', 'fatG', 'waterMl'] });
         const clamp = (v, lo, hi) => Math.max(lo, Math.min(hi, Math.round(Number(v) || 0)));
         p.targetKcal = clamp(res.targetKcal, 1350, 4500);
         p.proteinG = clamp(res.proteinG, 40, 350);
@@ -2011,7 +2017,13 @@ ${pool}
           const p = this.profile;
           const prompt = `برای وعده «${meal.name}» کاربر (کالری هدف روزانه ${p.targetKcal}، رژیم ${p.diet}، پرهیز: ${p.exclusions}) یک جایگزین ایرانی سالم پیشنهاد بده با کالری حدود ${meal.cal} و پروتئین حدود ${meal.p} گرم.
 فقط JSON با کلیدها برگردان: name (نام فارسی کوتاه), desc (مواد دقیق با مقادیر), cal (عدد), p (عدد), c (عدد), f (عدد).`;
-          const res = await GordolAI.generateJSON(prompt, ['name', 'desc', 'cal', 'p', 'c', 'f']);
+          const res = await GordolAI.generateJSON(prompt, ['name', 'desc', 'cal', 'p', 'c', 'f'],
+            { numericKeys: ['cal', 'p', 'c', 'f'] });
+          const clampMacro = (v, hi) => Math.max(0, Math.min(hi, Math.round(Number(v) || 0)));
+          res.cal = clampMacro(res.cal, 5000);
+          res.p = clampMacro(res.p, 500);
+          res.c = clampMacro(res.c, 800);
+          res.f = clampMacro(res.f, 400);
           const box = document.getElementById('swapmeal-ai-result');
           box.style.display = 'block';
           box.innerHTML = `
@@ -2152,7 +2164,8 @@ ${pool}
 ۳. کالری کل و ماکروها را با دقت علمی محاسبه کن (غذاهای ایرانی را کامل بشناس).
 فقط JSON با این کلیدها: foodName (نام فارسی), calories (عدد), protein (عدد), carbs (عدد), fat (عدد), healthScore (عدد ۱ تا ۱۰), coachTip (یک جمله نکته مربی به فارسی).`;
       try {
-        const res = await GordolAI.generateJSON(prompt, ['foodName', 'calories', 'protein', 'carbs', 'fat', 'healthScore', 'coachTip']);
+        const res = await GordolAI.generateJSON(prompt, ['foodName', 'calories', 'protein', 'carbs', 'fat', 'healthScore', 'coachTip'],
+          { numericKeys: ['calories', 'protein', 'carbs', 'fat', 'healthScore'] });
         this.scannedFoodResult = res;
         this.renderScannedFoodResult(res);
         btn.textContent = '⚡ تحلیل مجدد';
@@ -2237,7 +2250,8 @@ ${pool}
           const prompt = `تو کارشناس تغذیه بالینی گردول هستی. غذای زیر (به فارسی) را تحلیل کن و مقادیر دقیق بر اساس دانش بانک غذاهای ایرانی تخمین بزن:
 «${text}»
 فقط JSON با کلیدها: foodName (نام استاندارد فارسی غذا), calories (عدد), protein (عدد), carbs (عدد), fat (عدد), healthScore (عدد ۱-۱۰), coachTip (یک جمله فارسی).`;
-          const res = await GordolAI.generateJSON(prompt, ['foodName', 'calories', 'protein', 'carbs', 'fat', 'healthScore', 'coachTip']);
+          const res = await GordolAI.generateJSON(prompt, ['foodName', 'calories', 'protein', 'carbs', 'fat', 'healthScore', 'coachTip'],
+            { numericKeys: ['calories', 'protein', 'carbs', 'fat', 'healthScore'] });
           const box = document.getElementById('food-text-result');
           box.style.display = 'block';
           box.innerHTML = `
@@ -2509,7 +2523,7 @@ ${pool}
         </p>
         <div class="form-group">
           <label class="form-label">وزن فعلی (کیلوگرم):</label>
-          <input type="number" id="wt-input" class="form-input" value="${p.weightKg}" min="35" max="250" step="0.1"/>
+          <input type="number" id="wt-input" class="form-input" value="${esc(p.weightKg)}" min="35" max="250" step="0.1"/>
         </div>
         <div style="font-size:0.76rem; color:var(--text-muted); margin-bottom:12px;">
           آخرین وزن‌ها: ${((p.weightHistory || []).slice(-4).reverse().map(w => `${faNum(w.kg)}kg (${esc(faDateLong(new Date(w.date + 'T00:00:00')))})`).join(' · ')) || '—'}
@@ -2660,10 +2674,11 @@ ${pool}
       document.getElementById('set-weight').addEventListener('click', () => { modal.classList.remove('active'); this.openWeightModal(); });
 
       document.getElementById('set-export').addEventListener('click', () => {
+        // کلید API عمداً در بکاپ نمی‌آید (فایل بکاپ روی دیسک می‌نشیند)
         const backup = { app: 'gordol', version: 3, exportedAt: new Date().toISOString(), data: {} };
         for (let i = 0; i < localStorage.length; i++) {
           const k = localStorage.key(i);
-          if (k && k.startsWith('gordol_')) backup.data[k] = localStorage.getItem(k);
+          if (k && k.startsWith('gordol_') && k !== 'gordol_ai_config_v3') backup.data[k] = localStorage.getItem(k);
         }
         const blob = new Blob([JSON.stringify(backup, null, 2)], { type: 'application/json' });
         const a = document.createElement('a');
@@ -2671,7 +2686,7 @@ ${pool}
         a.download = 'gordol_backup_' + todayKey() + '.json';
         a.click();
         URL.revokeObjectURL(a.href);
-        toast('بکاپ کامل دانلود شد 📥');
+        toast('بکاپ دانلود شد 📥 (کلید API به دلایل امنیتی داخل بکاپ نیست)');
       });
 
       document.getElementById('set-import').addEventListener('click', () => document.getElementById('set-import-file').click());
@@ -2683,10 +2698,26 @@ ${pool}
           try {
             const backup = JSON.parse(ev.target.result);
             if (!backup || backup.app !== 'gordol' || !backup.data) throw new Error('فایل بکاپ نامعتبر است');
+            // فهرست سفید کلیدهای شناخته‌شده + اعتبارسنجی نوع — ضد تزریق داده از فایل
+            const allowed = {
+              gordol_profile_v3: 'object', gordol_logs_v3: 'object', gordol_swaps_v3: 'object',
+              gordol_chat_v3: 'array', gordol_fasting_v3: 'object',
+              gordol_notif_asked_v3: 'raw', gordol_notif_state_v3: 'object'
+            };
+            let restored = 0;
             Object.keys(backup.data).forEach(k => {
-              if (k.startsWith('gordol_') && typeof backup.data[k] === 'string') localStorage.setItem(k, backup.data[k]);
+              if (!(k in allowed)) return;
+              const v = backup.data[k];
+              if (typeof v !== 'string') return;
+              if (allowed[k] === 'raw') { localStorage.setItem(k, v); restored++; return; }
+              try {
+                const parsed = JSON.parse(v);
+                const okType = allowed[k] === 'array' ? Array.isArray(parsed) : (parsed && typeof parsed === 'object');
+                if (okType) { localStorage.setItem(k, v); restored++; }
+              } catch (err) { /* کلید نامعتبر نادیده گرفته می‌شود */ }
             });
-            toast('بازیابی کامل شد — اپ رفرش می‌شود.');
+            if (restored === 0) throw new Error('هیچ داده معتبری در فایل نبود');
+            toast(`بازیابی ${faNum(restored)} بخش داده — اپ رفرش می‌شود.`);
             setTimeout(() => location.reload(), 900);
           } catch (err) {
             toast('خطا: ' + err.message, false);

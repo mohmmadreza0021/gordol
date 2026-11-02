@@ -1,3 +1,4 @@
+// بانک ۱۴۱ حرکت اورجینال گردول (ویدیوها کاملاً لوکال)
 window.GORDOL_EXERCISES = [
   {
     "id": "shoulder-rolls",
@@ -24,8 +25,7 @@ window.GORDOL_EXERCISES = [
       "فقط شونه‌ها رو بالا و پایین می‌بری و دایره نمی‌زنی."
     ],
     "cautionFa": null,
-    "videoUrl": "videos/shoulder-rolls.mp4",
-    "cloudVideoUrl": "https://gordol-awjwt.hs3.ir/gordol-bucket/workouts/shoulder-rolls/ad6e4cb4d3/clip.mp4"
+    "videoUrl": "videos/shoulder-rolls.mp4"
   },
   {
     "id": "forward-arm-circles",
@@ -53,8 +53,7 @@ window.GORDOL_EXERCISES = [
       "دایره‌ها رو تند و بی‌کنترل می‌زنی."
     ],
     "cautionFa": "اگه شونه‌ت درد می‌کنه، دایره‌ها رو کوچیک‌تر بزن.",
-    "videoUrl": "videos/forward-arm-circles.mp4",
-    "cloudVideoUrl": "https://gordol-awjwt.hs3.ir/gordol-bucket/workouts/forward-arm-circles/918750847f/clip.mp4"
+    "videoUrl": "videos/forward-arm-circles.mp4"
   },
   {
     "id": "backward-arm-circles",
@@ -82,8 +81,7 @@ window.GORDOL_EXERCISES = [
       "دایره‌ها رو تند و بی‌کنترل می‌زنی."
     ],
     "cautionFa": "اگه شونه‌ت درد می‌کنه، دایره‌ها رو کوچیک‌تر بزن.",
-    "videoUrl": "videos/backward-arm-circles.mp4",
-    "cloudVideoUrl": "https://gordol-awjwt.hs3.ir/gordol-bucket/workouts/backward-arm-circles/7228870dc2/clip.mp4"
+    "videoUrl": "videos/backward-arm-circles.mp4"
   },
   {
     "id": "walk-in-place",
@@ -111,8 +109,7 @@ window.GORDOL_EXERCISES = [
       "قدم‌ها رو خیلی تند و بی‌ریتم برمی‌داری."
     ],
     "cautionFa": null,
-    "videoUrl": "videos/walk-in-place.mp4",
-    "cloudVideoUrl": "https://gordol-awjwt.hs3.ir/gordol-bucket/workouts/walk-in-place/091eb9bfb4/clip.mp4"
+    "videoUrl": "videos/walk-in-place.mp4"
   },
   {
     "id": "inchworm",
@@ -140,8 +137,7 @@ window.GORDOL_EXERCISES = [
       "خیلی تند و با فشار می‌ری."
     ],
     "cautionFa": "اگه مچ دستت اذیت می‌شه، دست‌ها رو مشت کن یا فقط تا نیمه جلو برو.",
-    "videoUrl": "videos/inchworm.mp4",
-    "cloudVideoUrl": "https://gordol-awjwt.hs3.ir/gordol-bucket/workouts/inchworm/7340c32906/clip.mp4"
+    "videoUrl": "videos/inchworm.mp4"
   },
   {
     "id": "slalom-mountain-climber",
@@ -169,8 +165,7 @@ window.GORDOL_EXERCISES = [
       "دست‌ها از زیر شونه‌ها جلو یا عقب می‌رن."
     ],
     "cautionFa": "اگه مچت اذیت شد، آروم‌تر برو و بین نوبت‌ها استراحت کن.",
-    "videoUrl": "videos/slalom-mountain-climber.mp4",
-    "cloudVideoUrl": "https://gordol-awjwt.hs3.ir/gordol-bucket/workouts/slalom-mountain-climber/71512a2f05/clip.mp4"
+    "videoUrl": "videos/slalom-mountain-climber.mp4"
   },
   {
     "id": "step-toe-taps",
@@ -198,8 +193,7 @@ window.GORDOL_EXERCISES = [
       "قوز می‌کنی و سینه می‌افته پایین."
     ],
     "cautionFa": "اگه تعادلت کمه، آهسته‌تر شروع کن.",
-    "videoUrl": "videos/step-toe-taps.mp4",
-    "cloudVideoUrl": "https://gordol-awjwt.hs3.ir/gordol-bucket/workouts/step-toe-taps/20a908f24b/clip.mp4"
+    "videoUrl": "videos/step-toe-taps.mp4"
   },
   {
     "id": "seal-jacks",
@@ -227,8 +221,7 @@ window.GORDOL_EXERCISES = [
       "با پاهای سفت فرود میای."
     ],
     "cautionFa": "اگه شونه‌ت اذیت می‌کنه، دست‌ها رو کمتر باز کن.",
-    "videoUrl": "videos/seal-jacks.mp4",
-    "cloudVideoUrl": "https://gordol-awjwt.hs3.ir/gordol-bucket/workouts/seal-jacks/2be5775545/clip.mp4"
+    "videoUrl": "videos/seal-jacks.mp4"
   },
   {
     "id": "running-in-place",
@@ -256,8 +249,7 @@ window.GORDOL_EXERCISES = [
       "بالاتنه رو خیلی جلو خم می‌کنی."
     ],
     "cautionFa": null,
-    "videoUrl": "videos/running-in-place.mp4",
-    "cloudVideoUrl": "https://gordol-awjwt.hs3.ir/gordol-bucket/workouts/running-in-place/fc8b9d0744/clip.mp4"
+    "videoUrl": "videos/running-in-place.mp4"
   },
   {
     "id": "jumping-jacks",
@@ -285,8 +277,7 @@ window.GORDOL_EXERCISES = [
       "دست‌ها رو نصفه بالا می‌بری."
     ],
     "cautionFa": "اگه زانو یا مچ پات اذیت می‌کنه، پرش رو کمتر کن.",
-    "videoUrl": "videos/jumping-jacks.mp4",
-    "cloudVideoUrl": "https://gordol-awjwt.hs3.ir/gordol-bucket/workouts/jumping-jacks/c909be5b6f/clip.mp4"
+    "videoUrl": "videos/jumping-jacks.mp4"
   },
   {
     "id": "in-and-out-hops",
@@ -314,8 +305,7 @@ window.GORDOL_EXERCISES = [
       "بالاتنه جلو می‌افته و دست‌ها پایین میان."
     ],
     "cautionFa": "اگه مچ پات یا زانوت اذیت می‌کنه، پرش‌ها رو کوچیک‌تر کن.",
-    "videoUrl": "videos/in-and-out-hops.mp4",
-    "cloudVideoUrl": "https://gordol-awjwt.hs3.ir/gordol-bucket/workouts/in-and-out-hops/e4b333dd51/clip.mp4"
+    "videoUrl": "videos/in-and-out-hops.mp4"
   },
   {
     "id": "quick-feet",
@@ -343,8 +333,7 @@ window.GORDOL_EXERCISES = [
       "زانوها صاف و سفت می‌مونن."
     ],
     "cautionFa": null,
-    "videoUrl": "videos/quick-feet.mp4",
-    "cloudVideoUrl": "https://gordol-awjwt.hs3.ir/gordol-bucket/workouts/quick-feet/33e46b4b6e/clip.mp4"
+    "videoUrl": "videos/quick-feet.mp4"
   },
   {
     "id": "butt-kicks",
@@ -372,8 +361,7 @@ window.GORDOL_EXERCISES = [
       "بالاتنه جلو می‌افته."
     ],
     "cautionFa": null,
-    "videoUrl": "videos/butt-kicks.mp4",
-    "cloudVideoUrl": "https://gordol-awjwt.hs3.ir/gordol-bucket/workouts/butt-kicks/075f8afa74/clip.mp4"
+    "videoUrl": "videos/butt-kicks.mp4"
   },
   {
     "id": "knee-taps",
@@ -400,8 +388,7 @@ window.GORDOL_EXERCISES = [
       "برای رسیدن زانو به دست، بالاتنه رو جلو خم می‌کنی."
     ],
     "cautionFa": "اگه تعادلت کمه، آروم‌تر برو و به دیوار نزدیک باش.",
-    "videoUrl": "videos/knee-taps.mp4",
-    "cloudVideoUrl": "https://gordol-awjwt.hs3.ir/gordol-bucket/workouts/knee-taps/dab07263b4/clip.mp4"
+    "videoUrl": "videos/knee-taps.mp4"
   },
   {
     "id": "march-high-knees",
@@ -429,8 +416,7 @@ window.GORDOL_EXERCISES = [
       "محکم روی زمین می‌کوبی."
     ],
     "cautionFa": "اگه زانو یا مچ پات حساسه، آروم‌تر برو و زانو رو کمتر بالا بیار.",
-    "videoUrl": "videos/march-high-knees.mp4",
-    "cloudVideoUrl": "https://gordol-awjwt.hs3.ir/gordol-bucket/workouts/march-high-knees/5998d698f1/clip.mp4"
+    "videoUrl": "videos/march-high-knees.mp4"
   },
   {
     "id": "step-jacks",
@@ -458,8 +444,7 @@ window.GORDOL_EXERCISES = [
       "قدم‌ها خیلی کوتاه و بی‌ریتمه."
     ],
     "cautionFa": "اگه شونه‌ت با بالا بردن دست‌ها اذیت می‌شه، دست‌ها رو فقط تا تراز شونه ببر.",
-    "videoUrl": "videos/step-jacks.mp4",
-    "cloudVideoUrl": "https://gordol-awjwt.hs3.ir/gordol-bucket/workouts/step-jacks/4a4b22a6f9/clip.mp4"
+    "videoUrl": "videos/step-jacks.mp4"
   },
   {
     "id": "burpee",
@@ -488,8 +473,7 @@ window.GORDOL_EXERCISES = [
       "پاها رو با فرود سفت می‌کوبی."
     ],
     "cautionFa": "اگه سخته، به جای پرش پاها رو یکی‌یکی عقب ببر.",
-    "videoUrl": "videos/burpee.mp4",
-    "cloudVideoUrl": "https://gordol-awjwt.hs3.ir/gordol-bucket/workouts/burpee/0c2002a9b6/clip.mp4"
+    "videoUrl": "videos/burpee.mp4"
   },
   {
     "id": "high-knee-sprint",
@@ -518,8 +502,7 @@ window.GORDOL_EXERCISES = [
       "بالاتنه رو به عقب خم می‌کنی."
     ],
     "cautionFa": "اگه زانوهات حساسه، آروم‌تر برو و زانو رو کمتر بالا بیار.",
-    "videoUrl": "videos/high-knee-sprint.mp4",
-    "cloudVideoUrl": "https://gordol-awjwt.hs3.ir/gordol-bucket/workouts/high-knee-sprint/e501fe08d4/clip.mp4"
+    "videoUrl": "videos/high-knee-sprint.mp4"
   },
   {
     "id": "long-jump-and-back",
@@ -548,8 +531,7 @@ window.GORDOL_EXERCISES = [
       "زانوها موقع فرود به داخل خم می‌شن."
     ],
     "cautionFa": "اگه زانو یا مچ پات مشکل داره، به‌جاش اسکوات سبک بزن.",
-    "videoUrl": "videos/long-jump-and-back.mp4",
-    "cloudVideoUrl": "https://gordol-awjwt.hs3.ir/gordol-bucket/workouts/long-jump-and-back/ac3548db4d/clip.mp4"
+    "videoUrl": "videos/long-jump-and-back.mp4"
   },
   {
     "id": "jumping-mountain-climber",
@@ -577,8 +559,7 @@ window.GORDOL_EXERCISES = [
       "باسن زیادی بالا می‌ره."
     ],
     "cautionFa": "اگه زانو یا مچت اذیت می‌کنه، پاها رو یکی‌یکی جلو بیار.",
-    "videoUrl": "videos/jumping-mountain-climber.mp4",
-    "cloudVideoUrl": "https://gordol-awjwt.hs3.ir/gordol-bucket/workouts/jumping-mountain-climber/41a9e1238a/clip.mp4"
+    "videoUrl": "videos/jumping-mountain-climber.mp4"
   },
   {
     "id": "crunch",
@@ -606,8 +587,7 @@ window.GORDOL_EXERCISES = [
       "کل کمر رو از زمین بلند می‌کنی."
     ],
     "cautionFa": null,
-    "videoUrl": "videos/crunch.mp4",
-    "cloudVideoUrl": "https://gordol-awjwt.hs3.ir/gordol-bucket/workouts/crunch/e88c469f34/clip.mp4"
+    "videoUrl": "videos/crunch.mp4"
   },
   {
     "id": "reach-and-catch",
@@ -635,8 +615,7 @@ window.GORDOL_EXERCISES = [
       "سرت رو یهو به جلو پرت می‌کنی."
     ],
     "cautionFa": null,
-    "videoUrl": "videos/reach-and-catch.mp4",
-    "cloudVideoUrl": "https://gordol-awjwt.hs3.ir/gordol-bucket/workouts/reach-and-catch/bad55cc989/clip.mp4"
+    "videoUrl": "videos/reach-and-catch.mp4"
   },
   {
     "id": "heel-reach-crunch",
@@ -664,8 +643,7 @@ window.GORDOL_EXERCISES = [
       "از کمر بلند می‌شی، نه از پهلو."
     ],
     "cautionFa": null,
-    "videoUrl": "videos/heel-reach-crunch.mp4",
-    "cloudVideoUrl": "https://gordol-awjwt.hs3.ir/gordol-bucket/workouts/heel-reach-crunch/de16d9f75c/clip.mp4"
+    "videoUrl": "videos/heel-reach-crunch.mp4"
   },
   {
     "id": "heel-slide",
@@ -693,8 +671,7 @@ window.GORDOL_EXERCISES = [
       "پاها رو سریع پرت می‌کنی جلو."
     ],
     "cautionFa": null,
-    "videoUrl": "videos/heel-slide.mp4",
-    "cloudVideoUrl": "https://gordol-awjwt.hs3.ir/gordol-bucket/workouts/heel-slide/c510a46d70/clip.mp4"
+    "videoUrl": "videos/heel-slide.mp4"
   },
   {
     "id": "oblique-crunch",
@@ -722,8 +699,7 @@ window.GORDOL_EXERCISES = [
       "سر رو با دست می‌کشی جلو."
     ],
     "cautionFa": null,
-    "videoUrl": "videos/oblique-crunch.mp4",
-    "cloudVideoUrl": "https://gordol-awjwt.hs3.ir/gordol-bucket/workouts/oblique-crunch/0f9c0ab3a5/clip.mp4"
+    "videoUrl": "videos/oblique-crunch.mp4"
   },
   {
     "id": "russian-twist-feet-down",
@@ -750,8 +726,7 @@ window.GORDOL_EXERCISES = [
       "فقط دست‌ها رو تکون می‌دی و تنه نمی‌چرخه."
     ],
     "cautionFa": "اگه کمرت اذیت شد، کمتر به عقب تکیه بده.",
-    "videoUrl": "videos/russian-twist-feet-down.mp4",
-    "cloudVideoUrl": "https://gordol-awjwt.hs3.ir/gordol-bucket/workouts/russian-twist-feet-down/c4f875e9f0/clip.mp4"
+    "videoUrl": "videos/russian-twist-feet-down.mp4"
   },
   {
     "id": "bird-dog",
@@ -779,8 +754,7 @@ window.GORDOL_EXERCISES = [
       "لگن به یک طرف می‌چرخه."
     ],
     "cautionFa": "اگه مچ دستت اذیت می‌شه، دست‌ها رو مشت کن یا روی ساعد بمون.",
-    "videoUrl": "videos/bird-dog.mp4",
-    "cloudVideoUrl": "https://gordol-awjwt.hs3.ir/gordol-bucket/workouts/bird-dog/6a922be73a/clip.mp4"
+    "videoUrl": "videos/bird-dog.mp4"
   },
   {
     "id": "dead-bug",
@@ -808,8 +782,7 @@ window.GORDOL_EXERCISES = [
       "خیلی تند حرکت می‌کنی."
     ],
     "cautionFa": "اگه کمرت گود شد، پا رو کمتر پایین ببر.",
-    "videoUrl": "videos/dead-bug.mp4",
-    "cloudVideoUrl": "https://gordol-awjwt.hs3.ir/gordol-bucket/workouts/dead-bug/4c1c529a7d/clip.mp4"
+    "videoUrl": "videos/dead-bug.mp4"
   },
   {
     "id": "side-lying-knee-crunch",
@@ -838,8 +811,7 @@ window.GORDOL_EXERCISES = [
       "تنه به عقب می‌چرخه و پهلو کار نمی‌کنه."
     ],
     "cautionFa": "اگه کمرت اذیت شد، زانوها رو کمتر بالا بیار.",
-    "videoUrl": "videos/side-lying-knee-crunch.mp4",
-    "cloudVideoUrl": "https://gordol-awjwt.hs3.ir/gordol-bucket/workouts/side-lying-knee-crunch/1d6db9a648/clip.mp4"
+    "videoUrl": "videos/side-lying-knee-crunch.mp4"
   },
   {
     "id": "arm-swing-sit-up",
@@ -867,8 +839,7 @@ window.GORDOL_EXERCISES = [
       "کمر رو یهو روی زمین می‌ندازی."
     ],
     "cautionFa": "اگه کمرت اذیت می‌شه، به‌جاش کرانچ بزن.",
-    "videoUrl": "videos/arm-swing-sit-up.mp4",
-    "cloudVideoUrl": "https://gordol-awjwt.hs3.ir/gordol-bucket/workouts/arm-swing-sit-up/3719481104/clip.mp4"
+    "videoUrl": "videos/arm-swing-sit-up.mp4"
   },
   {
     "id": "elbow-plank-knee-drive",
@@ -896,8 +867,7 @@ window.GORDOL_EXERCISES = [
       "کمر گود می‌شه و شکم شل می‌مونه."
     ],
     "cautionFa": "اگه کمرت اذیت شد، آروم‌تر برو و زانو رو کمتر بیار جلو.",
-    "videoUrl": "videos/elbow-plank-knee-drive.mp4",
-    "cloudVideoUrl": "https://gordol-awjwt.hs3.ir/gordol-bucket/workouts/elbow-plank-knee-drive/ed797978b5/clip.mp4"
+    "videoUrl": "videos/elbow-plank-knee-drive.mp4"
   },
   {
     "id": "side-plank-hold",
@@ -925,8 +895,7 @@ window.GORDOL_EXERCISES = [
       "شونه‌ی پایینی به گوش می‌چسبه."
     ],
     "cautionFa": "اگه مچ یا شونه‌ات اذیت شد، روی ساعد انجامش بده.",
-    "videoUrl": "videos/side-plank-hold.mp4",
-    "cloudVideoUrl": "https://gordol-awjwt.hs3.ir/gordol-bucket/workouts/side-plank-hold/ff44cbd0cd/clip.mp4"
+    "videoUrl": "videos/side-plank-hold.mp4"
   },
   {
     "id": "forearm-plank",
@@ -952,8 +921,7 @@ window.GORDOL_EXERCISES = [
       "باسن بالا می‌ره یا کمر گود می‌شه."
     ],
     "cautionFa": null,
-    "videoUrl": "videos/forearm-plank.mp4",
-    "cloudVideoUrl": "https://gordol-awjwt.hs3.ir/gordol-bucket/workouts/forearm-plank/7e8e6e394d/clip.mp4"
+    "videoUrl": "videos/forearm-plank.mp4"
   },
   {
     "id": "plank-arm-reach",
@@ -981,8 +949,7 @@ window.GORDOL_EXERCISES = [
       "باسن بالا می‌ره."
     ],
     "cautionFa": "اگه سخته، پاها رو بازتر بذار تا تعادلت راحت‌تر بشه.",
-    "videoUrl": "videos/plank-arm-reach.mp4",
-    "cloudVideoUrl": "https://gordol-awjwt.hs3.ir/gordol-bucket/workouts/plank-arm-reach/c8aa8422da/clip.mp4"
+    "videoUrl": "videos/plank-arm-reach.mp4"
   },
   {
     "id": "bench-leg-raise",
@@ -1010,8 +977,7 @@ window.GORDOL_EXERCISES = [
       "پاها رو با تاب بالا می‌اندازی."
     ],
     "cautionFa": "اگه کمرت اذیت شد، زانوها رو کمی خم کن.",
-    "videoUrl": "videos/bench-leg-raise.mp4",
-    "cloudVideoUrl": "https://gordol-awjwt.hs3.ir/gordol-bucket/workouts/bench-leg-raise/f7b54807a9/clip.mp4"
+    "videoUrl": "videos/bench-leg-raise.mp4"
   },
   {
     "id": "reverse-crunch",
@@ -1039,8 +1005,7 @@ window.GORDOL_EXERCISES = [
       "کمر رو بیش از حد از زمین بلند می‌کنی."
     ],
     "cautionFa": "اگه گردنت اذیت شد، سرت رو روی زمین شل نگه دار.",
-    "videoUrl": "videos/reverse-crunch.mp4",
-    "cloudVideoUrl": "https://gordol-awjwt.hs3.ir/gordol-bucket/workouts/reverse-crunch/a594059925/clip.mp4"
+    "videoUrl": "videos/reverse-crunch.mp4"
   },
   {
     "id": "plank-hand-jacks",
@@ -1068,8 +1033,7 @@ window.GORDOL_EXERCISES = [
       "پاها از جا می‌پرن و بدن می‌لرزه."
     ],
     "cautionFa": "اگه مچ یا شونه‌ات اذیت شد، آروم‌تر برو.",
-    "videoUrl": "videos/plank-hand-jacks.mp4",
-    "cloudVideoUrl": "https://gordol-awjwt.hs3.ir/gordol-bucket/workouts/plank-hand-jacks/bc5d9cda9b/clip.mp4"
+    "videoUrl": "videos/plank-hand-jacks.mp4"
   },
   {
     "id": "russian-twist-heels-up",
@@ -1097,8 +1061,7 @@ window.GORDOL_EXERCISES = [
       "کمر قوز می‌کنه."
     ],
     "cautionFa": "اگه کمرت اذیت شد، پاشنه‌ها رو روی زمین بذار.",
-    "videoUrl": "videos/russian-twist-heels-up.mp4",
-    "cloudVideoUrl": "https://gordol-awjwt.hs3.ir/gordol-bucket/workouts/russian-twist-heels-up/ea9fecfe3a/clip.mp4"
+    "videoUrl": "videos/russian-twist-heels-up.mp4"
   },
   {
     "id": "floor-leg-raise",
@@ -1126,8 +1089,7 @@ window.GORDOL_EXERCISES = [
       "پاها رو با تاب بالا می‌اندازی."
     ],
     "cautionFa": "اگه کمرت اذیت شد، زانوها رو کمی خم کن.",
-    "videoUrl": "videos/floor-leg-raise.mp4",
-    "cloudVideoUrl": "https://gordol-awjwt.hs3.ir/gordol-bucket/workouts/floor-leg-raise/4ec50ca412/clip.mp4"
+    "videoUrl": "videos/floor-leg-raise.mp4"
   },
   {
     "id": "plank-foot-taps",
@@ -1155,8 +1117,7 @@ window.GORDOL_EXERCISES = [
       "دست‌ها از زیر شونه جلو یا عقب می‌رن."
     ],
     "cautionFa": "اگه مچت اذیت شد، آروم‌تر برو.",
-    "videoUrl": "videos/plank-foot-taps.mp4",
-    "cloudVideoUrl": "https://gordol-awjwt.hs3.ir/gordol-bucket/workouts/plank-foot-taps/e10f513a0b/clip.mp4"
+    "videoUrl": "videos/plank-foot-taps.mp4"
   },
   {
     "id": "flutter-kick",
@@ -1184,8 +1145,7 @@ window.GORDOL_EXERCISES = [
       "پاها رو بیش از حد پایین می‌بری."
     ],
     "cautionFa": "اگه کمرت اذیت شد، پاها رو بالاتر نگه دار.",
-    "videoUrl": "videos/flutter-kick.mp4",
-    "cloudVideoUrl": "https://gordol-awjwt.hs3.ir/gordol-bucket/workouts/flutter-kick/d043c7b3e8/clip.mp4"
+    "videoUrl": "videos/flutter-kick.mp4"
   },
   {
     "id": "bent-leg-lowering",
@@ -1213,8 +1173,7 @@ window.GORDOL_EXERCISES = [
       "پا رو با تاب پایین می‌اندازی."
     ],
     "cautionFa": null,
-    "videoUrl": "videos/bent-leg-lowering.mp4",
-    "cloudVideoUrl": "https://gordol-awjwt.hs3.ir/gordol-bucket/workouts/bent-leg-lowering/517d0c0a76/clip.mp4"
+    "videoUrl": "videos/bent-leg-lowering.mp4"
   },
   {
     "id": "side-plank-hip-dip",
@@ -1242,8 +1201,7 @@ window.GORDOL_EXERCISES = [
       "با تاب دادن بدن بالا می‌ری."
     ],
     "cautionFa": "اگه شونه‌ات اذیت شد، روی ساعد انجامش بده.",
-    "videoUrl": "videos/side-plank-hip-dip.mp4",
-    "cloudVideoUrl": "https://gordol-awjwt.hs3.ir/gordol-bucket/workouts/side-plank-hip-dip/0cc06be864/clip.mp4"
+    "videoUrl": "videos/side-plank-hip-dip.mp4"
   },
   {
     "id": "hanging-knee-raise",
@@ -1271,8 +1229,7 @@ window.GORDOL_EXERCISES = [
       "پاها رو با شتاب بالا پرت می‌کنی."
     ],
     "cautionFa": "اگه مچ دستت درد گرفت، زودتر پایین بیا.",
-    "videoUrl": "videos/hanging-knee-raise.mp4",
-    "cloudVideoUrl": "https://gordol-awjwt.hs3.ir/gordol-bucket/workouts/hanging-knee-raise/16860378a2/clip.mp4"
+    "videoUrl": "videos/hanging-knee-raise.mp4"
   },
   {
     "id": "single-leg-lowering",
@@ -1300,8 +1257,7 @@ window.GORDOL_EXERCISES = [
       "کمر از زمین جدا می‌شه."
     ],
     "cautionFa": "اگه کمرت اذیت شد، زانوها رو کمی خم کن.",
-    "videoUrl": "videos/single-leg-lowering.mp4",
-    "cloudVideoUrl": "https://gordol-awjwt.hs3.ir/gordol-bucket/workouts/single-leg-lowering/ce6471a21f/clip.mp4"
+    "videoUrl": "videos/single-leg-lowering.mp4"
   },
   {
     "id": "hanging-knee-hold",
@@ -1329,8 +1285,7 @@ window.GORDOL_EXERCISES = [
       "کمر قوس می‌گیره و بدن عقب می‌ره."
     ],
     "cautionFa": "اگه مچ یا شونه‌ت خسته شد، زودتر پایین بیا.",
-    "videoUrl": "videos/hanging-knee-hold.mp4",
-    "cloudVideoUrl": "https://gordol-awjwt.hs3.ir/gordol-bucket/workouts/hanging-knee-hold/7c465e2245/clip.mp4"
+    "videoUrl": "videos/hanging-knee-hold.mp4"
   },
   {
     "id": "bicycle-crunch",
@@ -1358,8 +1313,7 @@ window.GORDOL_EXERCISES = [
       "خیلی تند رکاب می‌زنی و شکم کار نمی‌کنه."
     ],
     "cautionFa": "اگه کمرت یا گردنت اذیت شد، سرت رو روی زمین بذار و فقط پاها رو حرکت بده.",
-    "videoUrl": "videos/bicycle-crunch.mp4",
-    "cloudVideoUrl": "https://gordol-awjwt.hs3.ir/gordol-bucket/workouts/bicycle-crunch/a3b8f44437/clip.mp4"
+    "videoUrl": "videos/bicycle-crunch.mp4"
   },
   {
     "id": "side-plank-reach-through",
@@ -1387,8 +1341,7 @@ window.GORDOL_EXERCISES = [
       "فقط دست رو تکون می‌دی و تنه نمی‌چرخه."
     ],
     "cautionFa": "اگه سخته، زانوی پایینی رو روی زمین بذار.",
-    "videoUrl": "videos/side-plank-reach-through.mp4",
-    "cloudVideoUrl": "https://gordol-awjwt.hs3.ir/gordol-bucket/workouts/side-plank-reach-through/31ff435ddf/clip.mp4"
+    "videoUrl": "videos/side-plank-reach-through.mp4"
   },
   {
     "id": "plank-walkout",
@@ -1416,8 +1369,7 @@ window.GORDOL_EXERCISES = [
       "دست‌ها رو اونقدر دور می‌ذاری که بدن نمی‌تونه صاف بمونه."
     ],
     "cautionFa": "اگه سخته، دست‌ها رو کمتر جلو ببر.",
-    "videoUrl": "videos/plank-walkout.mp4",
-    "cloudVideoUrl": "https://gordol-awjwt.hs3.ir/gordol-bucket/workouts/plank-walkout/33d9eaeddb/clip.mp4"
+    "videoUrl": "videos/plank-walkout.mp4"
   },
   {
     "id": "scissor-leg-lift",
@@ -1445,8 +1397,7 @@ window.GORDOL_EXERCISES = [
       "پاها رو سریع و بدون کنترل تاب می‌دی."
     ],
     "cautionFa": "اگه کمرت اذیت شد، پای پایینی رو بالاتر نگه دار.",
-    "videoUrl": "videos/scissor-leg-lift.mp4",
-    "cloudVideoUrl": "https://gordol-awjwt.hs3.ir/gordol-bucket/workouts/scissor-leg-lift/f59e9dfa4c/clip.mp4"
+    "videoUrl": "videos/scissor-leg-lift.mp4"
   },
   {
     "id": "windshield-wiper",
@@ -1474,8 +1425,7 @@ window.GORDOL_EXERCISES = [
       "پاها رو با تاب می‌چرخونی، نه با کنترل."
     ],
     "cautionFa": "اگه کمرت اذیت شد، زانوها رو خم کن و کوچیک‌تر بچرخون.",
-    "videoUrl": "videos/windshield-wiper.mp4",
-    "cloudVideoUrl": "https://gordol-awjwt.hs3.ir/gordol-bucket/workouts/windshield-wiper/ff762ec364/clip.mp4"
+    "videoUrl": "videos/windshield-wiper.mp4"
   },
   {
     "id": "bent-leg-lowering-floor-tap",
@@ -1503,8 +1453,7 @@ window.GORDOL_EXERCISES = [
       "پا رو روی زمین رها می‌کنی."
     ],
     "cautionFa": null,
-    "videoUrl": "videos/bent-leg-lowering-floor-tap.mp4",
-    "cloudVideoUrl": "https://gordol-awjwt.hs3.ir/gordol-bucket/workouts/bent-leg-lowering-floor-tap/f9a6ac3688/clip.mp4"
+    "videoUrl": "videos/bent-leg-lowering-floor-tap.mp4"
   },
   {
     "id": "bench-leg-raise-hip-lift",
@@ -1532,8 +1481,7 @@ window.GORDOL_EXERCISES = [
       "پاها رو یهو رها می‌کنی و پایین می‌افتن."
     ],
     "cautionFa": "اگه کمر یا گردنت اذیت شد، به بالا آوردن پای ساده برگرد.",
-    "videoUrl": "videos/bench-leg-raise-hip-lift.mp4",
-    "cloudVideoUrl": "https://gordol-awjwt.hs3.ir/gordol-bucket/workouts/bench-leg-raise-hip-lift/dd5835a1f4/clip.mp4"
+    "videoUrl": "videos/bench-leg-raise-hip-lift.mp4"
   },
   {
     "id": "incline-push-up",
@@ -1561,8 +1509,7 @@ window.GORDOL_EXERCISES = [
       "فقط یه کم خم می‌شی و سینه دور می‌مونه."
     ],
     "cautionFa": "اگه هنوز سخته، جعبه‌ی بلندتر بگیر.",
-    "videoUrl": "videos/incline-push-up.mp4",
-    "cloudVideoUrl": "https://gordol-awjwt.hs3.ir/gordol-bucket/workouts/incline-push-up/45297fa279/clip.mp4"
+    "videoUrl": "videos/incline-push-up.mp4"
   },
   {
     "id": "knee-push-up",
@@ -1590,8 +1537,7 @@ window.GORDOL_EXERCISES = [
       "نیمه‌راه پایین می‌ری."
     ],
     "cautionFa": "اگه زانوت اذیت شد، یه حوله‌ی تاشده زیر زانو بذار.",
-    "videoUrl": "videos/knee-push-up.mp4",
-    "cloudVideoUrl": "https://gordol-awjwt.hs3.ir/gordol-bucket/workouts/knee-push-up/e4f30b2aef/clip.mp4"
+    "videoUrl": "videos/knee-push-up.mp4"
   },
   {
     "id": "wall-push-up",
@@ -1619,8 +1565,7 @@ window.GORDOL_EXERCISES = [
       "گردن رو جلو می‌کشی و سر زودتر می‌رسه."
     ],
     "cautionFa": "اگه مچ دستت اذیت می‌شه، پاها رو به دیوار نزدیک‌تر بذار.",
-    "videoUrl": "videos/wall-push-up.mp4",
-    "cloudVideoUrl": "https://gordol-awjwt.hs3.ir/gordol-bucket/workouts/wall-push-up/6b813460a2/clip.mp4"
+    "videoUrl": "videos/wall-push-up.mp4"
   },
   {
     "id": "box-dip-knees-bent",
@@ -1648,8 +1593,7 @@ window.GORDOL_EXERCISES = [
       "خیلی پایین می‌ری و شونه می‌کشه."
     ],
     "cautionFa": "اگه شونه‌ت درد گرفت، کم‌عمق‌تر پایین برو.",
-    "videoUrl": "videos/box-dip-knees-bent.mp4",
-    "cloudVideoUrl": "https://gordol-awjwt.hs3.ir/gordol-bucket/workouts/box-dip-knees-bent/dd1114d496/clip.mp4"
+    "videoUrl": "videos/box-dip-knees-bent.mp4"
   },
   {
     "id": "pike-shoulder-shrug",
@@ -1677,8 +1621,7 @@ window.GORDOL_EXERCISES = [
       "باسن پایین میاد."
     ],
     "cautionFa": "اگه مچ یا شونه‌ات اذیت شد، دامنه‌ی حرکت رو کم کن.",
-    "videoUrl": "videos/pike-shoulder-shrug.mp4",
-    "cloudVideoUrl": "https://gordol-awjwt.hs3.ir/gordol-bucket/workouts/pike-shoulder-shrug/7941d3bc30/clip.mp4"
+    "videoUrl": "videos/pike-shoulder-shrug.mp4"
   },
   {
     "id": "knee-push-up-hands-forward",
@@ -1706,8 +1649,7 @@ window.GORDOL_EXERCISES = [
       "دست‌ها رو اونقدر جلو می‌ذاری که تعادلت به هم می‌خوره."
     ],
     "cautionFa": "اگه مچ یا آرنجت اذیت شد، دست‌ها رو بازتر بذار.",
-    "videoUrl": "videos/knee-push-up-hands-forward.mp4",
-    "cloudVideoUrl": "https://gordol-awjwt.hs3.ir/gordol-bucket/workouts/knee-push-up-hands-forward/cd16be0003/clip.mp4"
+    "videoUrl": "videos/knee-push-up-hands-forward.mp4"
   },
   {
     "id": "push-up",
@@ -1735,8 +1677,7 @@ window.GORDOL_EXERCISES = [
       "نصفه پایین می‌ری و سینه به زمین نمی‌رسه."
     ],
     "cautionFa": "اگه سخته، زانوها رو بذار زمین یا دست‌ها رو روی جعبه بذار.",
-    "videoUrl": "videos/push-up.mp4",
-    "cloudVideoUrl": "https://gordol-awjwt.hs3.ir/gordol-bucket/workouts/push-up/5eb013ea37/clip.mp4"
+    "videoUrl": "videos/push-up.mp4"
   },
   {
     "id": "elevated-push-up",
@@ -1764,8 +1705,7 @@ window.GORDOL_EXERCISES = [
       "کمر گود می‌شه."
     ],
     "cautionFa": "اگه شونه‌ات موقع پایین رفتن اذیت شد، کم‌عمق‌تر برو.",
-    "videoUrl": "videos/elevated-push-up.mp4",
-    "cloudVideoUrl": "https://gordol-awjwt.hs3.ir/gordol-bucket/workouts/elevated-push-up/9bda12efdd/clip.mp4"
+    "videoUrl": "videos/elevated-push-up.mp4"
   },
   {
     "id": "pike-push-up",
@@ -1793,8 +1733,7 @@ window.GORDOL_EXERCISES = [
       "سر رو روی زمین می‌کوبی."
     ],
     "cautionFa": "اگه شونه‌ات اذیت شد، کم‌عمق‌تر برو.",
-    "videoUrl": "videos/pike-push-up.mp4",
-    "cloudVideoUrl": "https://gordol-awjwt.hs3.ir/gordol-bucket/workouts/pike-push-up/b2f9087f61/clip.mp4"
+    "videoUrl": "videos/pike-push-up.mp4"
   },
   {
     "id": "decline-push-up",
@@ -1822,8 +1761,7 @@ window.GORDOL_EXERCISES = [
       "فقط نیمه‌راه پایین می‌ری."
     ],
     "cautionFa": "اگه شونه‌ات اذیت می‌کنه، جعبه رو کوتاه‌تر بگیر یا شنای معمولی بزن.",
-    "videoUrl": "videos/decline-push-up.mp4",
-    "cloudVideoUrl": "https://gordol-awjwt.hs3.ir/gordol-bucket/workouts/decline-push-up/15f83d603b/clip.mp4"
+    "videoUrl": "videos/decline-push-up.mp4"
   },
   {
     "id": "elevated-pike-push-up",
@@ -1851,8 +1789,7 @@ window.GORDOL_EXERCISES = [
       "سر رو روی زمین می‌کوبی."
     ],
     "cautionFa": "اگه سخته، پاها رو روی زمین بذار تا ارتفاع کمتر بشه.",
-    "videoUrl": "videos/elevated-pike-push-up.mp4",
-    "cloudVideoUrl": "https://gordol-awjwt.hs3.ir/gordol-bucket/workouts/elevated-pike-push-up/9f73003536/clip.mp4"
+    "videoUrl": "videos/elevated-pike-push-up.mp4"
   },
   {
     "id": "leg-raised-push-up",
@@ -1880,8 +1817,7 @@ window.GORDOL_EXERCISES = [
       "پای بالا وسط حرکت می‌افته."
     ],
     "cautionFa": "اگه تعادلت رو از دست می‌دی، پا رو کمتر بالا ببر.",
-    "videoUrl": "videos/leg-raised-push-up.mp4",
-    "cloudVideoUrl": "https://gordol-awjwt.hs3.ir/gordol-bucket/workouts/leg-raised-push-up/8ff373574e/clip.mp4"
+    "videoUrl": "videos/leg-raised-push-up.mp4"
   },
   {
     "id": "straight-leg-box-dip",
@@ -1909,8 +1845,7 @@ window.GORDOL_EXERCISES = [
       "شونه‌ها تا گوش‌ها بالا می‌ره."
     ],
     "cautionFa": "اگه شونه‌ت درد گرفت یا سخته، زانوها رو خم کن.",
-    "videoUrl": "videos/straight-leg-box-dip.mp4",
-    "cloudVideoUrl": "https://gordol-awjwt.hs3.ir/gordol-bucket/workouts/straight-leg-box-dip/6b761f8543/clip.mp4"
+    "videoUrl": "videos/straight-leg-box-dip.mp4"
   },
   {
     "id": "knee-push-up-close-hands",
@@ -1938,8 +1873,7 @@ window.GORDOL_EXERCISES = [
       "نیمه‌راه پایین می‌ری."
     ],
     "cautionFa": "اگه زانوت اذیت شد، یه حوله‌ی تاشده زیر زانو بذار.",
-    "videoUrl": "videos/knee-push-up-close-hands.mp4",
-    "cloudVideoUrl": "https://gordol-awjwt.hs3.ir/gordol-bucket/workouts/knee-push-up-close-hands/d3f9666d44/clip.mp4"
+    "videoUrl": "videos/knee-push-up-close-hands.mp4"
   },
   {
     "id": "push-up-side-view",
@@ -1967,8 +1901,7 @@ window.GORDOL_EXERCISES = [
       "نصفه پایین می‌ری و سینه به زمین نمی‌رسه."
     ],
     "cautionFa": "اگه سخته، زانوها رو بذار زمین یا دست‌ها رو روی جعبه بذار.",
-    "videoUrl": "videos/push-up-side-view.mp4",
-    "cloudVideoUrl": "https://gordol-awjwt.hs3.ir/gordol-bucket/workouts/push-up-side-view/69bfdb89b6/clip.mp4"
+    "videoUrl": "videos/push-up-side-view.mp4"
   },
   {
     "id": "push-up-front-view",
@@ -1996,8 +1929,7 @@ window.GORDOL_EXERCISES = [
       "نصفه پایین می‌ری و سینه به زمین نمی‌رسه."
     ],
     "cautionFa": "اگه سخته، زانوها رو بذار زمین یا دست‌ها رو روی جعبه بذار.",
-    "videoUrl": "videos/push-up-front-view.mp4",
-    "cloudVideoUrl": "https://gordol-awjwt.hs3.ir/gordol-bucket/workouts/push-up-front-view/05e0f07c20/clip.mp4"
+    "videoUrl": "videos/push-up-front-view.mp4"
   },
   {
     "id": "superman",
@@ -2025,8 +1957,7 @@ window.GORDOL_EXERCISES = [
       "کمر رو بیش از حد گود می‌کنی."
     ],
     "cautionFa": "اگه کمرت اذیت شد، کمتر بالا بیا.",
-    "videoUrl": "videos/superman.mp4",
-    "cloudVideoUrl": "https://gordol-awjwt.hs3.ir/gordol-bucket/workouts/superman/d4ea147801/clip.mp4"
+    "videoUrl": "videos/superman.mp4"
   },
   {
     "id": "wall-angel",
@@ -2054,8 +1985,7 @@ window.GORDOL_EXERCISES = [
       "کمر رو گود می‌کنی تا دست‌ها بالاتر برن."
     ],
     "cautionFa": "اگه شونه‌ت گیر می‌کنه، فقط تا جایی برو که راحتی.",
-    "videoUrl": "videos/wall-angel.mp4",
-    "cloudVideoUrl": "https://gordol-awjwt.hs3.ir/gordol-bucket/workouts/wall-angel/20e1cf1e29/clip.mp4"
+    "videoUrl": "videos/wall-angel.mp4"
   },
   {
     "id": "prone-y-raise",
@@ -2083,8 +2013,7 @@ window.GORDOL_EXERCISES = [
       "سر رو بالا می‌گیری."
     ],
     "cautionFa": "اگه گردن یا کمرت اذیت شد، دست‌ها رو کمتر بالا ببر.",
-    "videoUrl": "videos/prone-y-raise.mp4",
-    "cloudVideoUrl": "https://gordol-awjwt.hs3.ir/gordol-bucket/workouts/prone-y-raise/c51f95a54f/clip.mp4"
+    "videoUrl": "videos/prone-y-raise.mp4"
   },
   {
     "id": "prone-t-raise",
@@ -2112,8 +2041,7 @@ window.GORDOL_EXERCISES = [
       "دست‌ها رو خیلی بالا می‌بری و شونه بالا می‌ره."
     ],
     "cautionFa": "اگه گردن یا کمرت اذیت شد، دست‌ها رو کمتر بالا ببر.",
-    "videoUrl": "videos/prone-t-raise.mp4",
-    "cloudVideoUrl": "https://gordol-awjwt.hs3.ir/gordol-bucket/workouts/prone-t-raise/92c3bd9315/clip.mp4"
+    "videoUrl": "videos/prone-t-raise.mp4"
   },
   {
     "id": "superman-pull",
@@ -2141,8 +2069,7 @@ window.GORDOL_EXERCISES = [
       "گردن رو بالا می‌بری."
     ],
     "cautionFa": "اگه کمرت اذیت شد، کمتر بالا بیا.",
-    "videoUrl": "videos/superman-pull.mp4",
-    "cloudVideoUrl": "https://gordol-awjwt.hs3.ir/gordol-bucket/workouts/superman-pull/cd4dc2b2f7/clip.mp4"
+    "videoUrl": "videos/superman-pull.mp4"
   },
   {
     "id": "towel-door-row",
@@ -2170,8 +2097,7 @@ window.GORDOL_EXERCISES = [
       "شونه‌ها بالا می‌رن."
     ],
     "cautionFa": "مطمئن شو در بسته و دستگیره محکمه؛ اگه شل بود حرکت رو انجام نده.",
-    "videoUrl": "videos/towel-door-row.mp4",
-    "cloudVideoUrl": "https://gordol-awjwt.hs3.ir/gordol-bucket/workouts/towel-door-row/d4a0e0357e/clip.mp4"
+    "videoUrl": "videos/towel-door-row.mp4"
   },
   {
     "id": "pull-up",
@@ -2199,8 +2125,7 @@ window.GORDOL_EXERCISES = [
       "پایین که میای دست‌ها رو کامل صاف نمی‌کنی."
     ],
     "cautionFa": "اگه هنوز بالا نمی‌ری، فقط آویزون شو و آروم پایین بیا.",
-    "videoUrl": "videos/pull-up.mp4",
-    "cloudVideoUrl": "https://gordol-awjwt.hs3.ir/gordol-bucket/workouts/pull-up/1017cc873f/clip.mp4"
+    "videoUrl": "videos/pull-up.mp4"
   },
   {
     "id": "walking-calf-raise",
@@ -2228,8 +2153,7 @@ window.GORDOL_EXERCISES = [
       "بالاتنه رو به جلو خم می‌کنی."
     ],
     "cautionFa": null,
-    "videoUrl": "videos/walking-calf-raise.mp4",
-    "cloudVideoUrl": "https://gordol-awjwt.hs3.ir/gordol-bucket/workouts/walking-calf-raise/ac4133fd34/clip.mp4"
+    "videoUrl": "videos/walking-calf-raise.mp4"
   },
   {
     "id": "standing-leg-swing-back",
@@ -2257,8 +2181,7 @@ window.GORDOL_EXERCISES = [
       "پا رو با تاب سریع پرت می‌کنی و باسن کار نمی‌کنه."
     ],
     "cautionFa": "اگه تعادلت کمه، دستت رو به دیوار بگیر.",
-    "videoUrl": "videos/standing-leg-swing-back.mp4",
-    "cloudVideoUrl": "https://gordol-awjwt.hs3.ir/gordol-bucket/workouts/standing-leg-swing-back/0357ae6ce3/clip.mp4"
+    "videoUrl": "videos/standing-leg-swing-back.mp4"
   },
   {
     "id": "standing-calf-raise",
@@ -2286,8 +2209,7 @@ window.GORDOL_EXERCISES = [
       "مچ پات به داخل یا بیرون خم می‌شه."
     ],
     "cautionFa": "اگه تعادلت کمه، دستت رو به یه تکیه‌گاه بگیر.",
-    "videoUrl": "videos/standing-calf-raise.mp4",
-    "cloudVideoUrl": "https://gordol-awjwt.hs3.ir/gordol-bucket/workouts/standing-calf-raise/02d4f8aa28/clip.mp4"
+    "videoUrl": "videos/standing-calf-raise.mp4"
   },
   {
     "id": "bodyweight-squat",
@@ -2315,8 +2237,7 @@ window.GORDOL_EXERCISES = [
       "پاشنه از زمین جدا می‌شه."
     ],
     "cautionFa": "اگه زانوت اذیت می‌شه، کمتر پایین برو.",
-    "videoUrl": "videos/bodyweight-squat.mp4",
-    "cloudVideoUrl": "https://gordol-awjwt.hs3.ir/gordol-bucket/workouts/bodyweight-squat/fece770608/clip.mp4"
+    "videoUrl": "videos/bodyweight-squat.mp4"
   },
   {
     "id": "wall-assisted-squat",
@@ -2344,8 +2265,7 @@ window.GORDOL_EXERCISES = [
       "پاشنه‌ها از زمین بلند می‌شن."
     ],
     "cautionFa": "اگه جلوی زانوت اذیت می‌شه، کم‌عمق‌تر برو.",
-    "videoUrl": "videos/wall-assisted-squat.mp4",
-    "cloudVideoUrl": "https://gordol-awjwt.hs3.ir/gordol-bucket/workouts/wall-assisted-squat/2c36f8da4d/clip.mp4"
+    "videoUrl": "videos/wall-assisted-squat.mp4"
   },
   {
     "id": "glute-bridge",
@@ -2373,8 +2293,7 @@ window.GORDOL_EXERCISES = [
       "پاشنه‌ها از زمین جدا می‌شه."
     ],
     "cautionFa": "اگه کمرت اذیت شد، کمتر بالا برو.",
-    "videoUrl": "videos/glute-bridge.mp4",
-    "cloudVideoUrl": "https://gordol-awjwt.hs3.ir/gordol-bucket/workouts/glute-bridge/3c29ddcc64/clip.mp4"
+    "videoUrl": "videos/glute-bridge.mp4"
   },
   {
     "id": "clamshell",
@@ -2402,8 +2321,7 @@ window.GORDOL_EXERCISES = [
       "پاها از هم جدا می‌شن."
     ],
     "cautionFa": null,
-    "videoUrl": "videos/clamshell.mp4",
-    "cloudVideoUrl": "https://gordol-awjwt.hs3.ir/gordol-bucket/workouts/clamshell/7ce6f5c3b1/clip.mp4"
+    "videoUrl": "videos/clamshell.mp4"
   },
   {
     "id": "side-lying-leg-raise",
@@ -2431,8 +2349,7 @@ window.GORDOL_EXERCISES = [
       "بدن به عقب می‌چرخه."
     ],
     "cautionFa": null,
-    "videoUrl": "videos/side-lying-leg-raise.mp4",
-    "cloudVideoUrl": "https://gordol-awjwt.hs3.ir/gordol-bucket/workouts/side-lying-leg-raise/cfc887c27c/clip.mp4"
+    "videoUrl": "videos/side-lying-leg-raise.mp4"
   },
   {
     "id": "hip-hinge",
@@ -2460,8 +2377,7 @@ window.GORDOL_EXERCISES = [
       "به‌جای عقب رفتن باسن، زانوها رو خم می‌کنی و چمباتمه می‌زنی."
     ],
     "cautionFa": "اگه پشت رانت خیلی می‌کشه، کمتر خم شو.",
-    "videoUrl": "videos/hip-hinge.mp4",
-    "cloudVideoUrl": "https://gordol-awjwt.hs3.ir/gordol-bucket/workouts/hip-hinge/cd8d4b3212/clip.mp4"
+    "videoUrl": "videos/hip-hinge.mp4"
   },
   {
     "id": "standing-knee-lift",
@@ -2489,8 +2405,7 @@ window.GORDOL_EXERCISES = [
       "زانوی پای تکیه‌گاه قفل می‌شه."
     ],
     "cautionFa": "اگه تعادلت کمه، دستت رو به دیوار بگیر.",
-    "videoUrl": "videos/standing-knee-lift.mp4",
-    "cloudVideoUrl": "https://gordol-awjwt.hs3.ir/gordol-bucket/workouts/standing-knee-lift/267cedfa93/clip.mp4"
+    "videoUrl": "videos/standing-knee-lift.mp4"
   },
   {
     "id": "walking-lunge",
@@ -2518,8 +2433,7 @@ window.GORDOL_EXERCISES = [
       "بالاتنه به جلو خم می‌شه."
     ],
     "cautionFa": "اگه زانوت درد می‌کنه، قدم رو کوتاه‌تر و عمق رو کمتر کن.",
-    "videoUrl": "videos/walking-lunge.mp4",
-    "cloudVideoUrl": "https://gordol-awjwt.hs3.ir/gordol-bucket/workouts/walking-lunge/d9ccc950dc/clip.mp4"
+    "videoUrl": "videos/walking-lunge.mp4"
   },
   {
     "id": "pulse-squat",
@@ -2547,8 +2461,7 @@ window.GORDOL_EXERCISES = [
       "زانوها به داخل می‌افتن."
     ],
     "cautionFa": "اگه زانوت درد گرفت، ضربه‌ها رو کوچیک‌تر کن یا بایست.",
-    "videoUrl": "videos/pulse-squat.mp4",
-    "cloudVideoUrl": "https://gordol-awjwt.hs3.ir/gordol-bucket/workouts/pulse-squat/d84e929ec2/clip.mp4"
+    "videoUrl": "videos/pulse-squat.mp4"
   },
   {
     "id": "step-up-knee-drive",
@@ -2576,8 +2489,7 @@ window.GORDOL_EXERCISES = [
       "زانوی پای روی جعبه به داخل می‌افته."
     ],
     "cautionFa": "اگه تعادلت کمه، با جعبه‌ی کوتاه‌تر شروع کن.",
-    "videoUrl": "videos/step-up-knee-drive.mp4",
-    "cloudVideoUrl": "https://gordol-awjwt.hs3.ir/gordol-bucket/workouts/step-up-knee-drive/7c195fa84a/clip.mp4"
+    "videoUrl": "videos/step-up-knee-drive.mp4"
   },
   {
     "id": "single-leg-glute-bridge",
@@ -2605,8 +2517,7 @@ window.GORDOL_EXERCISES = [
       "با نوک پا هل می‌دی، نه با پاشنه."
     ],
     "cautionFa": "اگه کمرت اذیت شد، با هر دو پا شروع کن.",
-    "videoUrl": "videos/single-leg-glute-bridge.mp4",
-    "cloudVideoUrl": "https://gordol-awjwt.hs3.ir/gordol-bucket/workouts/single-leg-glute-bridge/e224a6dde5/clip.mp4"
+    "videoUrl": "videos/single-leg-glute-bridge.mp4"
   },
   {
     "id": "cossack-squat",
@@ -2634,8 +2545,7 @@ window.GORDOL_EXERCISES = [
       "تنه زیادی به جلو خم می‌شه."
     ],
     "cautionFa": "اگه کشاله‌ی ران یا زانوت اذیت می‌شه، کم‌عمق‌تر برو.",
-    "videoUrl": "videos/cossack-squat.mp4",
-    "cloudVideoUrl": "https://gordol-awjwt.hs3.ir/gordol-bucket/workouts/cossack-squat/fbae7d2f09/clip.mp4"
+    "videoUrl": "videos/cossack-squat.mp4"
   },
   {
     "id": "curtsy-step-down",
@@ -2663,8 +2573,7 @@ window.GORDOL_EXERCISES = [
       "وزن رو می‌ندازی روی پای زمین."
     ],
     "cautionFa": "تعادل می‌خواد؛ اگه زانوت حساسه، کم‌عمق‌تر برو.",
-    "videoUrl": "videos/curtsy-step-down.mp4",
-    "cloudVideoUrl": "https://gordol-awjwt.hs3.ir/gordol-bucket/workouts/curtsy-step-down/86f982ba0c/clip.mp4"
+    "videoUrl": "videos/curtsy-step-down.mp4"
   },
   {
     "id": "kickstand-squat-to-bench",
@@ -2692,8 +2601,7 @@ window.GORDOL_EXERCISES = [
       "وزن رو می‌ندازی روی پای عقب."
     ],
     "cautionFa": "اگه زانوی پای جلو اذیت می‌شه، کم‌عمق‌تر بشین.",
-    "videoUrl": "videos/kickstand-squat-to-bench.mp4",
-    "cloudVideoUrl": "https://gordol-awjwt.hs3.ir/gordol-bucket/workouts/kickstand-squat-to-bench/fb63465b6d/clip.mp4"
+    "videoUrl": "videos/kickstand-squat-to-bench.mp4"
   },
   {
     "id": "side-lunge",
@@ -2721,8 +2629,7 @@ window.GORDOL_EXERCISES = [
       "تنه زیاد به جلو خم می‌شه."
     ],
     "cautionFa": "اگه کشاله‌ی ران یا زانوت اذیت می‌شه، قدم رو کوتاه‌تر بردار.",
-    "videoUrl": "videos/side-lunge.mp4",
-    "cloudVideoUrl": "https://gordol-awjwt.hs3.ir/gordol-bucket/workouts/side-lunge/f70f480cec/clip.mp4"
+    "videoUrl": "videos/side-lunge.mp4"
   },
   {
     "id": "alternating-reverse-lunge",
@@ -2750,8 +2657,7 @@ window.GORDOL_EXERCISES = [
       "قدم عقب کوتاهه و تعادلت می‌ره."
     ],
     "cautionFa": "اگه زانوت اذیت می‌شه، عمق رو کم کن.",
-    "videoUrl": "videos/alternating-reverse-lunge.mp4",
-    "cloudVideoUrl": "https://gordol-awjwt.hs3.ir/gordol-bucket/workouts/alternating-reverse-lunge/0490d6bada/clip.mp4"
+    "videoUrl": "videos/alternating-reverse-lunge.mp4"
   },
   {
     "id": "wall-sit",
@@ -2779,8 +2685,7 @@ window.GORDOL_EXERCISES = [
       "زانوها از نوک پا جلوتر می‌رن."
     ],
     "cautionFa": "اگه زانوت درد گرفت، کمی بالاتر بایست.",
-    "videoUrl": "videos/wall-sit.mp4",
-    "cloudVideoUrl": "https://gordol-awjwt.hs3.ir/gordol-bucket/workouts/wall-sit/25465cf051/clip.mp4"
+    "videoUrl": "videos/wall-sit.mp4"
   },
   {
     "id": "good-morning",
@@ -2808,8 +2713,7 @@ window.GORDOL_EXERCISES = [
       "زانوها زیاد خم می‌شن و حرکت شبیه اسکوات می‌شه."
     ],
     "cautionFa": "اگه کمرت حساسه، کمتر خم شو.",
-    "videoUrl": "videos/good-morning.mp4",
-    "cloudVideoUrl": "https://gordol-awjwt.hs3.ir/gordol-bucket/workouts/good-morning/119d544799/clip.mp4"
+    "videoUrl": "videos/good-morning.mp4"
   },
   {
     "id": "single-leg-romanian-deadlift",
@@ -2837,8 +2741,7 @@ window.GORDOL_EXERCISES = [
       "لگن به یه طرف باز می‌شه و پای عقب کج می‌شه."
     ],
     "cautionFa": "اگه کمرت حساسه یا تعادلت کمه، کمتر خم شو.",
-    "videoUrl": "videos/single-leg-romanian-deadlift.mp4",
-    "cloudVideoUrl": "https://gordol-awjwt.hs3.ir/gordol-bucket/workouts/single-leg-romanian-deadlift/6a90a2e1c9/clip.mp4"
+    "videoUrl": "videos/single-leg-romanian-deadlift.mp4"
   },
   {
     "id": "alternating-lateral-lunge",
@@ -2866,8 +2769,7 @@ window.GORDOL_EXERCISES = [
       "تنه خیلی به جلو خم می‌شه."
     ],
     "cautionFa": "اگه کشاله‌ی ران یا زانوت اذیت می‌شه، قدم رو کوتاه‌تر بردار.",
-    "videoUrl": "videos/alternating-lateral-lunge.mp4",
-    "cloudVideoUrl": "https://gordol-awjwt.hs3.ir/gordol-bucket/workouts/alternating-lateral-lunge/3bcaacde80/clip.mp4"
+    "videoUrl": "videos/alternating-lateral-lunge.mp4"
   },
   {
     "id": "swing-lunge",
@@ -2895,8 +2797,7 @@ window.GORDOL_EXERCISES = [
       "تنه به جلو خم می‌شه."
     ],
     "cautionFa": "اگه زانوت اذیت می‌شه، کم‌عمق برو و آروم‌تر تکرار کن.",
-    "videoUrl": "videos/swing-lunge.mp4",
-    "cloudVideoUrl": "https://gordol-awjwt.hs3.ir/gordol-bucket/workouts/swing-lunge/0bbb1231d6/clip.mp4"
+    "videoUrl": "videos/swing-lunge.mp4"
   },
   {
     "id": "squat-hands-to-floor",
@@ -2924,8 +2825,7 @@ window.GORDOL_EXERCISES = [
       "زانوی پای تکیه‌گاه به داخل می‌ره."
     ],
     "cautionFa": "اگه زانو یا کشاله‌ی رانت اذیت می‌شه، کمتر پایین برو.",
-    "videoUrl": "videos/squat-hands-to-floor.mp4",
-    "cloudVideoUrl": "https://gordol-awjwt.hs3.ir/gordol-bucket/workouts/squat-hands-to-floor/b19431255f/clip.mp4"
+    "videoUrl": "videos/squat-hands-to-floor.mp4"
   },
   {
     "id": "curtsy-lunge",
@@ -2953,8 +2853,7 @@ window.GORDOL_EXERCISES = [
       "زانوی جلو به داخل می‌ره."
     ],
     "cautionFa": "اگه زانوت اذیت می‌شه، کم‌عمق‌تر برو.",
-    "videoUrl": "videos/curtsy-lunge.mp4",
-    "cloudVideoUrl": "https://gordol-awjwt.hs3.ir/gordol-bucket/workouts/curtsy-lunge/d1f86b06fa/clip.mp4"
+    "videoUrl": "videos/curtsy-lunge.mp4"
   },
   {
     "id": "alternating-forward-lunge",
@@ -2982,8 +2881,7 @@ window.GORDOL_EXERCISES = [
       "تنه به جلو خم می‌شه."
     ],
     "cautionFa": "اگه زانوت اذیت می‌شه، قدم رو کوتاه‌تر بردار.",
-    "videoUrl": "videos/alternating-forward-lunge.mp4",
-    "cloudVideoUrl": "https://gordol-awjwt.hs3.ir/gordol-bucket/workouts/alternating-forward-lunge/92faea8dfa/clip.mp4"
+    "videoUrl": "videos/alternating-forward-lunge.mp4"
   },
   {
     "id": "plate-elevated-lunge",
@@ -3011,8 +2909,7 @@ window.GORDOL_EXERCISES = [
       "ناگهانی و بی‌کنترل پایین می‌ری."
     ],
     "cautionFa": "زانو رو جلو می‌بره؛ اگه زانوت حساسه، کم‌عمق برو.",
-    "videoUrl": "videos/plate-elevated-lunge.mp4",
-    "cloudVideoUrl": "https://gordol-awjwt.hs3.ir/gordol-bucket/workouts/plate-elevated-lunge/0d17d89ad1/clip.mp4"
+    "videoUrl": "videos/plate-elevated-lunge.mp4"
   },
   {
     "id": "heels-elevated-glute-bridge",
@@ -3040,8 +2937,7 @@ window.GORDOL_EXERCISES = [
       "باسن رو خیلی بالا می‌بری و کمر گود می‌شه."
     ],
     "cautionFa": "اگه پشت رانت گرفتگی کرد، نیمکت رو نزدیک‌تر بذار.",
-    "videoUrl": "videos/heels-elevated-glute-bridge.mp4",
-    "cloudVideoUrl": "https://gordol-awjwt.hs3.ir/gordol-bucket/workouts/heels-elevated-glute-bridge/d0756160dc/clip.mp4"
+    "videoUrl": "videos/heels-elevated-glute-bridge.mp4"
   },
   {
     "id": "figure-four-hip-thrust",
@@ -3069,8 +2965,7 @@ window.GORDOL_EXERCISES = [
       "با نوک پا هل می‌دی و پاشنه از جا بلند می‌شه."
     ],
     "cautionFa": "اگه برات سخته، اول با هر دو پا روی صفحه تمرین کن.",
-    "videoUrl": "videos/figure-four-hip-thrust.mp4",
-    "cloudVideoUrl": "https://gordol-awjwt.hs3.ir/gordol-bucket/workouts/figure-four-hip-thrust/1b11e69e1a/clip.mp4"
+    "videoUrl": "videos/figure-four-hip-thrust.mp4"
   },
   {
     "id": "bulgarian-split-squat",
@@ -3098,8 +2993,7 @@ window.GORDOL_EXERCISES = [
       "تنه به جلو خم می‌شه."
     ],
     "cautionFa": "تعادل می‌خواد؛ اگه زانوت حساسه، کم‌عمق‌تر برو.",
-    "videoUrl": "videos/bulgarian-split-squat.mp4",
-    "cloudVideoUrl": "https://gordol-awjwt.hs3.ir/gordol-bucket/workouts/bulgarian-split-squat/3adfb3f5af/clip.mp4"
+    "videoUrl": "videos/bulgarian-split-squat.mp4"
   },
   {
     "id": "pop-squat",
@@ -3127,8 +3021,7 @@ window.GORDOL_EXERCISES = [
       "پاها خیلی کم باز می‌شن و اسکوات کم‌عمق می‌مونه."
     ],
     "cautionFa": "اگه زانو یا مچ پات حساسه، به جای پرش با قدم جابه‌جا شو.",
-    "videoUrl": "videos/pop-squat.mp4",
-    "cloudVideoUrl": "https://gordol-awjwt.hs3.ir/gordol-bucket/workouts/pop-squat/db661d7bf9/clip.mp4"
+    "videoUrl": "videos/pop-squat.mp4"
   },
   {
     "id": "jump-squat",
@@ -3156,8 +3049,7 @@ window.GORDOL_EXERCISES = [
       "اسکوات رو نیمه‌کاره می‌زنی و پرش ضعیف می‌شه."
     ],
     "cautionFa": "اگه زانو یا مچ پات حساسه، اسکوات معمولی بزن.",
-    "videoUrl": "videos/jump-squat.mp4",
-    "cloudVideoUrl": "https://gordol-awjwt.hs3.ir/gordol-bucket/workouts/jump-squat/62acf03d86/clip.mp4"
+    "videoUrl": "videos/jump-squat.mp4"
   },
   {
     "id": "pistol-squat",
@@ -3185,8 +3077,7 @@ window.GORDOL_EXERCISES = [
       "زانوی پای تکیه‌گاه به داخل می‌ره."
     ],
     "cautionFa": "حرکت سنگینیه؛ اگه زانوت حساسه یا تعادلت کمه، کم‌عمق برو.",
-    "videoUrl": "videos/pistol-squat.mp4",
-    "cloudVideoUrl": "https://gordol-awjwt.hs3.ir/gordol-bucket/workouts/pistol-squat/587fbab151/clip.mp4"
+    "videoUrl": "videos/pistol-squat.mp4"
   },
   {
     "id": "curtsy-deficit-lunge",
@@ -3214,8 +3105,7 @@ window.GORDOL_EXERCISES = [
       "پایین رفتن تند و بی‌کنترله."
     ],
     "cautionFa": "اگه تعادلت کمه یا زانوت حساسه، با کم‌عمق شروع کن.",
-    "videoUrl": "videos/curtsy-deficit-lunge.mp4",
-    "cloudVideoUrl": "https://gordol-awjwt.hs3.ir/gordol-bucket/workouts/curtsy-deficit-lunge/f1d59acfcd/clip.mp4"
+    "videoUrl": "videos/curtsy-deficit-lunge.mp4"
   },
   {
     "id": "box-jump",
@@ -3243,8 +3133,7 @@ window.GORDOL_EXERCISES = [
       "موقع فرود زانوها به داخل می‌افته."
     ],
     "cautionFa": "اگه تازه شروع کردی، یه جعبه‌ی کوتاه انتخاب کن.",
-    "videoUrl": "videos/box-jump.mp4",
-    "cloudVideoUrl": "https://gordol-awjwt.hs3.ir/gordol-bucket/workouts/box-jump/718eee8852/clip.mp4"
+    "videoUrl": "videos/box-jump.mp4"
   },
   {
     "id": "squat-arms-forward",
@@ -3272,8 +3161,7 @@ window.GORDOL_EXERCISES = [
       "پاشنه از زمین بلند می‌شه."
     ],
     "cautionFa": "اگه زانوت اذیت می‌شه، کم‌عمق‌تر برو.",
-    "videoUrl": "videos/squat-arms-forward.mp4",
-    "cloudVideoUrl": "https://gordol-awjwt.hs3.ir/gordol-bucket/workouts/squat-arms-forward/84b71a4982/clip.mp4"
+    "videoUrl": "videos/squat-arms-forward.mp4"
   },
   {
     "id": "side-lying-leg-raise-reach",
@@ -3301,8 +3189,7 @@ window.GORDOL_EXERCISES = [
       "لگن به عقب می‌چرخه."
     ],
     "cautionFa": "اگه پشت رانت می‌کشه، زانو رو کمی خم کن.",
-    "videoUrl": "videos/side-lying-leg-raise-reach.mp4",
-    "cloudVideoUrl": "https://gordol-awjwt.hs3.ir/gordol-bucket/workouts/side-lying-leg-raise-reach/64a28fffa8/clip.mp4"
+    "videoUrl": "videos/side-lying-leg-raise-reach.mp4"
   },
   {
     "id": "standing-quad-stretch",
@@ -3331,8 +3218,7 @@ window.GORDOL_EXERCISES = [
       "بالاتنه رو به جلو خم می‌کنی."
     ],
     "cautionFa": "اگه تعادلت کم بود، چشمت رو به یک نقطه‌ی ثابت بدوز.",
-    "videoUrl": "videos/standing-quad-stretch.mp4",
-    "cloudVideoUrl": "https://gordol-awjwt.hs3.ir/gordol-bucket/workouts/standing-quad-stretch/8083a5266f/clip.mp4"
+    "videoUrl": "videos/standing-quad-stretch.mp4"
   },
   {
     "id": "pole-lat-stretch",
@@ -3361,8 +3247,7 @@ window.GORDOL_EXERCISES = [
       "آرنج‌ها خم می‌شن و کشش از بین می‌ره."
     ],
     "cautionFa": "اگه شونه‌هات اذیت می‌شن، میله رو پایین‌تر بگیر.",
-    "videoUrl": "videos/pole-lat-stretch.mp4",
-    "cloudVideoUrl": "https://gordol-awjwt.hs3.ir/gordol-bucket/workouts/pole-lat-stretch/1c3ed15fae/clip.mp4"
+    "videoUrl": "videos/pole-lat-stretch.mp4"
   },
   {
     "id": "childs-pose",
@@ -3391,8 +3276,7 @@ window.GORDOL_EXERCISES = [
       "شونه‌ها رو سمت گوش‌ها بالا می‌کشی."
     ],
     "cautionFa": "اگه زانوهات اذیت می‌شن، باسن رو کمتر پایین بیار.",
-    "videoUrl": "videos/childs-pose.mp4",
-    "cloudVideoUrl": "https://gordol-awjwt.hs3.ir/gordol-bucket/workouts/childs-pose/eec1882280/clip.mp4"
+    "videoUrl": "videos/childs-pose.mp4"
   },
   {
     "id": "knee-to-chest-stretch",
@@ -3421,8 +3305,7 @@ window.GORDOL_EXERCISES = [
       "نفست رو حبس می‌کنی."
     ],
     "cautionFa": "اگه زانوهات حساسه، فشار رو روی ساق بنداز و از خود زانو نگیر.",
-    "videoUrl": "videos/knee-to-chest-stretch.mp4",
-    "cloudVideoUrl": "https://gordol-awjwt.hs3.ir/gordol-bucket/workouts/knee-to-chest-stretch/0ea5115468/clip.mp4"
+    "videoUrl": "videos/knee-to-chest-stretch.mp4"
   },
   {
     "id": "seated-toe-touch",
@@ -3451,8 +3334,7 @@ window.GORDOL_EXERCISES = [
       "برای رسیدن به پنجه، زانوها رو کامل خم می‌کنی."
     ],
     "cautionFa": "اگه به پنجه نمی‌رسی، دست‌ها رو روی ساق نگه دار.",
-    "videoUrl": "videos/seated-toe-touch.mp4",
-    "cloudVideoUrl": "https://gordol-awjwt.hs3.ir/gordol-bucket/workouts/seated-toe-touch/c5c0a441e5/clip.mp4"
+    "videoUrl": "videos/seated-toe-touch.mp4"
   },
   {
     "id": "standing-side-bend-reach",
@@ -3481,8 +3363,7 @@ window.GORDOL_EXERCISES = [
       "شونه‌ی بالایی رو سمت گوش می‌کشی."
     ],
     "cautionFa": null,
-    "videoUrl": "videos/standing-side-bend-reach.mp4",
-    "cloudVideoUrl": "https://gordol-awjwt.hs3.ir/gordol-bucket/workouts/standing-side-bend-reach/374e2bc7cf/clip.mp4"
+    "videoUrl": "videos/standing-side-bend-reach.mp4"
   },
   {
     "id": "legs-up-wall-stretch",
@@ -3511,8 +3392,7 @@ window.GORDOL_EXERCISES = [
       "پای خم رو با زور فشار می‌دی."
     ],
     "cautionFa": "اگه زانوی پای خم اذیت شد، اون پا رو پایین‌تر روی ران بذار.",
-    "videoUrl": "videos/legs-up-wall-stretch.mp4",
-    "cloudVideoUrl": "https://gordol-awjwt.hs3.ir/gordol-bucket/workouts/legs-up-wall-stretch/ab304c8a61/clip.mp4"
+    "videoUrl": "videos/legs-up-wall-stretch.mp4"
   },
   {
     "id": "cross-body-shoulder-stretch",
@@ -3541,8 +3421,7 @@ window.GORDOL_EXERCISES = [
       "دست رو از خود آرنج فشار می‌دی."
     ],
     "cautionFa": null,
-    "videoUrl": "videos/cross-body-shoulder-stretch.mp4",
-    "cloudVideoUrl": "https://gordol-awjwt.hs3.ir/gordol-bucket/workouts/cross-body-shoulder-stretch/9d264e893c/clip.mp4"
+    "videoUrl": "videos/cross-body-shoulder-stretch.mp4"
   },
   {
     "id": "neck-rotation-stretch",
@@ -3570,8 +3449,7 @@ window.GORDOL_EXERCISES = [
       "گردن رو با تکون سریع می‌چرخونی."
     ],
     "cautionFa": "اگه سرگیجه گرفتی یا گردنت درد گرفت، همون‌جا متوقف شو.",
-    "videoUrl": "videos/neck-rotation-stretch.mp4",
-    "cloudVideoUrl": "https://gordol-awjwt.hs3.ir/gordol-bucket/workouts/neck-rotation-stretch/15ef92bce6/clip.mp4"
+    "videoUrl": "videos/neck-rotation-stretch.mp4"
   },
   {
     "id": "kneeling-hip-flexor-stretch",
@@ -3600,8 +3478,7 @@ window.GORDOL_EXERCISES = [
       "کمر رو گود می‌کنی."
     ],
     "cautionFa": "اگه زانوی پای عقب اذیت می‌شه، وزنت رو کمتر به جلو بده.",
-    "videoUrl": "videos/kneeling-hip-flexor-stretch.mp4",
-    "cloudVideoUrl": "https://gordol-awjwt.hs3.ir/gordol-bucket/workouts/kneeling-hip-flexor-stretch/7db9cb58b9/clip.mp4"
+    "videoUrl": "videos/kneeling-hip-flexor-stretch.mp4"
   },
   {
     "id": "cobra-stretch",
@@ -3630,8 +3507,7 @@ window.GORDOL_EXERCISES = [
       "برای بالاتر رفتن کمر رو با زور گود می‌کنی."
     ],
     "cautionFa": "اگه کمرت درد گرفت، روی ساعدها بمون و بالاتر نرو.",
-    "videoUrl": "videos/cobra-stretch.mp4",
-    "cloudVideoUrl": "https://gordol-awjwt.hs3.ir/gordol-bucket/workouts/cobra-stretch/acbc01da7f/clip.mp4"
+    "videoUrl": "videos/cobra-stretch.mp4"
   },
   {
     "id": "thoracic-rotation",
@@ -3660,8 +3536,7 @@ window.GORDOL_EXERCISES = [
       "آرنج رو با زور بالا می‌کشی و گردن رو خم می‌کنی."
     ],
     "cautionFa": null,
-    "videoUrl": "videos/thoracic-rotation.mp4",
-    "cloudVideoUrl": "https://gordol-awjwt.hs3.ir/gordol-bucket/workouts/thoracic-rotation/5ac1f985e6/clip.mp4"
+    "videoUrl": "videos/thoracic-rotation.mp4"
   },
   {
     "id": "overhead-reach-stretch",
@@ -3690,8 +3565,7 @@ window.GORDOL_EXERCISES = [
       "کمر رو زیاد عقب می‌دی و گود می‌شه."
     ],
     "cautionFa": null,
-    "videoUrl": "videos/overhead-reach-stretch.mp4",
-    "cloudVideoUrl": "https://gordol-awjwt.hs3.ir/gordol-bucket/workouts/overhead-reach-stretch/1e61f58cfc/clip.mp4"
+    "videoUrl": "videos/overhead-reach-stretch.mp4"
   },
   {
     "id": "spinal-roll-down",
@@ -3720,8 +3594,7 @@ window.GORDOL_EXERCISES = [
       "زانوها رو قفل می‌کنی و کمر زیر فشار می‌ره."
     ],
     "cautionFa": "اگه کمرت اذیت می‌شه یا سرت گیج می‌ره، کم‌عمق‌تر برو.",
-    "videoUrl": "videos/spinal-roll-down.mp4",
-    "cloudVideoUrl": "https://gordol-awjwt.hs3.ir/gordol-bucket/workouts/spinal-roll-down/6947aa0e81/clip.mp4"
+    "videoUrl": "videos/spinal-roll-down.mp4"
   },
   {
     "id": "wall-lat-stretch",
@@ -3750,8 +3623,7 @@ window.GORDOL_EXERCISES = [
       "سینه رو پایین می‌دی ولی کمر گود می‌شه."
     ],
     "cautionFa": "اگه پشت زانوهات کشیده می‌شه، زانوها رو کمی خم کن.",
-    "videoUrl": "videos/wall-lat-stretch.mp4",
-    "cloudVideoUrl": "https://gordol-awjwt.hs3.ir/gordol-bucket/workouts/wall-lat-stretch/7ff31cf744/clip.mp4"
+    "videoUrl": "videos/wall-lat-stretch.mp4"
   },
   {
     "id": "seated-single-leg-reach",
@@ -3780,8 +3652,7 @@ window.GORDOL_EXERCISES = [
       "باسن از روی زمین بلند می‌شه."
     ],
     "cautionFa": "اگه به پنجه نمی‌رسی، دست‌ها رو روی ساق یا مچ نگه دار.",
-    "videoUrl": "videos/seated-single-leg-reach.mp4",
-    "cloudVideoUrl": "https://gordol-awjwt.hs3.ir/gordol-bucket/workouts/seated-single-leg-reach/b3f5885a71/clip.mp4"
+    "videoUrl": "videos/seated-single-leg-reach.mp4"
   },
   {
     "id": "wall-chest-stretch",
@@ -3810,8 +3681,7 @@ window.GORDOL_EXERCISES = [
       "شونه سمت گوش بالا می‌ره."
     ],
     "cautionFa": "اگه جلوی شونه‌ت تیر کشید یا درد گرفت، کمتر بچرخ.",
-    "videoUrl": "videos/wall-chest-stretch.mp4",
-    "cloudVideoUrl": "https://gordol-awjwt.hs3.ir/gordol-bucket/workouts/wall-chest-stretch/a65a7c3d7a/clip.mp4"
+    "videoUrl": "videos/wall-chest-stretch.mp4"
   },
   {
     "id": "staggered-forward-fold",
@@ -3840,8 +3710,7 @@ window.GORDOL_EXERCISES = [
       "کمر رو گرد می‌کنی به‌جای اینکه از لگن خم بشی."
     ],
     "cautionFa": null,
-    "videoUrl": "videos/staggered-forward-fold.mp4",
-    "cloudVideoUrl": "https://gordol-awjwt.hs3.ir/gordol-bucket/workouts/staggered-forward-fold/317901a86a/clip.mp4"
+    "videoUrl": "videos/staggered-forward-fold.mp4"
   },
   {
     "id": "cat-stretch",
@@ -3869,8 +3738,7 @@ window.GORDOL_EXERCISES = [
       "شونه‌ها به سمت گوش‌ها بالا می‌رن."
     ],
     "cautionFa": "اگه کمرت از خم شدن اذیت می‌شه، گردی رو کمتر کن.",
-    "videoUrl": "videos/cat-stretch.mp4",
-    "cloudVideoUrl": "https://gordol-awjwt.hs3.ir/gordol-bucket/workouts/cat-stretch/56038ebf0b/clip.mp4"
+    "videoUrl": "videos/cat-stretch.mp4"
   },
   {
     "id": "neck-side-bend-stretch",
@@ -3898,8 +3766,7 @@ window.GORDOL_EXERCISES = [
       "سر رو به جلو یا عقب هم می‌دی."
     ],
     "cautionFa": "اگه سرگیجه یا مورمور دست داشتی، همین‌جا تمومش کن.",
-    "videoUrl": "videos/neck-side-bend-stretch.mp4",
-    "cloudVideoUrl": "https://gordol-awjwt.hs3.ir/gordol-bucket/workouts/neck-side-bend-stretch/c3d8ff9fc3/clip.mp4"
+    "videoUrl": "videos/neck-side-bend-stretch.mp4"
   },
   {
     "id": "triceps-overhead-stretch",
@@ -3927,8 +3794,7 @@ window.GORDOL_EXERCISES = [
       "آرنج رو با فشار زیاد می‌کشی."
     ],
     "cautionFa": "اگه شونه‌ت درد گرفت، دست رو کمتر بالا ببر.",
-    "videoUrl": "videos/triceps-overhead-stretch.mp4",
-    "cloudVideoUrl": "https://gordol-awjwt.hs3.ir/gordol-bucket/workouts/triceps-overhead-stretch/a2a4cf3363/clip.mp4"
+    "videoUrl": "videos/triceps-overhead-stretch.mp4"
   },
   {
     "id": "seated-spinal-twist",
@@ -3956,8 +3822,7 @@ window.GORDOL_EXERCISES = [
       "فقط گردن رو می‌چرخونی."
     ],
     "cautionFa": "اگه کمرت درد گرفت، چرخش رو کمتر کن.",
-    "videoUrl": "videos/seated-spinal-twist.mp4",
-    "cloudVideoUrl": "https://gordol-awjwt.hs3.ir/gordol-bucket/workouts/seated-spinal-twist/ae3f203c8a/clip.mp4"
+    "videoUrl": "videos/seated-spinal-twist.mp4"
   },
   {
     "id": "butterfly-stretch",
@@ -3985,8 +3850,7 @@ window.GORDOL_EXERCISES = [
       "زانوها رو با دست به زمین فشار می‌دی."
     ],
     "cautionFa": "اگه زانوهات اذیت می‌شن، پاها رو از باسن دورتر بذار.",
-    "videoUrl": "videos/butterfly-stretch.mp4",
-    "cloudVideoUrl": "https://gordol-awjwt.hs3.ir/gordol-bucket/workouts/butterfly-stretch/a4f283977a/clip.mp4"
+    "videoUrl": "videos/butterfly-stretch.mp4"
   },
   {
     "id": "supine-hamstring-stretch",
@@ -4014,8 +3878,7 @@ window.GORDOL_EXERCISES = [
       "زانو رو با فشار قفل می‌کنی."
     ],
     "cautionFa": "اگه کمرت اذیت شد، پای دیگه رو خم و کف پا رو روی زمین نگه دار.",
-    "videoUrl": "videos/supine-hamstring-stretch.mp4",
-    "cloudVideoUrl": "https://gordol-awjwt.hs3.ir/gordol-bucket/workouts/supine-hamstring-stretch/bc24a043ec/clip.mp4"
+    "videoUrl": "videos/supine-hamstring-stretch.mp4"
   },
   {
     "id": "sphinx-press-up",
@@ -4043,8 +3906,7 @@ window.GORDOL_EXERCISES = [
       "سر رو عقب می‌ندازی و کمر خیلی گود می‌شه."
     ],
     "cautionFa": "اگه کمرت از گود شدن درد گرفت، پایین بیا و این حرکت رو انجام نده.",
-    "videoUrl": "videos/sphinx-press-up.mp4",
-    "cloudVideoUrl": "https://gordol-awjwt.hs3.ir/gordol-bucket/workouts/sphinx-press-up/3dac813499/clip.mp4"
+    "videoUrl": "videos/sphinx-press-up.mp4"
   },
   {
     "id": "arm-across-chest-stretch",
@@ -4073,8 +3935,7 @@ window.GORDOL_EXERCISES = [
       "از روی آرنج فشار می‌دی و دست خم می‌شه."
     ],
     "cautionFa": null,
-    "videoUrl": "videos/arm-across-chest-stretch.mp4",
-    "cloudVideoUrl": "https://gordol-awjwt.hs3.ir/gordol-bucket/workouts/arm-across-chest-stretch/da5b08d047/clip.mp4"
+    "videoUrl": "videos/arm-across-chest-stretch.mp4"
   },
   {
     "id": "supine-hamstring-stretch-strap",
@@ -4102,7 +3963,6 @@ window.GORDOL_EXERCISES = [
       "کمر از زمین جدا می‌شه."
     ],
     "cautionFa": "اگه کمرت اذیت شد، پای دیگه رو خم و کف پا رو روی زمین نگه دار.",
-    "videoUrl": "videos/supine-hamstring-stretch-strap.mp4",
-    "cloudVideoUrl": "https://gordol-awjwt.hs3.ir/gordol-bucket/workouts/supine-hamstring-stretch-strap/f676820557/clip.mp4"
+    "videoUrl": "videos/supine-hamstring-stretch-strap.mp4"
   }
 ];

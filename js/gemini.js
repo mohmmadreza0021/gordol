@@ -41,11 +41,11 @@
     },
 
     async validateKey(key) {
-      const url = `${API_BASE}/models/${DEFAULT_MODEL}:generateContent?key=${encodeURIComponent(key)}`;
+      const url = `${API_BASE}/models/${DEFAULT_MODEL}:generateContent`;
       const res = await this._fetch(url, {
         contents: [{ parts: [{ text: 'ping' }] }],
         generationConfig: { maxOutputTokens: 5 }
-      });
+      }, key);
       return !!(res && res.candidates && res.candidates.length);
     },
 
@@ -53,8 +53,9 @@
       const ctrl = new AbortController();
       const t = setTimeout(() => ctrl.abort(), 20000);
       try {
-        const url = `${API_BASE}/models?key=${encodeURIComponent(key)}&pageSize=100`;
-        const res = await fetch(url, { signal: ctrl.signal });
+        // کلید در هدر ارسال می‌شود تا در URL (لاگ واسط‌ها) ظاهر نشود
+        const url = `${API_BASE}/models?pageSize=100`;
+        const res = await fetch(url, { signal: ctrl.signal, headers: { 'x-goog-api-key': key } });
         if (!res.ok) throw new Error('خطای دسترسی به فهرست مدل‌ها (' + res.status + ')');
         const data = await res.json();
         return (data.models || [])
@@ -71,13 +72,13 @@
     // درخواست متنی ساده — خروجی: متن پاسخ
     async generate(prompt, opts) {
       const o = opts || {};
-      const url = `${API_BASE}/models/${this.config.model || DEFAULT_MODEL}:generateContent?key=${encodeURIComponent(this.config.apiKey)}`;
+      const url = `${API_BASE}/models/${this.config.model || DEFAULT_MODEL}:generateContent`;
       const body = {
         contents: o.history ? o.history.concat([{ role: 'user', parts: [{ text: prompt }] }]) : [{ parts: [{ text: prompt }] }],
         generationConfig: Object.assign({ temperature: 0.7, maxOutputTokens: 1600 }, o.generationConfig || {})
       };
       if (o.systemPrompt) body.systemInstruction = { parts: [{ text: o.systemPrompt }] };
-      const res = await this._fetch(url, body);
+      const res = await this._fetch(url, body, this.config.apiKey);
       const cand = res && res.candidates && res.candidates[0];
       const text = cand && cand.content && cand.content.parts
         ? cand.content.parts.map(p => p.text || '').join('')
@@ -88,7 +89,7 @@
     // درخواست با تصویر (بینایی ماشین)
     async generateWithImage(prompt, base64Jpeg, opts) {
       const o = opts || {};
-      const url = `${API_BASE}/models/${this.config.model || DEFAULT_MODEL}:generateContent?key=${encodeURIComponent(this.config.apiKey)}`;
+      const url = `${API_BASE}/models/${this.config.model || DEFAULT_MODEL}:generateContent`;
       const parts = [{ text: prompt }];
       if (base64Jpeg) parts.push({ inline_data: { mime_type: 'image/jpeg', data: base64Jpeg } });
       const body = {
@@ -96,24 +97,25 @@
         generationConfig: Object.assign({ temperature: 0.5, maxOutputTokens: 1600 }, o.generationConfig || {})
       };
       if (o.systemPrompt) body.systemInstruction = { parts: [{ text: o.systemPrompt }] };
-      const res = await this._fetch(url, body);
+      const res = await this._fetch(url, body, this.config.apiKey);
       const cand = res && res.candidates && res.candidates[0];
       return cand && cand.content && cand.content.parts ? cand.content.parts.map(p => p.text || '').join('') : '';
     },
 
-    // درخواست JSON ساخت‌یافته — با استخراج مقاوم و اعتبارسنجی کلیدها
+    // درخواست JSON ساخت‌یافته — با استخراج مقاوم، اعتبارسنجی کلیدها و اجبار نوع عددی
     async generateJSON(prompt, requiredKeys, opts) {
       const o = opts || {};
       const jsonInstruction =
         `${prompt}\n\n[قانون خروجی — حیاتی]: پاسخ را فقط و فقط به صورت یک شیء JSON معتبر بنویس. ` +
         `بدون هیچ متن اضافه، بدون markdown، بدون بک‌تیک. ` +
-        `کلیدهای الزامی: ${(requiredKeys || []).join(', ')}.`;
+        `کلیدهای الزامی: ${(requiredKeys || []).join(', ')}.` +
+        (o.numericKeys && o.numericKeys.length ? ` مقادیر کلیدهای ${o.numericKeys.join(', ')} حتماً باید عدد باشند (نه متن).` : '');
       let text = await this.generate(jsonInstruction, Object.assign({ generationConfig: { temperature: 0.4 } }, o));
-      const parsed = this.extractJSON(text, requiredKeys);
+      const parsed = this.extractJSON(text, requiredKeys, o.numericKeys);
       return parsed;
     },
 
-    extractJSON(text, requiredKeys) {
+    extractJSON(text, requiredKeys, numericKeys) {
       if (!text) throw new Error('پاسخ خالی از مدل');
       let t = text.trim().replace(/^```(?:json)?/i, '').replace(/```$/, '').trim();
       const m = t.match(/\{[\s\S]*\}/);
@@ -124,17 +126,27 @@
       }
       const missing = (requiredKeys || []).filter(k => obj[k] === undefined || obj[k] === null);
       if (missing.length) throw new Error('پاسخ مدل ناقص بود (کلیدهای: ' + missing.join(', ') + ')');
+      // اجبار نوع عددی — ضد تزریق از طریق فیلدهای «عددی»
+      (numericKeys || []).forEach(k => {
+        const n = Number(obj[k]);
+        if (!Number.isFinite(n)) throw new Error('مقدار عددی نامعتبر از مدل (' + k + ')');
+        obj[k] = n;
+      });
       return obj;
     },
 
-    async _fetch(url, body) {
+    async _fetch(url, body, apiKey) {
       const ctrl = new AbortController();
       const t = setTimeout(() => ctrl.abort(), TIMEOUT_MS);
       let res;
       try {
         res = await fetch(url, {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: {
+            'Content-Type': 'application/json',
+            // کلید فقط در هدر — هرگز در URL نمی‌آید
+            'x-goog-api-key': apiKey
+          },
           body: JSON.stringify(body),
           signal: ctrl.signal
         });
