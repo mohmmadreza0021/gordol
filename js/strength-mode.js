@@ -238,6 +238,8 @@
       container.querySelectorAll('[data-rest-timer]').forEach(b => {
         b.addEventListener('click', () => this.startRestTimer(b, parseInt(b.dataset.restTimer, 10)));
       });
+      const guidedBtn = document.getElementById('btn-guided-start');
+      if (guidedBtn) guidedBtn.addEventListener('click', () => this.startGuidedSession(selDay));
       const finishBtn = document.getElementById('btn-strength-finish');
       if (finishBtn) finishBtn.addEventListener('click', () => {
         if (this.logSession(selDay)) {
@@ -311,7 +313,10 @@
         ${phase('۱. گرم کردن و روان‌سازی', 'var(--accent-purple)', day.warmup, 'warmup')}
         ${phase('۲. تمرینات اصلی قدرتی', 'var(--accent-coral)', day.main, 'main')}
         ${phase('۳. سرد کردن و کشش', 'var(--accent-emerald)', day.cooldown, 'cooldown')}
-        <div style="margin:20px 0 10px;">
+        <div style="margin-top:20px;">
+          <button class="btn-primary" style="width:100%; padding:13px;" id="btn-guided-start">${GordolIcon('play', 17)} شروع جلسه هدایت‌شده (ترتیبی با تایمر استراحت)</button>
+        </div>
+        <div style="margin:10px 0 10px;">
           <button class="btn-emerald" style="width:100%; padding:13px;" id="btn-strength-finish" ${logged ? 'disabled' : ''}>
             ${GordolIcon('check-circle', 16)} ${logged ? 'این جلسه ثبت شده است' : 'ثبت اتمام جلسه ' + fa(day.day) + ' (استریک +۱)'}
           </button>
@@ -341,7 +346,246 @@
       };
       tick();
       const iv = setInterval(tick, 1000);
+    },
+
+  // ---------------- پلیر جلسه هدایت‌شده ترتیبی (درخواست کاربر) ----------------
+  // جریان: همه ست‌های حرکت ۱ → استراحت خودکار → حرکت ۲ → ... → پایان دور → دور بعد یا ثبت
+
+  player: null, // {day, exIndex, setIndex, round, phase:'work'|'rest'|'roundDone', restLeft, restTimerId, paused}
+
+  startGuidedSession(day) {
+    // شروع از اولین ستِ ناتمام (اگر از چک‌لیست تیکی خورده شده)
+    let exIndex = 0, setIndex = 0, found = false;
+    for (let i = 0; i < day.main.length && !found; i++) {
+      for (let sIdx = 0; sIdx < day.main[i].setsCount; sIdx++) {
+        if (!this.isSetDone(day.day, day.main[i].id, sIdx)) { exIndex = i; setIndex = sIdx; found = true; break; }
+      }
     }
+    this.player = { day, exIndex, setIndex, round: 1, phase: 'work', restLeft: 0, restTimerId: null, paused: false };
+    const modal = document.getElementById('session-player-modal');
+    modal.querySelector('.modal-card').style.maxWidth = '480px';
+    this.renderPlayer();
+    modal.classList.add('active');
+  },
+
+  playerExercise() {
+    return this.player.day.main[this.player.exIndex];
+  },
+
+  renderPlayer() {
+    const pl = this.player;
+    if (!pl) return;
+    const fa = window.GordolUtil.faNum;
+    const item = this.playerExercise();
+    const ex = (window.GORDOL_EXERCISES || []).find(e => e.id === item.id) || { id: item.id, nameFa: item.id, videoUrl: 'videos/' + item.id + '.mp4' };
+
+    const modal = document.getElementById('session-player-modal');
+    let body = '';
+
+    if (pl.phase === 'roundDone') {
+      // پایان یک دور کامل
+      body = `
+        <div style="text-align:center; padding:18px 0;">
+          <div style="color:var(--accent-emerald);">${GordolIcon('check-circle', 56)}</div>
+          <h3 style="font-size:1.2rem; font-weight:800; color:#fff; margin-top:10px;">یک دور کامل شد! 🔥</h3>
+          <p style="font-size:0.84rem; color:var(--text-muted); margin-top:8px; line-height:1.8;">همه ${fa(pl.day.main.length)} حرکت و ست‌هاشون رو انجام دادی. اگه توان داری، دور بعد رو بزن یا جلسه رو ثبت کن.</p>
+        </div>`;
+    } else if (pl.phase === 'rest') {
+      body = `
+        <div style="text-align:center; padding:8px 0;">
+          <div style="font-size:1rem; font-weight:800; color:#60a5fa;">⏳ استراحت — نفس بگیر</div>
+        </div>`;
+    } else {
+      // فاز تمرین
+      body = `
+        <div style="text-align:center; padding:6px 0;">
+          <div style="font-size:0.95rem; font-weight:800; color:#fff;">${window.GordolUtil.esc(item.reps || '')}</div>
+          ${ex.perSide ? '<div style="font-size:0.74rem; color:#c9b3ff; margin-top:3px;">هر طرف جداگانه اجرا شود</div>' : ''}
+        </div>`;
+    }
+
+    modal.querySelector('.modal-card').innerHTML = `
+      <div class="modal-header">
+        <div>
+          <h3 class="modal-title">${window.GordolUtil.esc(ex.nameFa)}</h3>
+          <div style="font-size:0.72rem; color:var(--text-muted); margin-top:2px;">ست ${fa(Math.min(pl.setIndex + 1, item.setsCount))} از ${fa(item.setsCount)} · دور ${fa(pl.round)} · حرکت ${fa(pl.exIndex + 1)} از ${fa(pl.day.main.length)}</div>
+        </div>
+        <button class="btn-close" id="gsp-close">×</button>
+      </div>
+      <div class="sp-video-box">
+        <video id="gsp-video" autoplay loop muted playsinline data-vposter="${window.GordolUtil.esc(ex.id)}"></video>
+        <div class="sp-phase-badge ${pl.phase === 'rest' ? 'rest' : ''}" id="gsp-phase">${pl.phase === 'rest' ? 'استراحت' : (pl.phase === 'roundDone' ? 'پایان دور' : 'تمرین اصلی')}</div>
+      </div>
+      <div style="display:flex; align-items:center; justify-content:center; margin:14px 0;">
+        <div class="sp-timer-wrap">
+          <svg viewBox="0 0 120 120" class="sp-timer-svg">
+            <circle cx="60" cy="60" r="54" class="sp-timer-bg"/>
+            <circle cx="60" cy="60" r="54" class="sp-timer-fg" id="gsp-circle"/>
+          </svg>
+          <div class="sp-timer-num" id="gsp-timer-num">—</div>
+        </div>
+      </div>
+      ${body}
+      <div style="display:flex; gap:8px; margin-top:14px;">
+        ${pl.phase === 'work' ? `<button class="btn-emerald" style="flex:1;" id="gsp-tick">${GordolIcon('check', 16)} ست انجام شد</button>` : ''}
+        ${pl.phase === 'work' ? `<button class="btn-secondary" style="width:auto; padding:0 14px;" id="gsp-skip" title="رد کردن">${GordolIcon('skip', 15)}</button>` : ''}
+        ${pl.phase === 'rest' ? `<button class="btn-secondary" style="flex:1;" id="gsp-pause">${GordolIcon('pause', 15)} مکث</button>` : ''}
+        ${pl.phase === 'rest' ? `<button class="btn-secondary" style="flex:1;" id="gsp-skip">رد استراحت ${GordolIcon('skip', 14)}</button>` : ''}
+        ${pl.phase === 'roundDone' ? `<button class="btn-primary" style="flex:1;" id="gsp-next-round">${GordolIcon('refresh', 16)} دور بعد (${fa(pl.round + 1)})</button>` : ''}
+        ${pl.phase === 'roundDone' ? `<button class="btn-emerald" style="flex:1;" id="gsp-finish">${GordolIcon('check-circle', 16)} ثبت پایان جلسه</button>` : ''}
+      </div>
+      <button class="btn-secondary" style="width:100%; margin-top:10px; font-size:0.76rem; color:#ef4444; border-color:rgba(239,68,68,0.3);" id="gsp-end">پایان و ثبت جلسه</button>
+    `;
+
+    // ویدیو
+    const video = document.getElementById('gsp-video');
+    if (video) {
+      video.setAttribute('src', ex.videoUrl);
+      video.load();
+      video.play().catch(() => {});
+      if (window.GordolThumbs) window.GordolThumbs.attachPoster(ex.id, video);
+    }
+
+    // تایمر دایره‌ای استراحت
+    if (pl.phase === 'rest') {
+      const num = document.getElementById('gsp-timer-num');
+      if (num) num.textContent = fa(pl.restLeft);
+      this.drawRestCircle();
+    } else if (pl.phase === 'work') {
+      const num = document.getElementById('gsp-timer-num');
+      if (num) num.textContent = fa(pl.setIndex + 1) + '/' + fa(item.setsCount);
+    } else {
+      const num = document.getElementById('gsp-timer-num');
+      if (num) num.textContent = '🔥';
+    }
+
+    // رویدادها
+    const bind = (id, fn) => { const el = document.getElementById(id); if (el) el.addEventListener('click', fn); };
+    bind('gsp-close', () => this.closePlayer());
+    bind('gsp-tick', () => this.playerTick());
+    bind('gsp-skip', () => this.playerSkip());
+    bind('gsp-pause', () => {
+      pl.paused = !pl.paused;
+      const b = document.getElementById('gsp-pause');
+      if (b) b.innerHTML = pl.paused ? GordolIcon('play', 15) + ' ادامه' : GordolIcon('pause', 15) + ' مکث';
+    });
+    bind('gsp-next-round', () => {
+      pl.round++; pl.exIndex = 0; pl.setIndex = 0; pl.phase = 'work';
+      this.renderPlayer();
+    });
+    bind('gsp-finish', () => this.playerFinish());
+    bind('gsp-end', () => this.playerFinish());
+  },
+
+  drawRestCircle() {
+    const pl = this.player;
+    if (!pl || pl.phase !== 'rest') return;
+    const total = this.playerExercise().restSec || 45;
+    const circle = document.getElementById('gsp-circle');
+    const num = document.getElementById('gsp-timer-num');
+    if (circle) {
+      const c = 2 * Math.PI * 54;
+      circle.style.strokeDasharray = c;
+      circle.style.strokeDashoffset = c * (1 - pl.restLeft / total);
+    }
+    if (num) num.textContent = window.GordolUtil.faNum(Math.max(0, pl.restLeft));
+  },
+
+  // تیک ست فعلی: ثبت → استراحت خودکار → ست/حرکت بعد
+  playerTick() {
+    const pl = this.player;
+    const item = this.playerExercise();
+    // ثبت اجباری تیک (idempotent) — سینک با چک‌لیست
+    if (!this.isSetDone(pl.day.day, item.id, pl.setIndex)) this.toggleSet(pl.day.day, item.id, pl.setIndex);
+    window.GordolApp.playBeep(880, 0.15);
+    this.playerAdvance();
+  },
+
+  playerSkip() {
+    const pl = this.player;
+    if (pl.phase === 'rest') {
+      // رد استراحت → مرحله بعد فوراً
+      if (pl.restTimerId) { clearInterval(pl.restTimerId); pl.restTimerId = null; }
+      this.playerAdvanceAfterRest();
+    } else {
+      // رد ست بدون تیک → ست بعد
+      this.playerAdvance();
+    }
+  },
+
+  playerAdvance() {
+    const pl = this.player;
+    const item = this.playerExercise();
+    if (pl.setIndex + 1 < item.setsCount) {
+      // ست بعدی همین حرکت — با استراحت خودکار
+      this.playerStartRest(item.restSec || 45, () => { pl.phase = 'work'; pl.setIndex++; this.renderPlayer(); });
+    } else if (pl.exIndex + 1 < pl.day.main.length) {
+      // حرکت تمام شد — استراحت بین حرکات
+      this.playerStartRest(item.restSec || 45, () => { pl.phase = 'work'; pl.exIndex++; pl.setIndex = 0; this.renderPlayer(); });
+    } else {
+      // دور کامل شد
+      pl.phase = 'roundDone';
+      window.GordolApp.playBeep(990, 0.25);
+      this.renderPlayer();
+    }
+  },
+
+  playerStartRest(seconds, onDone) {
+    const pl = this.player;
+    pl.phase = 'rest';
+    pl.restLeft = seconds;
+    pl.paused = false;
+    pl.onRestDone = onDone;
+    this.renderPlayer();
+    window.GordolApp.playBeep(660, 0.12);
+    if (pl.restTimerId) clearInterval(pl.restTimerId);
+    pl.restTimerId = setInterval(() => {
+      if (pl.paused) return;
+      pl.restLeft--;
+      if (pl.restLeft <= 3 && pl.restLeft > 0) window.GordolApp.playBeep(660, 0.08);
+      this.drawRestCircle();
+      if (pl.restLeft <= 0) {
+        clearInterval(pl.restTimerId);
+        pl.restTimerId = null;
+        window.GordolApp.playBeep(880, 0.2);
+        const fn = pl.onRestDone;
+        pl.onRestDone = null;
+        if (fn) fn();
+      }
+    }, 1000);
+  },
+
+  playerAdvanceAfterRest() {
+    const pl = this.player;
+    const fn = pl.onRestDone;
+    pl.onRestDone = null;
+    if (fn) fn();
+  },
+
+  playerFinish() {
+    const pl = this.player;
+    if (pl.restTimerId) { clearInterval(pl.restTimerId); pl.restTimerId = null; }
+    const day = pl.day;
+    this.player = null;
+    document.getElementById('session-player-modal').classList.remove('active');
+    const logged = this.logSession(day);
+    if (logged) {
+      window.GordolApp.sendLocalNotification('جلسه قدرتی امروز ثبت شد!', day.title + ' کامل شد. آفرین قهرمان!');
+      window.GordolApp.toast('جلسه ثبت شد — استریک تو ادامه دارد!');
+    } else {
+      window.GordolApp.toast('این جلسه قبلاً ثبت شده است.', false);
+    }
+    this.render(document.querySelector('main.main-content'));
+  },
+
+  closePlayer() {
+    const pl = this.player;
+    if (pl && pl.restTimerId) { clearInterval(pl.restTimerId); pl.restTimerId = null; }
+    this.player = null;
+    document.getElementById('session-player-modal').classList.remove('active');
+    window.GordolApp.toast('جلسه نیمه‌کاره رها شد — تیک‌ها سر جایشان هستند.', false);
+  },
+
   };
 
   window.GordolStrength = Strength;
