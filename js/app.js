@@ -168,8 +168,8 @@
       if (!modal) return;
       modal.querySelector('.modal-card').innerHTML = `
         <div style="text-align:center; margin-bottom:14px;">
-          <div style="font-size:3rem;">👁️</div>
-          <h3 style="font-size:1.25rem; font-weight:900; color:#fff; margin-top:6px;">به گردول خوش اومدی!</h3>
+          <div style="color:var(--accent-purple);">${GordolIcon('eye', 44)}</div>
+          <h3 style="font-size:1.25rem; font-weight:800; color:#fff; margin-top:6px;">به گردول خوش اومدی!</h3>
         </div>
 
         <div style="background:rgba(156,107,255,0.12); border:1px solid var(--accent-purple); border-radius:16px; padding:14px; margin-bottom:16px;">
@@ -180,7 +180,7 @@
         </div>
 
         <div style="background:var(--bg-elevated); border-radius:14px; padding:12px 14px; margin-bottom:16px; font-size:0.8rem; color:var(--text-muted); line-height:1.8;">
-          <b style="color:#fff;">🔑 گرفتن کلید رایگان در ۳۰ ثانیه:</b><br/>
+          <b style="color:#fff;">گرفتن کلید رایگان در ۳۰ ثانیه:</b><br/>
           ۱. وارد <a href="https://aistudio.google.com/app/apikey" target="_blank" rel="noopener" style="color:var(--accent-purple); text-decoration:underline;">Google AI Studio</a> شو (با اکانت گوگل).<br/>
           ۲. روی «Create API Key» بزن و کلید را کپی کن.<br/>
           ۳. کلید را همین‌جا پیست کن — تمام!
@@ -193,15 +193,24 @@
 
         <div id="mand-api-status" style="font-size:0.82rem; margin-bottom:12px; display:none; line-height:1.6;"></div>
 
-        <button id="btn-mand-verify" class="btn-primary">تست و فعال‌سازی هوش مصنوعی 🚀</button>
+        <button id="btn-mand-verify" class="btn-primary">${GordolIcon('zap', 17)} تست و فعال‌سازی هوش مصنوعی</button>
 
         <div style="background:rgba(16,185,129,0.08); border:1px solid rgba(16,185,129,0.3); border-radius:14px; padding:10px 12px; margin-top:14px; font-size:0.72rem; color:var(--text-muted); line-height:1.7;">
-          🔒 <b>امنیت و حریم خصوصی:</b> کلید تو فقط روی مرورگر خودت ذخیره می‌شود و فقط به سرور رسمی گوگل ارسال می‌شود.
+          ${GordolIcon('shield', 14)} <b>امنیت و حریم خصوصی:</b> کلید تو فقط روی مرورگر خودت ذخیره می‌شود و فقط به سرور رسمی گوگل ارسال می‌شود.
           هیچ سرور واسطی وجود ندارد؛ هیچ‌کس — حتی ما — به اطلاعات، عکس‌ها یا تمرین‌های تو دسترسی ندارد.
         </div>
       `;
 
       document.getElementById('btn-mand-verify').addEventListener('click', () => this.verifyAndSaveMandatoryApiKey());
+      const skipBtn = document.createElement('button');
+      skipBtn.className = 'btn-secondary';
+      skipBtn.style.marginTop = '10px';
+      skipBtn.textContent = 'فعلاً بدون هوش مصنوعی ادامه بده';
+      skipBtn.addEventListener('click', () => {
+        document.getElementById('mandatory-api-modal').classList.remove('active');
+        this.afterKeyGate();
+      });
+      document.getElementById('btn-mand-verify').after(skipBtn);
       modal.classList.add('active');
     },
 
@@ -322,11 +331,11 @@
       const rt = (this.profile && this.profile.reminderTime) || '18:00';
       modal.querySelector('.modal-card').innerHTML = `
         <div class="modal-header">
-          <h3 class="modal-title">🔔 یادآورهای هوشمند گردول</h3>
+          <h3 class="modal-title">${GordolIcon('bell', 18)} یادآورهای هوشمند گردول</h3>
         </div>
         <div style="text-align:center; margin-bottom:16px;">
-          <span style="font-size:3rem;">⏰</span>
-          <h4 style="font-size:1.05rem; font-weight:900; margin-top:10px; color:#fff;">هیچ تمرین یا آبی رو فراموش نکن!</h4>
+          <span style="color:var(--accent-gold);">${GordolIcon('bell', 40)}</span>
+          <h4 style="font-size:1.05rem; font-weight:800; margin-top:10px; color:#fff;">هیچ تمرین یا آبی رو فراموش نکن!</h4>
           <p style="font-size:0.84rem; color:var(--text-muted); margin-top:6px; line-height:1.7;">
             گردول هر روز ساعت ${esc(faNum(rt))} یادآور تمرین می‌فرستد، در طول روز برای نوشیدن آب یادت می‌گذارد
             و شب‌ها اگر وعده‌هات را ثبت نکرده باشی یادآوری می‌کند.
@@ -334,7 +343,7 @@
         </div>
         <div style="display:flex; gap:10px;">
           <button class="btn-secondary" style="width:auto; padding:0 16px;" id="notif-later-btn">بعداً</button>
-          <button class="btn-emerald" style="flex:1;" id="notif-enable-btn">فعال‌سازی نوتیفیکیشن‌ها 🔔</button>
+          <button class="btn-emerald" style="flex:1;" id="notif-enable-btn">${GordolIcon('bell', 16)} فعال‌سازی نوتیفیکیشن‌ها</button>
         </div>
       `;
       document.getElementById('notif-later-btn').addEventListener('click', () => {
@@ -448,14 +457,14 @@
       const dayNum = (this.profile && this.profile.currentDay) || 1;
       header.innerHTML = `
         <div class="brand-badge">
-          <span class="logo-icon">🥜</span>
+          <span class="logo-icon">${GordolIcon('dumbbell', 20)}</span>
           <span>گردول</span>
         </div>
         <div class="header-actions">
           <div class="streak-pill" title="روز فعلی برنامه">
-            <span>🔥</span><span>روز ${faNum(dayNum)}</span>
+            ${GordolIcon('flame', 15)}<span>روز ${faNum(dayNum)}</span>
           </div>
-          <button class="btn-icon" id="btn-open-settings" title="تنظیمات">⚙️</button>
+          <button class="btn-icon" id="btn-open-settings" title="تنظیمات">${GordolIcon('settings', 19)}</button>
         </div>
       `;
       document.getElementById('btn-open-settings').addEventListener('click', () => this.openSettingsModal());
@@ -466,20 +475,20 @@
       if (!nav) return;
       nav.innerHTML = `
         <div class="nav-item ${this.activeTab === 'today' ? 'active' : ''}" data-tab="today">
-          <span class="nav-icon">📅</span><span>امروز</span>
+          ${GordolIcon('calendar', 21)}<span>امروز</span>
         </div>
         <div class="nav-item ${this.activeTab === 'workout' ? 'active' : ''}" data-tab="workout">
-          <span class="nav-icon">🔥</span><span>تمرین</span>
+          ${GordolIcon('flame', 21)}<span>تمرین</span>
         </div>
         <div class="nav-center-action" id="nav-eye-btn">
-          <button class="nav-center-btn" title="چشم گِردول — شمارش هوشمند با دوربین">👁️</button>
+          <button class="nav-center-btn" title="چشم گردول — شمارش هوشمند با دوربین">${GordolIcon('eye', 24)}</button>
           <span class="nav-center-label">چشم گردول</span>
         </div>
         <div class="nav-item ${this.activeTab === 'diet' ? 'active' : ''}" data-tab="diet">
-          <span class="nav-icon">🥗</span><span>تغذیه</span>
+          ${GordolIcon('salad', 21)}<span>تغذیه</span>
         </div>
         <div class="nav-item ${this.activeTab === 'coach' ? 'active' : ''}" data-tab="coach">
-          <span class="nav-icon">🤖</span><span>مربی</span>
+          ${GordolIcon('bot', 21)}<span>مربی</span>
         </div>
       `;
       nav.querySelectorAll('.nav-item').forEach(n => {
@@ -748,13 +757,13 @@
       switch (step) {
         case 'welcome': {
           main.innerHTML = this.onbChrome(
-            'به گردول خوش اومدی! 🥜',
+            'به گردول خوش اومدی!',
             'مربی هوش مصنوعی ورزش و تغذیه — قراره با هم به هدفت برسیم. چند سؤال کوتاه ازت می‌پرسم تا برنامه دقیق تو ساخته بشه.',
             `<div style="display:flex; flex-direction:column; gap:10px; margin-bottom:16px;">
-              <div class="onb-feature"><span>🏋️</span><span>تمرین روزانه با ویدیو و چشم هوشمند</span></div>
-              <div class="onb-feature"><span>📸</span><span>ثبت غذا فقط با عکس یا تایپ</span></div>
-              <div class="onb-feature"><span>🎯</span><span>پیش‌بینی روز رسیدن به هدفت</span></div>
-            </div>`, false, 'شروع کنیم ➡️', 'onb-start');
+              <div class="onb-feature"><span style="color:var(--accent-purple);">${GordolIcon('dumbbell', 20)}</span><span>تمرین روزانه با ویدیو و چشم هوشمند</span></div>
+              <div class="onb-feature"><span style="color:#f59e0b;">${GordolIcon('camera', 20)}</span><span>ثبت غذا فقط با عکس یا تایپ</span></div>
+              <div class="onb-feature"><span style="color:#10b981;">${GordolIcon('target', 20)}</span><span>پیش‌بینی روز رسیدن به هدفت</span></div>
+            </div>`, false, 'شروع کنیم', 'onb-start');
           document.getElementById('onb-start').addEventListener('click', () => this.onbNav(main, false));
           break;
         }
@@ -779,7 +788,7 @@
 
         case 'obstacle-response': {
           const resp = O.OBSTACLE_RESPONSE[d.obstacle] || 'بریم جلو!';
-          main.innerHTML = this.onbChrome('', resp, `<div style="text-align:center; font-size:2.6rem; padding:12px 0;">💪</div>`, true, 'ادامه ➡️');
+          main.innerHTML = this.onbChrome('', resp, `<div style="text-align:center; font-size:2.6rem; padding:12px 0;">💪</div>`, true, 'ادامه');
           main.querySelector('.onb-back').addEventListener('click', () => this.onbNav(main, true));
           document.getElementById('onb-next').addEventListener('click', () => this.onbNav(main, false));
           break;
@@ -882,7 +891,7 @@
         case 'plan': {
           // پیش‌نمایش برنامه — مثل مرحله plan اپ اصلی
           const preview = this.computeOnboardingPlan();
-          main.innerHTML = this.onbChrome('برنامه‌ات آماده‌ست! 🎉', 'این چیزیه که گردول بر اساس جواب‌هات برایت چیده:',
+          main.innerHTML = this.onbChrome('برنامه‌ات آماده‌ست!', 'این چیزیه که گردول بر اساس جواب‌هات برایت چیده:',
             `<div style="display:flex; flex-direction:column; gap:10px;">
               <div class="onb-plan-row"><span>🔥 کالری روزانه</span><b>${faNum(preview.targetKcal)} kcal</b></div>
               <div class="onb-plan-row"><span>🥩 پروتئین</span><b>${faNum(preview.proteinG)} گرم</b></div>
@@ -890,7 +899,7 @@
               <div class="onb-plan-row"><span>🥑 چربی</span><b>${faNum(preview.fatG)} گرم</b></div>
               <div class="onb-plan-row"><span>💧 آب</span><b>${faNum(preview.waterMl)} میلی‌لیتر</b></div>
               <div class="onb-plan-row"><span>🏋️ مسیر تمرین</span><b>${esc(preview.pathTitle)}</b></div>
-            </div>`, true, 'عالیه، ادامه بده ➡️');
+            </div>`, true, 'عالیه، ادامه بده');
           main.querySelector('.onb-back').addEventListener('click', () => this.onbNav(main, true));
           document.getElementById('onb-next').addEventListener('click', () => this.onbNav(main, false));
           break;
@@ -966,8 +975,8 @@
           this.finishOnboarding();
           main.innerHTML = `
             <div class="onb-preparing">
-              <div style="font-size:3rem; animation:pulse-ai 1.4s infinite;">🥜</div>
-              <h2 style="font-size:1.25rem; font-weight:900; margin-top:12px;">در حال آماده‌سازی برنامه تو...</h2>
+              <div style="color:var(--accent-purple);">${GordolIcon('sparkles', 44)}</div>
+              <h2 style="font-size:1.25rem; font-weight:800; margin-top:12px;">در حال آماده‌سازی برنامه تو...</h2>
               <p style="font-size:0.85rem; color:var(--text-muted); margin-top:8px; line-height:1.8;">
                 ${esc(firstStep ? 'قدم اول امروزت: ' + firstStep : '')}
               </p>
@@ -1115,10 +1124,10 @@
       container.innerHTML = `
         <div class="target-projection-card">
           <div class="projection-header">
-            <span>🎯 روز رسیدن به هدف</span>
+            <span>${GordolIcon('target', 17)} روز رسیدن به هدف</span>
             <span style="font-size:0.72rem; background:rgba(16,185,129,0.2); color:#10b981; padding:2px 8px; border-radius:6px;">محاسبه علمی</span>
           </div>
-          <div class="proj-goal-date">📅 حدود <b>${esc(goalDateText)}</b> به وزن هدف (${faNum(p.goalWeightKg)} کیلو) می‌رسی</div>
+          <div class="proj-goal-date">${GordolIcon('calendar', 16)} حدود <b>${esc(goalDateText)}</b> به وزن هدف (${faNum(p.goalWeightKg)} کیلو) می‌رسی</div>
           <p style="font-size:0.78rem; color:#fff; line-height:1.6; margin-top:6px;">
             با نرخ ایمن <b>${faNum(p.weeklyRateKg || 0)} کیلو در هفته</b> از ${faNum(p.weightKg)} به ${faNum(p.goalWeightKg)} کیلوگرم.
           </p>
@@ -1148,21 +1157,21 @@
         <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:16px;">
           <div class="card eye-shortcut" style="padding:14px; margin-bottom:0; cursor:pointer;">
             <div style="display:flex; justify-content:space-between; align-items:center;">
-              <span style="font-size:1.6rem;">👁️</span>
-              <span style="font-size:0.7rem; background:rgba(16,185,129,0.2); color:#10b981; padding:2px 8px; border-radius:8px; font-weight:800;">زنده AI</span>
+              <span style="color:#10b981;">${GordolIcon('eye', 26)}</span>
+              <span style="font-size:0.7rem; background:rgba(16,185,129,0.2); color:#10b981; padding:2px 8px; border-radius:999px; font-weight:700;">چشم هوشمند</span>
             </div>
             <div style="margin-top:10px;">
-              <h4 style="font-size:0.95rem; font-weight:900; color:#fff;">چشم گِردول</h4>
+              <h4 style="font-size:0.95rem; font-weight:800; color:#fff;">چشم گِردول</h4>
               <p style="font-size:0.74rem; color:var(--text-muted); margin-top:3px;">شمارش تکرار و کنترل فرم با دوربین، برای همه حرکات</p>
             </div>
           </div>
           <div class="card food-shortcut" style="padding:14px; margin-bottom:0; cursor:pointer;">
             <div style="display:flex; justify-content:space-between; align-items:center;">
-              <span style="font-size:1.6rem;">📸</span>
-              <span style="font-size:0.7rem; background:rgba(245,158,11,0.2); color:#f59e0b; padding:2px 8px; border-radius:8px; font-weight:800;">Vision AI</span>
+              <span style="color:#f59e0b;">${GordolIcon('camera', 26)}</span>
+              <span style="font-size:0.7rem; background:rgba(245,158,11,0.2); color:#f59e0b; padding:2px 8px; border-radius:999px; font-weight:700;">تحلیل تصویر</span>
             </div>
             <div style="margin-top:10px;">
-              <h4 style="font-size:0.95rem; font-weight:900; color:#fff;">دوربین تغذیه</h4>
+              <h4 style="font-size:0.95rem; font-weight:800; color:#fff;">دوربین تغذیه</h4>
               <p style="font-size:0.74rem; color:var(--text-muted); margin-top:3px;">عکس یا متن غذا → کالری و ماکرو دقیق</p>
             </div>
           </div>
@@ -1170,27 +1179,27 @@
 
         <div class="card">
           <div class="card-title">
-            <span>🔥 کالری و ماکروهای امروز</span>
+            <span>${GordolIcon('flame', 17)} کالری و ماکروهای امروز</span>
             <span style="font-size:0.85rem; color:var(--accent-purple); font-weight:800;">${faNum(loggedCal)} / ${faNum(p.targetKcal)} kcal</span>
           </div>
           <div style="height:10px; background:var(--bg-elevated); border-radius:5px; overflow:hidden; margin:12px 0;">
             <div style="height:100%; width:${calPercent}%; background:linear-gradient(90deg, var(--accent-purple), var(--accent-coral)); border-radius:5px; transition:width 0.3s;"></div>
           </div>
           <div style="display:flex; justify-content:space-between; margin-top:10px;">
-            <span class="macro-tag prot">🥩 پروتئین: ${faNum(loggedP)}/${faNum(p.proteinG)}g</span>
-            <span class="macro-tag carb">🌾 کربوهیدرات: ${faNum(p.carbsG)}g</span>
-            <span class="macro-tag fat">🥑 چربی: ${faNum(p.fatG)}g</span>
+            <span class="macro-tag prot">پروتئین: ${faNum(loggedP)}/${faNum(p.proteinG)} گرم</span>
+            <span class="macro-tag carb">کربوهیدرات: ${faNum(p.carbsG)} گرم</span>
+            <span class="macro-tag fat">چربی: ${faNum(p.fatG)} گرم</span>
           </div>
           <div style="display:flex; gap:8px; margin-top:12px;">
-            <button class="btn-secondary" style="flex:1; font-size:0.8rem;" id="btn-food-photo">📸 عکس غذا</button>
-            <button class="btn-secondary" style="flex:1; font-size:0.8rem;" id="btn-food-text">✍️ متن غذا</button>
-            <button class="btn-secondary" style="width:auto; padding:6px 12px; font-size:0.8rem;" id="btn-ai-retune">🤖 بازتنظیم</button>
+            <button class="btn-secondary" style="flex:1; font-size:0.8rem;" id="btn-food-photo">${GordolIcon('camera', 16)} عکس غذا</button>
+            <button class="btn-secondary" style="flex:1; font-size:0.8rem;" id="btn-food-text">${GordolIcon('pencil', 16)} متن غذا</button>
+            <button class="btn-secondary" style="width:auto; padding:6px 12px; font-size:0.8rem;" id="btn-ai-retune">${GordolIcon('sparkles', 16)} بازتنظیم</button>
           </div>
         </div>
 
         <div class="card">
           <div class="card-title">
-            <span>💧 مصرف آب روزانه</span>
+            <span>${GordolIcon('droplet', 17)} مصرف آب روزانه</span>
             <span style="font-size:0.85rem; color:#06b6d4; font-weight:800;">${faNum(t.waterMl)} / ${faNum(p.waterMl)} ml</span>
           </div>
           <div style="height:8px; background:var(--bg-elevated); border-radius:4px; overflow:hidden; margin:10px 0;">
@@ -1204,13 +1213,13 @@
 
         <div class="card">
           <div class="card-title">
-            <span>🏋️ تمرین اختصاصی روز ${faNum(p.currentDay)}</span>
+            <span>${GordolIcon('dumbbell', 17)} تمرین اختصاصی روز ${faNum(p.currentDay)}</span>
             <span style="font-size:0.75rem; color:var(--text-muted);">${t.dayCompleted ? '✅ ثبت شده' : 'در انتظار انجام'}</span>
           </div>
           <p style="color:var(--text-muted); font-size:0.84rem; margin-bottom:12px;">
             مدت: ${faNum(p.trainingMinutes)} دقیقه | تمرکز: ${p.trainingFocus === 'core' ? 'شکم و مرکز بدن' : (p.trainingFocus === 'lower' ? 'باسن و پا' : 'کل بدن')} | سبک: ${p.trainingStyle === 'mastery' ? 'چشم گردول 👁️' : 'مسیر روزانه 🏃'}
           </p>
-          <button class="btn-primary" id="btn-go-workout">ورود به تمرینات روز ${faNum(p.currentDay)} 🔥</button>
+          <button class="btn-primary" id="btn-go-workout">${GordolIcon('play', 17)} شروع تمرین امروز</button>
         </div>
       `;
 
@@ -1297,35 +1306,35 @@
         <div class="card" style="background:linear-gradient(135deg, rgba(156,107,255,0.15), rgba(255,127,92,0.15)); border-color:var(--accent-purple);">
           <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:8px;">
             <div style="flex:1;">
-              <h3 style="font-size:1.1rem; font-weight:900; color:#fff;">${esc(plan.titleFa)} — روز ${faNum(p.currentDay)}</h3>
+              <h3 style="font-size:1.1rem; font-weight:800; color:#fff;">${esc(plan.titleFa)} — روز ${faNum(p.currentDay)}</h3>
               <p style="font-size:0.82rem; color:var(--text-muted); margin-top:4px;">${esc(template.name)} · ${esc(plan.subtitle)}</p>
               <div style="display:flex; gap:8px; margin-top:12px; font-size:0.78rem; font-weight:700; flex-wrap:wrap;">
-                <span class="macro-tag">⏱️ ${faNum(p.trainingMinutes)} دقیقه</span>
-                <span class="macro-tag">🔄 ${faNum(chapter.rounds)} راند</span>
-                <span class="macro-tag">💪 ${faNum(template.training.length)} حرکت اصلی</span>
+                <span class="macro-tag">${GordolIcon('timer', 13)} ${faNum(p.trainingMinutes)} دقیقه</span>
+                <span class="macro-tag">${GordolIcon('refresh', 13)} ${faNum(chapter.rounds)} راند</span>
+                <span class="macro-tag">${GordolIcon('dumbbell', 13)} ${faNum(template.training.length)} حرکت اصلی</span>
               </div>
             </div>
-            <button class="btn-secondary" style="width:auto; padding:7px 12px; font-size:0.74rem; flex-shrink:0;" id="btn-switch-program">🔄 تغییر مسیر</button>
+            <button class="btn-secondary" style="width:auto; padding:7px 12px; font-size:0.74rem; flex-shrink:0;" id="btn-switch-program">${GordolIcon('refresh', 14)} تغییر مسیر</button>
           </div>
         </div>
 
         <button class="btn-emerald" style="width:100%; padding:14px; font-size:1rem;" id="btn-start-session">
-          ▶️ شروع جلسه تمرین با تایمر
+          ${GordolIcon('play', 17)} شروع جلسه تمرین با تایمر
         </button>
         <p style="text-align:center; font-size:0.72rem; color:var(--text-muted); margin:8px 0 16px;">
           ویدیو + تایمر + بوق + استراحت خودکار — مثل مربی واقعی کنارت هستیم
         </p>
 
-        <h4 style="font-size:0.92rem; font-weight:900; margin:8px 0 10px; color:var(--accent-purple);">۱. گرم کردن (${faNum(template.warmup.length)} حرکت)</h4>
+        <h4 style="font-size:0.92rem; font-weight:800; margin:8px 0 10px; color:var(--accent-purple);">۱. گرم کردن (${faNum(template.warmup.length)} حرکت)</h4>
         <div style="display:flex; flex-direction:column; gap:10px;" id="list-warmup"></div>
-        <h4 style="font-size:0.92rem; font-weight:900; margin:20px 0 10px; color:var(--accent-coral);">۲. تمرین اصلی (${faNum(template.training.length)} حرکت)</h4>
+        <h4 style="font-size:0.92rem; font-weight:800; margin:20px 0 10px; color:var(--accent-coral);">۲. تمرین اصلی (${faNum(template.training.length)} حرکت)</h4>
         <div style="display:flex; flex-direction:column; gap:10px;" id="list-training"></div>
-        <h4 style="font-size:0.92rem; font-weight:900; margin:20px 0 10px; color:var(--accent-emerald);">۳. سرد کردن و کشش (${faNum(template.cooldown.length)} حرکت)</h4>
+        <h4 style="font-size:0.92rem; font-weight:800; margin:20px 0 10px; color:var(--accent-emerald);">۳. سرد کردن و کشش (${faNum(template.cooldown.length)} حرکت)</h4>
         <div style="display:flex; flex-direction:column; gap:10px;" id="list-cooldown"></div>
 
         <div style="margin-top:24px; padding-bottom:20px;">
           <button class="btn-secondary" style="width:100%; padding:12px;" id="btn-manual-complete">
-            ✅ امروز را بیرون از اپ تمرین کردم — ثبت دستی
+            ${GordolIcon('check-circle', 17)} امروز را بیرون از اپ تمرین کردم — ثبت دستی
           </button>
         </div>
       `;
@@ -1343,20 +1352,20 @@
             <div style="display:flex; justify-content:space-between; align-items:center; gap:8px;">
               <div style="flex:1; min-width:0;">
                 <div style="display:flex; align-items:center; gap:6px; flex-wrap:wrap;">
-                  <h5 style="font-size:0.9rem; font-weight:900; color:#fff;">${esc(e.nameFa)}</h5>
+                  <h5 style="font-size:0.9rem; font-weight:800; color:#fff;">${esc(e.nameFa)}</h5>
                   ${this.swaps.exercises[rawId] ? '<span style="font-size:0.62rem; background:var(--accent-purple); color:#fff; padding:1px 6px; border-radius:6px;">جایگزین</span>' : ''}
                   ${done ? '<span style="font-size:0.62rem; background:rgba(16,185,129,0.25); color:#10b981; padding:1px 6px; border-radius:6px;">✔ انجام شد</span>' : ''}
                 </div>
                 <div style="font-size:0.74rem; color:var(--text-muted); margin-top:3px;">${esc(e.targetFa || 'عضلات هدف')}</div>
                 <div style="display:flex; gap:5px; margin-top:6px; flex-wrap:wrap;">
-                  <span class="macro-tag" style="font-size:0.7rem;">🔁 ${faNum(chapter.rounds)} ست × ${e.measure === 'SECONDS' ? faNum(e.suggestedSeconds || 30) + ' ثانیه' : faNum(e.suggestedReps || 12) + ' تکرار'}</span>
-                  <span class="macro-tag" style="font-size:0.7rem;">⏸ استراحت ${faNum(restSec)} ثانیه</span>
+                  <span class="macro-tag" style="font-size:0.7rem;">${faNum(chapter.rounds)} ست × ${e.measure === 'SECONDS' ? faNum(e.suggestedSeconds || 30) + ' ثانیه' : faNum(e.suggestedReps || 12) + ' تکرار'}</span>
+                  <span class="macro-tag" style="font-size:0.7rem;">استراحت ${faNum(restSec)} ثانیه</span>
                 </div>
               </div>
               <div style="display:flex; gap:5px; flex-shrink:0;">
-                <button class="btn-secondary mini" data-act="video" title="ویدیو و نکات">▶️</button>
-                <button class="btn-emerald mini" data-act="eye" title="چشم گردول">👁️</button>
-                <button class="btn-secondary mini" data-act="swap" title="جایگزینی">🔄</button>
+                <button class="btn-secondary mini" data-act="video" title="ویدیو و نکات">${GordolIcon('play', 14)}</button>
+                <button class="btn-emerald mini" data-act="eye" title="چشم گردول">${GordolIcon('eye', 14)}</button>
+                <button class="btn-secondary mini" data-act="swap" title="جایگزینی">${GordolIcon('refresh', 14)}</button>
               </div>
             </div>
           `;
@@ -1393,7 +1402,7 @@
       this.saveLogs();
       this.saveProfile();
       this.renderHeader();
-      this.sendLocalNotification('🏆 یک روز دیگر به هدف نزدیک‌تر شدی!', `روز ${faNum(p.currentDay - 1)} کامل شد. استریک تو ادامه دارد 🔥`);
+      this.sendLocalNotification('یک روز دیگر به هدف نزدیک‌تر شدی!', `روز ${faNum(p.currentDay - 1)} کامل شد. استریک تو ادامه دارد 🔥`);
       toast(`آفرین قهرمان! روز ${faNum(p.currentDay - 1)} ثبت شد 💪`);
       this.switchTab('workout');
     },
@@ -1421,7 +1430,7 @@
                   <div style="font-size:0.74rem; color:var(--text-muted); margin-top:2px;">${esc(pl.subtitle || '')}</div>
                 </div>
               </div>
-              ${this.profile.selectedPath === pl.slug ? '<span style="color:#10b981; font-weight:900;">✓ فعال</span>' : '<button class="btn-secondary" style="width:auto; padding:4px 10px; font-size:0.72rem;">انتخاب</button>'}
+              ${this.profile.selectedPath === pl.slug ? '<span style="color:#10b981; font-weight:800;">✓ فعال</span>' : '<button class="btn-secondary" style="width:auto; padding:4px 10px; font-size:0.72rem;">انتخاب</button>'}
             </div>
           `).join('')}
         </div>
@@ -1472,13 +1481,14 @@
       modal.querySelector('.modal-card').innerHTML = `
         <div class="modal-header">
           <h3 class="modal-title" id="sp-title">آماده‌سازی جلسه...</h3>
+          <span style="font-size:0.74rem; color:var(--text-muted); font-weight:700;" id="sp-counter"></span>
           <button class="btn-close" id="sp-close">×</button>
         </div>
         <div class="sp-video-box">
           <video id="sp-video" autoplay loop muted playsinline></video>
           <div class="sp-rest-overlay" id="sp-rest-overlay" style="display:none;">
-            <div style="font-size:2.6rem; animation:pulse-ai 2s infinite;">💨</div>
-            <div style="font-size:1.1rem; font-weight:900; color:#fff; margin-top:8px;">نفس بگیر و آب بنوش</div>
+            <div style="color:#60a5fa;">${GordolIcon('droplet', 40)}</div>
+            <div style="font-size:1.1rem; font-weight:800; color:#fff; margin-top:8px;">نفس بگیر و آب بنوش</div>
             <div style="font-size:0.78rem; color:var(--text-muted); margin-top:4px;">عضلاتت رو ریلکس کن — حرکت بعدی نزدیکه</div>
           </div>
           <div class="sp-phase-badge" id="sp-phase">—</div>
@@ -1496,8 +1506,8 @@
           <div style="font-size:0.78rem; color:var(--text-muted);" id="sp-next">—</div>
         </div>
         <div style="display:flex; gap:8px; margin-top:12px;">
-          <button class="btn-secondary" style="flex:1;" id="sp-pause">⏸ مکث</button>
-          <button class="btn-secondary" style="flex:1;" id="sp-skip">رد کردن ⏭</button>
+          <button class="btn-secondary" style="flex:1;" id="sp-pause">${GordolIcon('pause', 15)} مکث</button>
+          <button class="btn-secondary" style="flex:1;" id="sp-skip">رد کردن ${GordolIcon('skip', 15)}</button>
           <button class="btn-secondary" style="width:auto; padding:0 14px; color:#ef4444;" id="sp-end">پایان</button>
         </div>
       `;
@@ -1509,7 +1519,7 @@
         const sp = this.sessionPlayer;
         if (!sp) return;
         sp.paused = !sp.paused;
-        document.getElementById('sp-pause').textContent = sp.paused ? '▶ ادامه' : '⏸ مکث';
+        document.getElementById('sp-pause').innerHTML = sp.paused ? GordolIcon('play', 15) + ' ادامه' : GordolIcon('pause', 15) + ' مکث';
       });
       document.getElementById('sp-skip').addEventListener('click', () => this.advanceSessionItem());
 
@@ -1533,13 +1543,15 @@
       const ex = item.exId ? (window.GORDOL_EXERCISES || []).find(e => e.id === (this.swaps.exercises[item.exId] || item.exId)) : null;
 
       document.getElementById('sp-title').textContent = ex ? ex.nameFa : (item.phase || 'استراحت');
+      const cnt = document.getElementById('sp-counter');
+      if (cnt) cnt.textContent = 'حرکت ' + faNum(sp.idx + 1) + ' از ' + faNum(sp.items.length);
       const roundTxt = item.kind === 'rest'
         ? 'استراحت'
         : `${item.phase} · ست ${faNum(item.round)} از ${faNum(sp.totalRounds)}`;
       document.getElementById('sp-phase').textContent = roundTxt;
       document.getElementById('sp-phase').className = 'sp-phase-badge' + (item.kind === 'rest' ? ' rest' : '');
       const pauseBtn = document.getElementById('sp-pause');
-      if (pauseBtn) pauseBtn.textContent = '⏸ مکث';
+      if (pauseBtn) pauseBtn.innerHTML = GordolIcon('pause', 15) + ' مکث';
 
       // کادر ویدیو: در استراحت به جای ویدیوی سیاه، اورلی تنفس نمایش داده می‌شود
       const restOverlay = document.getElementById('sp-rest-overlay');
@@ -1646,34 +1658,34 @@
         </div>
         <div style="display:flex; gap:6px; margin-bottom:12px; flex-wrap:wrap;">
           <span class="macro-tag">🎯 ${esc(ex.targetFa || '')}</span>
-          <span class="macro-tag">📊 ${ex.difficulty === 'BEGINNER' ? 'مبتدی' : (ex.difficulty === 'INTERMEDIATE' ? 'متوسط' : (ex.difficulty === 'NOVICE' ? 'نیمه‌مبتدی' : 'پیشرفته'))}</span>
-          <span class="macro-tag">${ex.measure === 'SECONDS' ? '⏱️ ' + faNum(ex.suggestedSeconds || 30) + ' ثانیه' : '🔁 ' + faNum(ex.suggestedReps || 12) + ' تکرار'}</span>
+          <span class="macro-tag">سطح: ${ex.difficulty === 'BEGINNER' ? 'مبتدی' : (ex.difficulty === 'INTERMEDIATE' ? 'متوسط' : (ex.difficulty === 'NOVICE' ? 'نیمه‌مبتدی' : 'پیشرفته'))}</span>
+          <span class="macro-tag">${ex.measure === 'SECONDS' ? faNum(ex.suggestedSeconds || 30) + ' ثانیه' : faNum(ex.suggestedReps || 12) + ' تکرار'}</span>
         </div>
         ${ex.summaryFa ? `<div style="background:rgba(156,107,255,0.1); border-radius:14px; padding:10px 12px; margin-bottom:12px; font-size:0.8rem; color:#fff; line-height:1.6;">${esc(ex.summaryFa)}</div>` : ''}
         <div class="ex-details-section">
           ${(ex.stepsFa || []).length ? `
             <div class="ex-detail-block">
-              <div class="ex-detail-title steps"><span>📋</span><span>مراحل اجرای صحیح:</span></div>
+              <div class="ex-detail-title steps">${GordolIcon('list-ordered', 16)}<span>مراحل اجرای صحیح:</span></div>
               <ol class="ex-list">${ex.stepsFa.map(s => `<li>${esc(s)}</li>`).join('')}</ol>
             </div>` : ''}
           ${(ex.cuesFa || []).length ? `
             <div class="ex-detail-block">
-              <div class="ex-detail-title cues"><span>💡</span><span>نکات کلیدی مربی گردول:</span></div>
+              <div class="ex-detail-title cues">${GordolIcon('lightbulb', 16)}<span>نکات کلیدی مربی گردول:</span></div>
               <ul class="ex-list">${ex.cuesFa.map(c => `<li>${esc(c)}</li>`).join('')}</ul>
             </div>` : ''}
           ${(ex.mistakesFa || []).length ? `
             <div class="ex-detail-block">
-              <div class="ex-detail-title mistakes"><span>⚠️</span><span>اشتباهات رایج:</span></div>
+              <div class="ex-detail-title mistakes">${GordolIcon('triangle-alert', 16)}<span>اشتباهات رایج:</span></div>
               <ul class="ex-list">${ex.mistakesFa.map(m => `<li>${esc(m)}</li>`).join('')}</ul>
             </div>` : ''}
           ${ex.cautionFa ? `
             <div class="ex-detail-block">
-              <div class="ex-detail-title caution"><span>🛑</span><span>هشدار پزشکی:</span></div>
+              <div class="ex-detail-title caution">${GordolIcon('octagon-alert', 16)}<span>هشدار پزشکی:</span></div>
               <p style="font-size:0.78rem; color:#fca5a5; line-height:1.6;">${esc(ex.cautionFa)}</p>
             </div>` : ''}
         </div>
         <div style="display:flex; gap:8px; margin-top:14px;">
-          <button class="btn-emerald" style="flex:1;" id="exv-eye">👁️ تمرین با چشم گردول</button>
+          <button class="btn-emerald" style="flex:1;" id="exv-eye">${GordolIcon('eye', 16)} تمرین با چشم گردول</button>
         </div>
       `;
       modal.classList.add('active');
@@ -1706,7 +1718,7 @@
         <p style="font-size:0.82rem; color:var(--text-muted); margin-bottom:14px;">
           یک حرکت هم‌خانواده انتخاب کن — یا از مربی هوش مصنوعی پیشنهاد بگیر:
         </p>
-        <button class="btn-primary" style="margin-bottom:14px; padding:10px;" id="swap-ai-btn">🤖 پیشنهاد هوشمند جایگزین با AI</button>
+        <button class="btn-primary" style="margin-bottom:14px; padding:10px;" id="swap-ai-btn">${GordolIcon('sparkles', 16)} پیشنهاد هوشمند جایگزین</button>
         <div id="swap-ai-result" style="display:none; margin-bottom:12px;"></div>
         <div style="display:flex; flex-direction:column; gap:8px; max-height:52vh; overflow-y:auto;">
           <div class="swap-card-item ${!this.swaps.exercises[rawExId] ? 'selected' : ''}" data-swap-id="">
@@ -1742,7 +1754,7 @@
       document.getElementById('swap-ai-btn').addEventListener('click', async () => {
         const btn = document.getElementById('swap-ai-btn');
         btn.disabled = true;
-        btn.textContent = '⏳ در حال دریافت پیشنهاد مربی...';
+        btn.textContent = 'در حال دریافت پیشنهاد مربی...';
         try {
           const pool = alternatives.slice(0, 14).map(a => `${a.id} (${a.nameFa})`).join('، ');
           const prompt = `حرکت فعلی کاربر: «${current.nameFa}» (${current.targetFa || 'عمومی'}).
@@ -1756,7 +1768,7 @@ ${pool}
           box.style.display = 'block';
           box.innerHTML = `
             <div style="background:rgba(16,185,129,0.12); border:1px solid rgba(16,185,129,0.4); border-radius:14px; padding:12px;">
-              <div style="font-size:0.85rem; font-weight:900; color:#10b981;">👁️ پیشنهاد مربی: ${esc(pick.nameFa)}</div>
+              <div style="font-size:0.85rem; font-weight:800; color:#10b981;">${GordolIcon('sparkles', 15)} پیشنهاد مربی: ${esc(pick.nameFa)}</div>
               <div style="font-size:0.76rem; color:var(--text-muted); margin-top:4px;">${esc(res.reason)}</div>
               <button class="btn-emerald" style="width:100%; margin-top:10px; padding:9px; font-size:0.85rem;" id="swap-ai-apply">پذیرش پیشنهاد ✅</button>
             </div>`;
@@ -1771,7 +1783,7 @@ ${pool}
           toast('خطا در پیشنهاد AI: ' + e.message, false);
         }
         btn.disabled = false;
-        btn.textContent = '🤖 پیشنهاد هوشمند جایگزین با AI';
+        btn.innerHTML = GordolIcon('sparkles', 16) + ' پیشنهاد هوشمند جایگزین';
       });
     },
 
@@ -1786,7 +1798,7 @@ ${pool}
       card.style.maxWidth = '480px';
       card.innerHTML = `
         <div class="modal-header">
-          <h3 class="modal-title">👁️ چشم گردول</h3>
+          <h3 class="modal-title">${GordolIcon('eye', 18)} چشم گردول</h3>
           <button class="btn-close" id="pose-close">×</button>
         </div>
 
@@ -1812,7 +1824,7 @@ ${pool}
           <div id="pose-warning" class="pose-warning-banner" style="display:none;"></div>
           <div id="pose-loading" class="pose-loading-overlay">
             <div style="text-align:center;">
-              <div style="font-size:2.4rem; animation:pulse-ai 1.2s infinite;">👁️</div>
+              <div style="color:var(--accent-purple);">${GordolIcon('eye', 38)}</div>
               <div style="font-size:0.85rem; font-weight:800; color:#fff; margin-top:8px;">در حال بارگذاری موتور بینایی ماشین...</div>
               <div style="font-size:0.72rem; color:var(--text-muted); margin-top:4px;">فقط بار اول — پردازش کاملاً روی دستگاه خودت انجام می‌شود</div>
             </div>
@@ -1822,8 +1834,8 @@ ${pool}
         <div id="pose-goal-hint" style="font-size:0.76rem; color:var(--text-muted); text-align:center; margin:6px 0;"></div>
 
         <div style="display:flex; justify-content:space-between; align-items:center; margin-top:8px;">
-          <button class="btn-secondary" style="width:auto; padding:8px 14px; font-size:0.8rem;" id="pose-flip">🔄 چرخش دوربین</button>
-          <button class="btn-emerald" style="width:auto; padding:9px 20px; font-size:0.85rem;" id="pose-finish">ثبت و اتمام 💪</button>
+          <button class="btn-secondary" style="width:auto; padding:8px 14px; font-size:0.8rem;" id="pose-flip">${GordolIcon('flip', 14)} چرخش</button>
+          <button class="btn-emerald" style="width:auto; padding:9px 20px; font-size:0.85rem;" id="pose-finish">${GordolIcon('check', 15)} ثبت و اتمام</button>
         </div>
       `;
 
@@ -2023,23 +2035,23 @@ ${pool}
       container.innerHTML = `
         <div class="card" style="display:flex; justify-content:space-between; align-items:center; padding:14px; background:linear-gradient(135deg, rgba(245,158,11,0.15), rgba(239,68,68,0.15)); border-color:rgba(245,158,11,0.4);">
           <div>
-            <h4 style="font-size:0.95rem; font-weight:900; color:#fff;">📸 اسکن بشقاب غذا با AI</h4>
+            <h4 style="font-size:0.95rem; font-weight:800; color:#fff;">${GordolIcon('camera', 17)} اسکن بشقاب غذا با هوش مصنوعی</h4>
             <p style="font-size:0.74rem; color:var(--text-muted); margin-top:2px;">عکس بگیر یا غذا رو تایپ کن — کالری و ماکرو خودکار حساب می‌شه</p>
           </div>
           <div style="display:flex; flex-direction:column; gap:6px;">
-            <button class="btn-amber" style="width:auto; padding:6px 12px; font-size:0.78rem;" id="diet-scan-photo">عکس 📷</button>
-            <button class="btn-secondary" style="width:auto; padding:5px 12px; font-size:0.74rem;" id="diet-scan-text">متن ✍️</button>
+            <button class="btn-amber" style="width:auto; padding:6px 12px; font-size:0.78rem;" id="diet-scan-photo">${GordolIcon('camera', 15)} عکس</button>
+            <button class="btn-secondary" style="width:auto; padding:5px 12px; font-size:0.74rem;" id="diet-scan-text">${GordolIcon('pencil', 14)} متن</button>
           </div>
         </div>
 
         <div class="card">
-          <div class="card-title"><span>🔥 ثبت‌شده‌های امروز</span>
+          <div class="card-title"><span>${GordolIcon('flame', 17)} ثبت‌شده‌های امروز</span>
             <span style="font-size:0.85rem; color:var(--accent-purple); font-weight:800;">
               ${faNum(t.meals.reduce((s, m) => s + (m.cal || 0), 0))} / ${faNum(p.targetKcal)} kcal
             </span>
           </div>
           <div id="today-meals-list" style="display:flex; flex-direction:column; gap:8px;">
-            ${t.meals.length === 0 ? '<p style="font-size:0.8rem; color:var(--text-muted);">هنوز چیزی ثبت نشده — اولین وعده‌ت رو اسکن یا ثبت کن 🍽️</p>' : ''}
+            ${t.meals.length === 0 ? '<div style="text-align:center; padding:14px;"><div style="color:var(--text-muted); display:flex; justify-content:center; margin-bottom:6px;">' + GordolIcon('salad', 30) + '</div><div style="font-size:0.85rem; font-weight:800; color:#fff;">هنوز چیزی ثبت نشده</div><div style="font-size:0.76rem; color:var(--text-muted); margin-top:4px;">اولین وعده‌ات را اسکن یا تایپ کن</div></div>' : ''}
           </div>
         </div>
 
@@ -2048,10 +2060,10 @@ ${pool}
         ${this.renderFastingCard()}
 
         <div class="card">
-          <div class="card-title"><span>🛒 لیست خرید هفتگی گردول</span></div>
+          <div class="card-title"><span>${GordolIcon('cart', 17)} لیست خرید هفتگی گردول</span></div>
           ${grocery.map(g => `
             <div style="margin-bottom:12px;">
-              <div style="font-size:0.85rem; font-weight:900; color:var(--accent-purple); margin-bottom:6px;">${esc(g.cat)}</div>
+              <div style="font-size:0.85rem; font-weight:800; color:var(--accent-purple); margin-bottom:6px;">${esc(g.cat)}</div>
               <div style="display:flex; flex-wrap:wrap; gap:6px;">
                 ${g.items.map(it => `<span class="macro-tag" style="font-size:0.74rem;">${esc(it)}</span>`).join('')}
               </div>
@@ -2117,18 +2129,18 @@ ${pool}
           </div>
           <div class="meal-card-body">
             <div style="display:flex; justify-content:space-between; align-items:center;">
-              <h4 style="font-size:0.98rem; font-weight:900; color:#fff;">${esc(active.name)}</h4>
+              <h4 style="font-size:0.98rem; font-weight:800; color:#fff;">${esc(active.name)}</h4>
               <span style="font-size:0.8rem; font-weight:800; color:var(--accent-gold);">🔥 ${faNum(active.cal)} kcal</span>
             </div>
             <p style="font-size:0.78rem; color:var(--text-muted); margin-top:6px; line-height:1.6;">${esc(active.desc)}</p>
             <div class="macro-row">
-              <span class="macro-tag prot">🥩 ${faNum(active.p)}g پروتئین</span>
-              <span class="macro-tag carb">🌾 ${faNum(active.c)}g کربوهیدرات</span>
-              <span class="macro-tag fat">🥑 ${faNum(active.f)}g چربی</span>
+              <span class="macro-tag prot">${faNum(active.p)} گرم پروتئین</span>
+              <span class="macro-tag carb">${faNum(active.c)} گرم کربوهیدرات</span>
+              <span class="macro-tag fat">${faNum(active.f)} گرم چربی</span>
             </div>
             <div style="display:flex; gap:8px; margin-top:10px;">
-              <button class="btn-secondary" style="flex:1; padding:7px; font-size:0.76rem;" data-meal-swap="${esc(meal.id)}">🔄 جایگزینی</button>
-              <button class="btn-amber" style="width:auto; padding:7px 12px; font-size:0.76rem;" data-meal-scan="${esc(meal.id)}">📸 ثبت عکس این وعده</button>
+              <button class="btn-secondary" style="flex:1; padding:7px; font-size:0.76rem;" data-meal-swap="${esc(meal.id)}">${GordolIcon('refresh', 14)} جایگزینی</button>
+              <button class="btn-amber" style="width:auto; padding:7px 12px; font-size:0.76rem;" data-meal-scan="${esc(meal.id)}">${GordolIcon('camera', 14)} ثبت این وعده</button>
             </div>
           </div>
         </div>
@@ -2162,7 +2174,7 @@ ${pool}
           گزینه استاندارد گردول را انتخاب کن یا از AI پیشنهاد بگیر (متناسب با کالری هدف ${faNum(this.profile.targetKcal)}):
         </p>
         <div style="display:flex; gap:8px; margin-bottom:12px;">
-          <button class="btn-primary" style="padding:9px; font-size:0.8rem;" id="swapmeal-ai-btn">🤖 پیشنهاد AI</button>
+          <button class="btn-primary" style="padding:9px; font-size:0.8rem;" id="swapmeal-ai-btn">${GordolIcon('sparkles', 15)} پیشنهاد هوشمند</button>
           <button class="btn-secondary" style="padding:9px; font-size:0.8rem; width:auto;" id="swapmeal-reset-btn" ${active ? '' : 'disabled'}>بازگشت به اصلی</button>
         </div>
         <div id="swapmeal-ai-result" style="display:none; margin-bottom:12px;"></div>
@@ -2233,7 +2245,7 @@ ${pool}
           box.innerHTML = `
             <div class="swap-card-item selected" style="border-color:#10b981;">
               <div>
-                <div style="font-size:0.88rem; font-weight:800; color:#10b981;">👁️ پیشنهاد AI: ${esc(res.name)}</div>
+                <div style="font-size:0.88rem; font-weight:800; color:#10b981;">${GordolIcon('sparkles', 15)} پیشنهاد هوشمند: ${esc(res.name)}</div>
                 <div style="font-size:0.74rem; color:var(--text-muted); margin-top:2px;">${esc(res.desc)}</div>
                 <div style="font-size:0.72rem; color:#f59e0b; margin-top:4px;">🔥 ${faNum(res.cal)} kcal · 🥩 ${faNum(res.p)}g</div>
               </div>
@@ -2250,7 +2262,7 @@ ${pool}
           toast('خطا: ' + e.message, false);
         }
         btn.disabled = false;
-        btn.textContent = '🤖 پیشنهاد AI';
+        btn.innerHTML = GordolIcon('sparkles', 15) + ' پیشنهاد هوشمند';
       });
     },
 
@@ -2263,7 +2275,7 @@ ${pool}
       const modal = document.getElementById('food-scanner-modal');
       modal.querySelector('.modal-card').innerHTML = `
         <div class="modal-header">
-          <h3 class="modal-title">📸 دوربین تغذیه هوشمند</h3>
+          <h3 class="modal-title">${GordolIcon('camera', 18)} دوربین تغذیه هوشمند</h3>
           <button class="btn-close" id="fsc-close">×</button>
         </div>
         <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:12px;">
@@ -2274,15 +2286,15 @@ ${pool}
           <img id="food-preview-img" style="display:none; width:100%; height:100%; object-fit:cover; position:absolute; inset:0;"/>
           <div id="food-loading" class="pose-loading-overlay" style="display:none;">
             <div style="text-align:center;">
-              <div style="font-size:2.2rem; animation:pulse-ai 1.2s infinite;">📸</div>
+              <div style="color:#f59e0b;">${GordolIcon('camera', 36)}</div>
               <div style="font-size:0.82rem; font-weight:800; color:#fff; margin-top:8px;">در حال تحلیل بشقاب غذا...</div>
             </div>
           </div>
         </div>
         <input type="file" id="food-file-input" accept="image/*" style="display:none;"/>
         <div style="display:flex; gap:8px; margin:12px 0;">
-          <button class="btn-secondary" style="flex:1; font-size:0.78rem;" id="food-capture">📸 گرفتن عکس</button>
-          <button class="btn-secondary" style="flex:1; font-size:0.78rem;" id="food-upload">📁 از گالری</button>
+          <button class="btn-secondary" style="flex:1; font-size:0.78rem;" id="food-capture">${GordolIcon('camera', 15)} گرفتن عکس</button>
+          <button class="btn-secondary" style="flex:1; font-size:0.78rem;" id="food-upload">${GordolIcon('image', 15)} از گالری</button>
         </div>
         <div class="form-group">
           <label class="form-label">ثبت در وعده:</label>
@@ -2295,7 +2307,7 @@ ${pool}
           </select>
         </div>
         <div id="food-scan-result-card" style="display:none; margin-bottom:12px;" class="card"></div>
-        <button id="btn-analyze-food" class="btn-amber" style="width:100%;">⚡ تحلیل کالری و ماکرو با AI</button>
+        <button id="btn-analyze-food" class="btn-amber" style="width:100%;">${GordolIcon('sparkles', 16)} تحلیل کالری و ماکرو با هوش مصنوعی</button>
       `;
       modal.classList.add('active');
       document.getElementById('fsc-close').addEventListener('click', () => this.closeFoodScannerModal());
@@ -2372,13 +2384,13 @@ ${pool}
           { numericKeys: ['calories', 'protein', 'carbs', 'fat', 'healthScore'] });
         this.scannedFoodResult = res;
         this.renderScannedFoodResult(res);
-        btn.textContent = '⚡ تحلیل مجدد';
+        btn.textContent = 'تحلیل مجدد';
       } catch (e) {
         // خطای ماندگار داخل کارت نتیجه
         const card = document.getElementById('food-scan-result-card');
         card.style.display = 'block';
         card.innerHTML = `<div class="chat-bubble-msg error" style="max-width:100%;">⚠️ ${esc(e.message)}<br/><span style="font-size:0.72rem;">دوباره تلاش کن یا از تنظیمات، کلید و اتصال را بررسی کن.</span></div>`;
-        btn.textContent = '⚡ تلاش مجدد';
+        btn.textContent = 'تلاش مجدد';
       }
       btn.disabled = false;
       loading.style.display = 'none';
@@ -2388,7 +2400,7 @@ ${pool}
       const card = document.getElementById('food-scan-result-card');
       card.style.display = 'block';
       card.innerHTML = `
-        <h4 style="font-size:0.98rem; font-weight:900; color:#fff; margin-bottom:6px;">🍽️ ${esc(r.foodName)}</h4>
+        <h4 style="font-size:0.98rem; font-weight:800; color:#fff; margin-bottom:6px;">🍽️ ${esc(r.foodName)}</h4>
         <div style="display:flex; gap:6px; margin:8px 0; flex-wrap:wrap;">
           <span class="macro-tag cal">🔥 ${faNum(r.calories)} kcal</span>
           <span class="macro-tag prot">🥩 ${faNum(r.protein)}g</span>
@@ -2420,7 +2432,7 @@ ${pool}
       const modal = document.getElementById('food-text-modal');
       modal.querySelector('.modal-card').innerHTML = `
         <div class="modal-header">
-          <h3 class="modal-title">✍️ ثبت غذا با متن</h3>
+          <h3 class="modal-title">${GordolIcon('pencil', 18)} ثبت غذا با متن</h3>
           <button class="btn-close" id="ftx-close">×</button>
         </div>
         <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:12px;">
@@ -2440,7 +2452,7 @@ ${pool}
           </select>
         </div>
         <div id="food-text-result" style="display:none; margin-bottom:12px;"></div>
-        <button class="btn-amber" style="width:100%;" id="food-text-analyze">⚡ تحلیل با هوش مصنوعی</button>
+        <button class="btn-amber" style="width:100%;" id="food-text-analyze">${GordolIcon('sparkles', 16)} تحلیل با هوش مصنوعی</button>
       `;
       modal.classList.add('active');
       document.getElementById('ftx-close').addEventListener('click', () => modal.classList.remove('active'));
@@ -2460,7 +2472,7 @@ ${pool}
           box.style.display = 'block';
           box.innerHTML = `
             <div class="card" style="margin-bottom:10px;">
-              <h4 style="font-size:0.95rem; font-weight:900; color:#fff;">🍽️ ${esc(res.foodName)}</h4>
+              <h4 style="font-size:0.95rem; font-weight:800; color:#fff;">🍽️ ${esc(res.foodName)}</h4>
               <div style="display:flex; gap:6px; margin:8px 0; flex-wrap:wrap;">
                 <span class="macro-tag cal">🔥 ${faNum(res.calories)} kcal</span>
                 <span class="macro-tag prot">🥩 ${faNum(res.protein)}g</span>
@@ -2495,27 +2507,27 @@ ${pool}
       let inner;
       if (active) {
         const elapsedH = (Date.now() - this.fasting.startTs) / 3600000;
-        const stage = elapsedH < 4 ? '🔵 فاز گلیکوژن: بدن از قند ذخیره‌شده استفاده می‌کند'
-          : elapsedH < 8 ? '🟡 فاز سوخت‌وساز: گلیکوژن رو به پایان است'
-          : elapsedH < 12 ? '🟠 فاز چربی‌سوزی: بدن وارد سوزاندن چربی شده!'
-          : '🟣 فاز اتوفاژی: سلول‌ها در حال بازیافت و تعمیر هستند';
+        const stage = elapsedH < 4 ? 'فاز ۱ — گلیکوژن: بدن از قند ذخیره‌شده استفاده می‌کند'
+          : elapsedH < 8 ? 'فاز ۲ — سوخت‌وساز: گلیکوژن رو به پایان است'
+          : elapsedH < 12 ? 'فاز ۳ — چربی‌سوزی: بدن وارد سوزاندن چربی شده!'
+          : 'فاز ۴ — اتوفاژی: سلول‌ها در حال بازیافت و تعمیر هستند';
         inner = `
           <div style="text-align:center;">
-            <div style="font-size:1.6rem; font-weight:900; color:#9c6bff;" id="fasting-live-timer">${faNum(this.formatFastingHMS())}</div>
+            <div style="font-size:1.6rem; font-weight:800; color:#9c6bff;" id="fasting-live-timer">${faNum(this.formatFastingHMS())}</div>
             <div style="font-size:0.74rem; color:var(--text-muted); margin-top:4px;">از هدف ${faNum(16)} ساعته</div>
             <p style="font-size:0.78rem; color:#fff; margin-top:8px; line-height:1.6;">${stage}</p>
-            <button class="btn-secondary" style="margin-top:10px;" data-fast-action="stop">پایان فستینگ ⏹</button>
+            <button class="btn-secondary" style="margin-top:10px;" data-fast-action="stop">پایان فستینگ</button>
           </div>`;
       } else {
         inner = `
           <p style="font-size:0.78rem; color:var(--text-muted); line-height:1.6;">
             فستینگ متناوب ۱۶:۸ — روزه‌داری با پنجره غذایی ۸ ساعته. تایمر زنده با تشریح مراحل بیولوژیک بدن.
           </p>
-          <button class="btn-primary" style="margin-top:10px;" data-fast-action="start">شروع فستینگ ۱۶ ساعته ⏱️</button>`;
+          <button class="btn-primary" style="margin-top:10px;" data-fast-action="start">شروع فستینگ ۱۶ ساعته</button>`;
       }
       return `
         <div class="card">
-          <div class="card-title"><span>⏳ ردیاب فستینگ ۱۶:۸ (اختیاری)</span></div>
+          <div class="card-title"><span>${GordolIcon('timer', 17)} ردیاب فستینگ ۱۶:۸ (اختیاری)</span></div>
           ${inner}
         </div>
       `;
@@ -2564,19 +2576,19 @@ ${pool}
         <div class="card" style="padding:16px; margin-bottom:12px; background:linear-gradient(135deg, rgba(156,107,255,0.15), rgba(16,185,129,0.15)); border-color:var(--accent-purple);">
           <div style="display:flex; align-items:center; justify-content:space-between;">
             <div style="display:flex; align-items:center; gap:10px;">
-              <span style="font-size:2.2rem;">🤖</span>
+              <span style="color:var(--accent-purple);">${GordolIcon('bot', 30)}</span>
               <div>
-                <h4 style="font-size:1rem; font-weight:900; color:#fff;">مربی هوشمند گردول</h4>
+                <h4 style="font-size:1rem; font-weight:800; color:#fff;">مربی هوشمند گردول</h4>
                 <p style="font-size:0.74rem; color:var(--text-muted);">با آگاهی کامل از پرونده تو — حتی عکس بفرست تا تحلیل کنه</p>
               </div>
             </div>
-            <button class="btn-clear-chat" id="coach-clear">پاک کردن 🗑</button>
+            <button class="btn-clear-chat" id="coach-clear">${GordolIcon('trash', 13)} پاک کردن</button>
           </div>
         </div>
 
         <div id="coach-chat-box" class="coach-chat-box">
           ${this.chat.length === 0 ? `
-            <div class="chat-bubble-msg coach">سلام قهرمان! من مربی هوش مصنوعی گردول هستم. قد، وزن، کالری و برنامه تمرینی‌ت رو کامل در پرونده دارم. هر سؤالی درباره تغذیه، فست‌فودها، جایگزینی غذا، درد و فرم تمرین داری بپرس — یا عکس غذا و دستگاه بدنسازی بفرست تا تحلیلش کنم! 💪</div>
+            <div class="chat-bubble-msg coach">سلام قهرمان! من مربی هوش مصنوعی گردول هستم. قد، وزن، کالری و برنامه تمرینی‌ت رو کامل در پرونده دارم. هر سؤالی درباره تغذیه، فست‌فودها، جایگزینی غذا، درد و فرم تمرین داری بپرس — یا عکس غذا و دستگاه بدنسازی بفرست تا تحلیلش کنم.</div>
           ` : this.chat.map(m => this.renderChatBubble(m)).join('')}
         </div>
 
@@ -2588,9 +2600,9 @@ ${pool}
           </div>
           <input type="file" id="coach-file-input" accept="image/*" style="display:none;"/>
           <div class="coach-input-bar">
-            <button class="btn-attach" id="coach-attach-btn" title="ارسال عکس برای مربی">📷</button>
+            <button class="btn-attach" id="coach-attach-btn" title="ارسال عکس برای مربی">${GordolIcon('camera', 19)}</button>
             <input type="text" id="coach-user-msg" class="form-input" placeholder="سوالت رو بنویس (مثلاً پیتزا بخورم؟)..."/>
-            <button class="btn-primary" style="width:auto; padding:0 18px;" id="coach-send">ارسال</button>
+            <button class="btn-primary" style="width:auto; padding:0 18px;" id="coach-send">${GordolIcon('send', 16)}</button>
           </div>
         </div>
       `;
@@ -2714,7 +2726,7 @@ ${mealLines}
       chatBox.scrollTop = chatBox.scrollHeight;
 
       const loadingId = 'coach-loading-' + Date.now();
-      chatBox.insertAdjacentHTML('beforeend', `<div class="chat-bubble-msg coach" id="${loadingId}">در حال فکر کردن با هوش مصنوعی گردول... 🤔</div>`);
+      chatBox.insertAdjacentHTML('beforeend', `<div class="chat-bubble-msg coach" id="${loadingId}">در حال فکر کردن...</div>`);
       chatBox.scrollTop = chatBox.scrollHeight;
 
       const history = this.chat.slice(-9, -1).map(m => ({
@@ -2753,7 +2765,7 @@ ${mealLines}
       const p = this.profile;
       modal.querySelector('.modal-card').innerHTML = `
         <div class="modal-header">
-          <h3 class="modal-title">⚖️ ثبت وزن امروز</h3>
+          <h3 class="modal-title">${GordolIcon('scale', 18)} ثبت وزن امروز</h3>
           <button class="btn-close" id="wt-close">×</button>
         </div>
         <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:12px;">
@@ -2766,7 +2778,7 @@ ${mealLines}
         <div style="font-size:0.76rem; color:var(--text-muted); margin-bottom:12px;">
           آخرین وزن‌ها: ${((p.weightHistory || []).slice(-4).reverse().map(w => `${faNum(w.kg)}kg (${esc(faDateLong(new Date(w.date + 'T00:00:00')))})`).join(' · ')) || '—'}
         </div>
-        <button class="btn-emerald" style="width:100%;" id="wt-save">ثبت و به‌روزرسانی پیش‌بینی 🎯</button>
+        <button class="btn-emerald" style="width:100%;" id="wt-save">ثبت و به‌روزرسانی پیش‌بینی</button>
       `;
       modal.classList.add('active');
       document.getElementById('wt-close').addEventListener('click', () => modal.classList.remove('active'));
@@ -2797,13 +2809,13 @@ ${mealLines}
       const modal = document.getElementById('goal-celebration-modal');
       modal.querySelector('.modal-card').innerHTML = `
         <div style="text-align:center; padding:10px 0;">
-          <div style="font-size:4rem;">🏆</div>
-          <h2 style="font-size:1.4rem; font-weight:900; color:#fff; margin-top:10px;">به وزن هدف رسیدی!</h2>
+          <div style="color:var(--accent-gold);">${GordolIcon('trophy', 56)}</div>
+          <h2 style="font-size:1.4rem; font-weight:800; color:#fff; margin-top:10px;">به وزن هدف رسیدی!</h2>
           <p style="font-size:0.9rem; color:var(--text-muted); line-height:1.8; margin-top:10px;">
             ${faNum(this.profile.goalWeightKg)} کیلوگرم — دقیقاً همون عددی که روز اول گردول کنار هم گذاشتیم!
             <br/>مربی گردول بهت افتخار می‌کنه. حالا وقتشه هدف بعدی رو انتخاب کنی 💪
           </p>
-          <button class="btn-primary" style="margin-top:16px;" id="goal-celebrate-close">ادامه می‌دم 🔥</button>
+          <button class="btn-primary" style="margin-top:16px;" id="goal-celebrate-close">ادامه می‌دم</button>
         </div>
       `;
       modal.classList.add('active');
@@ -2817,7 +2829,7 @@ ${mealLines}
       const modal = document.getElementById('settings-modal');
       modal.querySelector('.modal-card').innerHTML = `
         <div class="modal-header">
-          <h3 class="modal-title">⚙️ تنظیمات</h3>
+          <h3 class="modal-title">${GordolIcon('settings', 18)} تنظیمات</h3>
           <button class="btn-close" id="set-close">×</button>
         </div>
 
@@ -2830,8 +2842,8 @@ ${mealLines}
           <input type="password" id="set-api-key" class="form-input" dir="ltr" value="${esc(GordolAI.config.apiKey)}"/>
         </div>
         <div style="display:flex; gap:8px; margin-bottom:14px;">
-          <button class="btn-secondary" style="flex:1; font-size:0.76rem;" id="set-detect">🔍 شناسایی مدل‌ها</button>
-          <button class="btn-secondary" style="flex:1; font-size:0.76rem;" id="set-test">⚡ تست اتصال</button>
+          <button class="btn-secondary" style="flex:1; font-size:0.76rem;" id="set-detect">${GordolIcon('search', 14)} شناسایی مدل‌ها</button>
+          <button class="btn-secondary" style="flex:1; font-size:0.76rem;" id="set-test">${GordolIcon('zap', 14)} تست اتصال</button>
         </div>
         <div id="set-status" style="font-size:0.76rem; margin-bottom:12px; display:none;"></div>
 
@@ -2841,20 +2853,20 @@ ${mealLines}
           <label class="form-label">ساعت یادآور تمرین روزانه:</label>
           <input type="time" id="set-reminder" class="form-input" value="${esc((this.profile && this.profile.reminderTime) || '18:00')}"/>
         </div>
-        <button class="btn-secondary" style="font-size:0.8rem;" id="set-test-notif">🔔 ارسال نوتیفیکیشن تستی</button>
+        <button class="btn-secondary" style="font-size:0.8rem;" id="set-test-notif">${GordolIcon('bell', 15)} ارسال نوتیفیکیشن تستی</button>
 
         <hr style="border:0; border-top:1px solid var(--border-color); margin:14px 0;"/>
 
         <div class="form-group">
-          <button class="btn-secondary" style="font-size:0.8rem;" id="set-weight">⚖️ ثبت وزن جدید</button>
+          <button class="btn-secondary" style="font-size:0.8rem;" id="set-weight">${GordolIcon('scale', 15)} ثبت وزن جدید</button>
         </div>
 
         <div style="background:var(--bg-elevated); border-radius:14px; padding:12px; margin-bottom:12px;">
-          <h4 style="font-size:0.85rem; font-weight:900; color:#fff; margin-bottom:8px;">💾 داده‌های من (۱۰۰٪ روی همین دستگاه)</h4>
+          <h4 style="font-size:0.85rem; font-weight:800; color:#fff; margin-bottom:8px;">${GordolIcon('shield', 15)} داده‌های من (۱۰۰٪ روی همین دستگاه)</h4>
           <div style="display:flex; gap:8px; flex-wrap:wrap;">
-            <button class="btn-secondary" style="width:auto; padding:7px 12px; font-size:0.74rem;" id="set-export">📥 دانلود بکاپ</button>
-            <button class="btn-secondary" style="width:auto; padding:7px 12px; font-size:0.74rem;" id="set-import">📤 بازیابی بکاپ</button>
-            <button class="btn-secondary" style="width:auto; padding:7px 12px; font-size:0.74rem; color:#ef4444; border-color:rgba(239,68,68,0.4);" id="set-wipe">🗑 پاک‌سازی کامل</button>
+            <button class="btn-secondary" style="width:auto; padding:7px 12px; font-size:0.74rem;" id="set-export">${GordolIcon('download', 14)} دانلود بکاپ</button>
+            <button class="btn-secondary" style="width:auto; padding:7px 12px; font-size:0.74rem;" id="set-import">${GordolIcon('upload', 14)} بازیابی بکاپ</button>
+            <button class="btn-secondary" style="width:auto; padding:7px 12px; font-size:0.74rem; color:#ef4444; border-color:rgba(239,68,68,0.4);" id="set-wipe">${GordolIcon('trash', 14)} پاک‌سازی کامل</button>
           </div>
           <input type="file" id="set-import-file" accept="application/json" style="display:none;"/>
         </div>
@@ -2924,7 +2936,7 @@ ${mealLines}
         a.download = 'gordol_backup_' + todayKey() + '.json';
         a.click();
         URL.revokeObjectURL(a.href);
-        toast('بکاپ دانلود شد 📥 (کلید API به دلایل امنیتی داخل بکاپ نیست)');
+        toast('بکاپ دانلود شد (کلید API به دلایل امنیتی داخل بکاپ نیست)');
       });
 
       document.getElementById('set-import').addEventListener('click', () => document.getElementById('set-import-file').click());
