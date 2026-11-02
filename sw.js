@@ -2,7 +2,7 @@
 // اصول: هرگز درخواست‌های هوش مصنوعی (گوگل) کش یا دستکاری نمی‌شوند؛
 // کلید و داده‌های کاربر هیچ‌وقت از دستگاه خارج نمی‌شوند.
 
-const CACHE_NAME = 'gordol-v8';
+const CACHE_NAME = 'gordol-v10';
 const CORE_ASSETS = [
   './',
   './index.html',
@@ -12,6 +12,9 @@ const CORE_ASSETS = [
   './js/plans-data.js',
   './js/meals-data.js',
   './js/grocery-data.js',
+  './js/strength-plan.js',
+  './js/strength-mode.js',
+  './js/thumbs.js',
   './js/icons.js',
   './js/gemini.js',
   './js/pose-engine.js',

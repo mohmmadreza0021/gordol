@@ -1298,6 +1298,10 @@
     renderWorkoutTab(container) {
       const p = this.profile;
       if (!p) return;
+      if (p.workoutMode === 'strength' && window.GordolStrength) {
+        window.GordolStrength.render(container);
+        return;
+      }
       const plan = this.getPlan();
       const { chapter, template, templateIdx } = this.getDayTemplate(plan, p.currentDay);
       const t = this.getDayLog(todayKey());
@@ -1314,7 +1318,10 @@
                 <span class="macro-tag">${GordolIcon('dumbbell', 13)} ${faNum(template.training.length)} حرکت اصلی</span>
               </div>
             </div>
-            <button class="btn-secondary" style="width:auto; padding:7px 12px; font-size:0.74rem; flex-shrink:0;" id="btn-switch-program">${GordolIcon('refresh', 14)} تغییر مسیر</button>
+            <div style="display:flex; flex-direction:column; gap:6px; flex-shrink:0;">
+              <button class="btn-secondary" style="width:auto; padding:7px 12px; font-size:0.74rem;" id="btn-strength-mode">${GordolIcon('dumbbell', 14)} حالت قدرتی</button>
+              <button class="btn-secondary" style="width:auto; padding:7px 12px; font-size:0.74rem;" id="btn-switch-program">${GordolIcon('refresh', 14)} تغییر مسیر</button>
+            </div>
           </div>
         </div>
 
@@ -1349,7 +1356,8 @@
           card.className = 'card';
           card.style.cssText = 'margin-bottom:0; padding:12px;';
           card.innerHTML = `
-            <div style="display:flex; justify-content:space-between; align-items:center; gap:8px;">
+            <div style="display:flex; gap:10px; align-items:flex-start;">
+              <div class="ex-thumb" data-thumb="${esc(finalId)}" data-act="video">${GordolIcon('play', 14)}</div>
               <div style="flex:1; min-width:0;">
                 <div style="display:flex; align-items:center; gap:6px; flex-wrap:wrap;">
                   <h5 style="font-size:0.9rem; font-weight:800; color:#fff;">${esc(e.nameFa)}</h5>
@@ -1382,6 +1390,12 @@
 
       document.getElementById('btn-start-session').addEventListener('click', () => this.startSessionPlayer());
       document.getElementById('btn-switch-program').addEventListener('click', () => this.openProgramSwitcher());
+      document.getElementById('btn-strength-mode').addEventListener('click', () => window.GordolStrength.setMode('strength'));
+      if (window.GordolThumbs) container.querySelectorAll('[data-thumb]').forEach(el => {
+        window.GordolThumbs.get(el.dataset.thumb, (dataUrl) => {
+          if (dataUrl) { el.style.backgroundImage = 'url(' + dataUrl + ')'; el.classList.add('has-thumb'); }
+        });
+      });
       document.getElementById('btn-manual-complete').addEventListener('click', () => {
         if (confirm(`تمام تمرینات روز ${p.currentDay} را انجام داده‌ای؟`)) {
           this.completeWorkoutDay(Math.round(p.trainingMinutes * 60));
@@ -1652,13 +1666,14 @@
           <button class="btn-close exv-close">×</button>
         </div>
         <div style="border-radius:18px; overflow:hidden; background:#000; margin-bottom:14px;">
-          <video controls autoplay loop muted playsinline style="width:100%; max-height:260px; object-fit:cover;">
+          <video controls autoplay loop muted playsinline data-vposter="${esc(ex.id)}" style="width:100%; max-height:260px; object-fit:cover;">
             <source src="${esc(ex.videoUrl)}" type="video/mp4"/>
           </video>
         </div>
         <div style="display:flex; gap:6px; margin-bottom:12px; flex-wrap:wrap;">
           <span class="macro-tag">🎯 ${esc(ex.targetFa || '')}</span>
           <span class="macro-tag">سطح: ${ex.difficulty === 'BEGINNER' ? 'مبتدی' : (ex.difficulty === 'INTERMEDIATE' ? 'متوسط' : (ex.difficulty === 'NOVICE' ? 'نیمه‌مبتدی' : 'پیشرفته'))}</span>
+          ${ex.perSide ? '<span class="macro-tag" style="color:#c9b3ff; border-color:rgba(156,107,255,0.4);">هر طرف جداگانه</span>' : ''}
           <span class="macro-tag">${ex.measure === 'SECONDS' ? faNum(ex.suggestedSeconds || 30) + ' ثانیه' : faNum(ex.suggestedReps || 12) + ' تکرار'}</span>
         </div>
         ${ex.summaryFa ? `<div style="background:rgba(156,107,255,0.1); border-radius:14px; padding:10px 12px; margin-bottom:12px; font-size:0.8rem; color:#fff; line-height:1.6;">${esc(ex.summaryFa)}</div>` : ''}
@@ -1689,6 +1704,7 @@
         </div>
       `;
       modal.classList.add('active');
+      if (window.GordolThumbs) window.GordolThumbs.attachPoster(exId, modal.querySelector('video[data-vposter]'));
       modal.querySelector('.exv-close').addEventListener('click', () => modal.classList.remove('active'));
       document.getElementById('exv-eye').addEventListener('click', () => {
         modal.classList.remove('active');
@@ -2689,6 +2705,13 @@ ${pool}
 - رژیم: ${p.diet} | پرهیزها: ${(Array.isArray(p.exclusions) && p.exclusions.length) ? p.exclusions.join('، ') : 'ندارد'}
 - برنامه تمرین: روز ${p.currentDay} از مسیر «${p.selectedPath}» | سبک: ${p.trainingStyle === 'mastery' ? 'تسلط با چشم گردول' : 'روزانه'} | ${p.weeklyCadence} روز در هفته
 - سابقه کالری‌شماری: ${p.trackingExperience === 'new' ? 'تازه‌کار' : p.trackingExperience === 'quit' ? 'قبلاً رها کرده' : 'فعال می‌شمارد'}
+${p.bodyProfile ? '- ⚡ پروفایل بدنی تکمیلی: ' + [
+  p.bodyProfile.waistCm ? 'دور کمر ' + p.bodyProfile.waistCm + ' سانتی‌متر' : '',
+  p.bodyProfile.wristCm ? 'دور مچ ' + p.bodyProfile.wristCm + ' سانتی‌متر' : '',
+  p.bodyProfile.place === 'gym' ? 'به باشگاه دسترسی دارد' : (p.bodyProfile.place === 'home' ? 'فقط در خانه با وزن بدن تمرین می‌کند' : ''),
+  p.bodyProfile.level === 'beginner' ? 'سطح مبتدی' : (p.bodyProfile.level === 'intermediate' ? 'سطح متوسط' : (p.bodyProfile.level === 'advanced' ? 'سطح پیشرفته' : '')),
+  p.bodyProfile.injuriesText ? 'آسیب/محدودیت: ' + p.bodyProfile.injuriesText + ' (حرکات مربوط را با جایگزین امن پیشنهاد بده)' : ''
+].filter(Boolean).join(' | ') : '- پروفایل بدنی تکمیلی ثبت نشده'}
 - تاریخ پیش‌بینی‌شده رسیدن به هدف: ${goalDateText} | استریک فعلی: ${streak} روز
 
 ═══ گزارش کامل امروز (${todayKey()}) ═══
@@ -2862,6 +2885,41 @@ ${mealLines}
         </div>
 
         <div style="background:var(--bg-elevated); border-radius:14px; padding:12px; margin-bottom:12px;">
+          <h4 style="font-size:0.85rem; font-weight:800; color:#fff; margin-bottom:10px;">${GordolIcon('user', 15)} پروفایل بدنی (اختیاری — مربی دقیق‌تر می‌شود)</h4>
+          <div style="display:flex; gap:8px; margin-bottom:10px;">
+            <div style="flex:1;">
+              <label class="form-label" style="font-size:0.7rem;">دور کمر (سانتی‌متر)</label>
+              <input type="number" id="set-waist" class="form-input" style="padding:8px 10px; font-size:0.85rem;" min="40" max="200" value="${esc((this.profile && this.profile.bodyProfile && this.profile.bodyProfile.waistCm) || '')}"/>
+            </div>
+            <div style="flex:1;">
+              <label class="form-label" style="font-size:0.7rem;">دور مچ (سانتی‌متر)</label>
+              <input type="number" id="set-wrist" class="form-input" style="padding:8px 10px; font-size:0.85rem;" min="10" max="30" value="${esc((this.profile && this.profile.bodyProfile && this.profile.bodyProfile.wristCm) || '')}"/>
+            </div>
+          </div>
+          <div class="form-group" style="margin-bottom:8px;">
+            <label class="form-label" style="font-size:0.7rem;">محل تمرین:</label>
+            <select id="set-place" class="form-select" style="padding:8px 10px; font-size:0.85rem;">
+              <option value="">— انتخاب نشده —</option>
+              <option value="home" ${this.profile && this.profile.bodyProfile && this.profile.bodyProfile.place === 'home' ? 'selected' : ''}>خانه (وزن بدن)</option>
+              <option value="gym" ${this.profile && this.profile.bodyProfile && this.profile.bodyProfile.place === 'gym' ? 'selected' : ''}>باشگاه</option>
+            </select>
+          </div>
+          <div class="form-group" style="margin-bottom:8px;">
+            <label class="form-label" style="font-size:0.7rem;">سطح تجربه:</label>
+            <select id="set-level" class="form-select" style="padding:8px 10px; font-size:0.85rem;">
+              <option value="">— انتخاب نشده —</option>
+              <option value="beginner" ${this.profile && this.profile.bodyProfile && this.profile.bodyProfile.level === 'beginner' ? 'selected' : ''}>مبتدی</option>
+              <option value="intermediate" ${this.profile && this.profile.bodyProfile && this.profile.bodyProfile.level === 'intermediate' ? 'selected' : ''}>متوسط</option>
+              <option value="advanced" ${this.profile && this.profile.bodyProfile && this.profile.bodyProfile.level === 'advanced' ? 'selected' : ''}>پیشرفته</option>
+            </select>
+          </div>
+          <div class="form-group" style="margin-bottom:0;">
+            <label class="form-label" style="font-size:0.7rem;">آسیب یا محدودیت (با ویرگول جدا کن):</label>
+            <input type="text" id="set-injuries" class="form-input" style="padding:8px 10px; font-size:0.85rem;" placeholder="مثلاً: زانو، کمر، شانه" value="${esc((this.profile && this.profile.bodyProfile && this.profile.bodyProfile.injuriesText) || '')}"/>
+          </div>
+        </div>
+
+        <div style="background:var(--bg-elevated); border-radius:14px; padding:12px; margin-bottom:12px;">
           <h4 style="font-size:0.85rem; font-weight:800; color:#fff; margin-bottom:8px;">${GordolIcon('shield', 15)} داده‌های من (۱۰۰٪ روی همین دستگاه)</h4>
           <div style="display:flex; gap:8px; flex-wrap:wrap;">
             <button class="btn-secondary" style="width:auto; padding:7px 12px; font-size:0.74rem;" id="set-export">${GordolIcon('download', 14)} دانلود بکاپ</button>
@@ -2989,6 +3047,22 @@ ${mealLines}
       });
 
       document.getElementById('set-save').addEventListener('click', () => {
+        // پروفایل بدنی اختیاری
+        const waist = parseFloat(document.getElementById('set-waist').value);
+        const wrist = parseFloat(document.getElementById('set-wrist').value);
+        const place = document.getElementById('set-place').value;
+        const level = document.getElementById('set-level').value;
+        const injuriesText = document.getElementById('set-injuries').value.trim();
+        const bp = {};
+        if (waist > 0) bp.waistCm = waist;
+        if (wrist > 0) bp.wristCm = wrist;
+        if (place) bp.place = place;
+        if (level) bp.level = level;
+        if (injuriesText) bp.injuriesText = injuriesText;
+        if (Object.keys(bp).length) this.profile.bodyProfile = bp;
+        else delete this.profile.bodyProfile;
+        this.saveProfile();
+
         GordolAI.config.apiKey = document.getElementById('set-api-key').value.trim();
         GordolAI.config.model = document.getElementById('set-model').value;
         GordolAI.saveConfig();
@@ -3004,6 +3078,8 @@ ${mealLines}
   };
 
   window.GordolApp = App;
+  // ابزارهای مشترک برای ماژول‌های جانبی (حالت قدرتی و...)
+  window.GordolUtil = { todayKey, dateKeyOffset, faNum, esc };
 
   document.addEventListener('DOMContentLoaded', () => {
     App.init();

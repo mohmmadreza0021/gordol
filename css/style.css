@@ -449,10 +449,25 @@ nav.bottom-nav {
 
 .meal-card-banner {
   width: 100%;
-  height: 120px;
+  height: 84px;
   position: relative;
   overflow: hidden;
   background-color: var(--bg-elevated);
+}
+
+.meal-card-banner img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.meal-card-banner::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(12,13,20,0.05) 40%, rgba(12,13,20,0.45));
+  pointer-events: none;
 }
 
 .meal-badge-time {
@@ -1144,3 +1159,51 @@ nav.bottom-nav {
 /* آیکون‌های SVG */
 .gi { flex-shrink: 0; vertical-align: middle; }
 .nav-item .gi { display: block; margin: 0 auto 3px; }
+
+/* ================= حالت قدرتی و تامبنیل‌ها ================= */
+.strength-mode-card { background: linear-gradient(135deg, rgba(156,107,255,0.12), rgba(6,182,212,0.08)); border-color: rgba(156,107,255,0.4); }
+.strength-week-bar { height: 6px; background: var(--bg-elevated); border-radius: 999px; overflow: hidden; margin-top: 10px; }
+.strength-week-bar > div { height: 100%; background: linear-gradient(135deg, var(--accent-purple), var(--accent-coral)); border-radius: 999px; transition: width 0.4s cubic-bezier(0.4,0,0.2,1); }
+.strength-today-banner, .strength-rest-banner { display: flex; align-items: center; gap: 12px; color: #fff; font-size: 0.92rem; }
+.strength-today-banner { border-color: rgba(16,185,129,0.4); color: #10b981; }
+.strength-rest-banner { border-color: rgba(59,130,246,0.4); color: #60a5fa; }
+.strength-day-row { display: flex; gap: 8px; margin-bottom: 14px; }
+.strength-day-btn {
+  flex: 1; padding: 10px 0; border-radius: var(--r-sm);
+  background: var(--bg-card); border: 1px solid var(--border-color); color: var(--text-main);
+  font-family: inherit; font-size: 0.95rem; font-weight: 800; cursor: pointer; transition: all 0.15s;
+}
+.strength-day-btn.active { background: rgba(156,107,255,0.18); border-color: var(--accent-purple); color: #c9b3ff; }
+.strength-day-btn.done { border-color: rgba(16,185,129,0.5); }
+.strength-day-btn.done::after { content: " ✔"; color: #10b981; font-size: 0.7rem; }
+.strength-ex-card.done { border-color: rgba(16,185,129,0.4); background: rgba(16,185,129,0.06); }
+.ex-thumb {
+  width: 64px; height: 44px; border-radius: var(--r-sm); flex-shrink: 0; cursor: pointer;
+  background: var(--bg-elevated) center/cover no-repeat;
+  border: 1px solid var(--border-color);
+  display: flex; align-items: center; justify-content: center; color: var(--text-muted);
+  position: relative; overflow: hidden; transition: border-color 0.15s;
+}
+.ex-thumb:hover { border-color: var(--accent-purple); }
+.ex-thumb.has-thumb { color: #fff; text-shadow: 0 1px 4px rgba(0,0,0,0.8); }
+.set-pill {
+  width: 34px; height: 34px; border-radius: 10px;
+  background: var(--bg-elevated); border: 1px solid var(--border-color);
+  color: var(--text-main); font-family: inherit; font-size: 0.85rem; font-weight: 800;
+  cursor: pointer; transition: all 0.15s;
+}
+.set-pill.done { background: rgba(16,185,129,0.2); border-color: #10b981; color: #10b981; }
+.rest-chip {
+  display: inline-flex; align-items: center; gap: 4px;
+  background: var(--bg-elevated); border: 1px solid var(--border-color); border-radius: 999px;
+  color: var(--text-muted); font-family: inherit; font-size: 0.7rem; font-weight: 700;
+  padding: 5px 10px; cursor: pointer; transition: all 0.15s;
+}
+.rest-chip:active { transform: scale(0.95); }.swap-thumb {
+  width: 44px;
+  height: 44px;
+  border-radius: var(--r-sm);
+  object-fit: cover;
+  flex-shrink: 0;
+  border: 1px solid var(--border-color);
+}
