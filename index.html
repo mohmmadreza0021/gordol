@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+
+  <!-- امنیت: فقط اسکریپت‌های همین دامنه؛ اتصال شبکه فقط به سرور رسمی گوگل برای کلید API کاربر -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; media-src 'self' blob:; font-src 'self'; connect-src 'self' https://generativelanguage.googleapis.com; worker-src 'self' blob:; object-src 'none'; base-uri 'self'">
+
+  <title>گردول — برنامه هوشمند تمرین، چشم گردول و تغذیه</title>
+  <meta name="description" content="گردول؛ مربی هوش مصنوعی ورزش و تغذیه با چشم گردول (شمارش هوشمند حرکات)، اسکن غذای ایرانی و برنامه تمرینی شخصی — تمام داده‌ها فقط روی دستگاه شما.">
+
+  <!-- PWA -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="گردول">
+  <link rel="apple-touch-icon" href="assets/icons/icon-192.svg">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="application-name" content="گردول">
+  <meta name="theme-color" content="#0c0d14">
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" type="image/svg+xml" href="assets/icons/favicon.svg">
+
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <div id="app-container">
+    <!-- بنر نصب PWA -->
+    <div id="pwa-install-banner" class="pwa-install-banner" style="display: none;">
+      <div style="display: flex; align-items: center; gap: 8px;">
+        <span>📲</span>
+        <span>برای دسترسی سریع‌تر، گردول را روی گوشی خود نصب کنید</span>
+      </div>
+      <button id="pwa-install-btn">نصب برنامه</button>
+    </div>
+
+    <!-- هدر -->
+    <header class="app-header"></header>
+
+    <!-- محتوای تب‌ها -->
+    <main class="main-content"></main>
+
+    <!-- تب‌بار پایین با دکمه برجسته چشم گردول -->
+    <nav class="bottom-nav"></nav>
+  </div>
+
+  <!-- ۱. مدال پلیر ویدیوی تمرین -->
+  <div id="exercise-player-modal" class="modal-overlay"><div class="modal-card"></div></div>
+
+  <!-- ۲. مدال چشم گِردول (دوربین تشخیص حرکت واقعی) -->
+  <div id="pose-camera-modal" class="modal-overlay"><div class="modal-card"></div></div>
+
+  <!-- ۳. مدال دوربین تغذیه (اسکن عکس غذا) -->
+  <div id="food-scanner-modal" class="modal-overlay"><div class="modal-card"></div></div>
+
+  <!-- ۴. مدال ثبت غذا با متن -->
+  <div id="food-text-modal" class="modal-overlay"><div class="modal-card"></div></div>
+
+  <!-- ۵. مدال جایگزینی حرکت تمرینی -->
+  <div id="exercise-swap-modal" class="modal-overlay"><div class="modal-card"></div></div>
+
+  <!-- ۶. مدال جایگزینی وعده غذایی -->
+  <div id="meal-swap-modal" class="modal-overlay"><div class="modal-card"></div></div>
+
+  <!-- ۷. مدال پلیر جلسه تمرین با تایمر -->
+  <div id="session-player-modal" class="modal-overlay"><div class="modal-card"></div></div>
+
+  <!-- ۸. مدال تنظیمات -->
+  <div id="settings-modal" class="modal-overlay"><div class="modal-card"></div></div>
+
+  <!-- ۹. مدال اجباری ورود کلید API در اولین ورود -->
+  <div id="mandatory-api-modal" class="modal-overlay"><div class="modal-card"></div></div>
+
+  <!-- ۱۰. مدال فعال‌سازی نوتیفیکیشن‌ها -->
+  <div id="notif-permission-modal" class="modal-overlay"><div class="modal-card"></div></div>
+
+  <!-- ۱۱. مدال ثبت وزن -->
+  <div id="weight-modal" class="modal-overlay"><div class="modal-card"></div></div>
+
+  <!-- ۱۲. مدال جشن رسیدن به هدف -->
+  <div id="goal-celebration-modal" class="modal-overlay"><div class="modal-card"></div></div>
+
+  <!-- بانک داده‌های اورجینال گردول -->
+  <script src="js/exercises-data.js"></script>
+  <script src="js/plans-data.js"></script>
+  <script src="js/meals-data.js"></script>
+  <script src="js/grocery-data.js"></script>
+
+  <!-- موتورهای اپ -->
+  <script src="js/gemini.js"></script>
+  <script src="js/pose-engine.js"></script>
+  <script src="js/app.js"></script>
+
+  <!-- Service Worker برای کش آفلاین (GitHub Pages) -->
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('sw.js').catch(err => {
+          console.warn('[Gordol PWA] SW registration notice', err);
+        });
+      });
+    }
+  </script>
+</body>
+</html>

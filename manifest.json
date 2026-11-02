@@ -1,0 +1,33 @@
+{
+  "name": "گردول — برنامه هوشمند تمرین و تغذیه",
+  "short_name": "گردول",
+  "description": "برنامه اختصاصی تمرین، تغذیه، چشم گردول و مربی هوش مصنوعی",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#0c0d14",
+  "theme_color": "#0c0d14",
+  "lang": "fa",
+  "dir": "rtl",
+  "icons": [
+    {
+      "src": "assets/icons/favicon.svg",
+      "sizes": "48x48",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "assets/icons/icon-192.svg",
+      "sizes": "192x192",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "assets/icons/icon-512.svg",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
