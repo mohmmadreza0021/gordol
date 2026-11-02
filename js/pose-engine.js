@@ -116,7 +116,7 @@
       const id = (exId || '').toLowerCase();
       const R = null;
       const pushup = (opts) => Object.assign({ mech: 'angle', group: 'pushup', joint: 'elbow', downLe: 105, upGe: 155, hipCheck: true }, opts || {});
-      const squat = (opts) => Object.assign({ mech: 'angle', group: 'squat', joint: 'knee', downLe: 115, upGe: 162, torsoCheck: true }, opts || {});
+      const squat = (opts) => Object.assign({ mech: 'angle', group: 'squat', joint: 'knee', downLe: 115, upGe: 162, torsoCheck: false }, opts || {});
       const lunge = (opts) => Object.assign({ mech: 'angle', group: 'lunge', joint: 'kneeMin', downLe: 112, upGe: 158, torsoCheck: true }, opts || {});
       const crunch = (opts) => Object.assign({ mech: 'angle', group: 'crunch', joint: 'torsoHip', downGe: 138, upLe: 112 }, opts || {});
       const legraise = (opts) => Object.assign({ mech: 'angle', group: 'legraise', joint: 'hipLeg', downGe: 163, upLe: 118 }, opts || {});
@@ -133,9 +133,10 @@
       if (id.includes('dip')) return pushup({ hipCheck: false, group: 'dip' });
       if (id.includes('pull-up')) return pushup({ hipCheck: false, group: 'pullup', downLe: 60, upGe: 150, invert: true });
 
+      if (id.includes('wall-sit')) return hold({ group: 'wallsit', align: 'wallsit', bandLo: 85, bandHi: 115 });
       if (id.includes('squat')) {
-        if (id.includes('pulse')) return squat({ downLe: 142, upGe: 165 });
-        if (id.includes('wall-assisted') || id.includes('wall-sit')) return hold({ group: 'wallsit', bandLo: 85, bandHi: 115 });
+        if (id.includes('pulse')) return squat({ downLe: 142, upGe: 165, torsoCheck: false });
+        if (id.includes('wall-assisted')) return squat({ torsoCheck: false });
         return squat();
       }
       if (id.includes('lunge') || id.includes('split-squat') || id.includes('step-up') || id.includes('step-toe') || id.includes('step-down') || id.includes('box-jump') || id.includes('long-jump')) return lunge();
@@ -148,15 +149,18 @@
         return crunch();
       }
 
-      if (id.includes('leg-raise') || id.includes('leg-lift') || id.includes('knee-raise') || id.includes('knee-hold') ||
+      if (id.includes('leg-raise') || id.includes('leg-lift') || id.includes('knee-raise') ||
           id.includes('leg-lowering') || id.includes('flutter') || id.includes('scissor')) {
         if (id.includes('flutter') || id.includes('scissor')) return amp('ankle', { group: 'amp', minAmp: 0.03 });
         return legraise();
       }
+      // نگه‌داشتن زانو آویزان = تایمر نشست (بدون کنترل ستون فقرات)
+      if (id.includes('knee-hold')) return hold({ group: 'plank', align: 'none' });
       if (id.includes('clamshell') || id.includes('side-lying-leg-raise')) return amp('knee', { group: 'amp', minAmp: 0.03 });
 
       if (id.includes('plank')) {
         if (id.includes('knee-drive') || id.includes('walkout') || id.includes('hand-jacks') || id.includes('foot-taps') || id.includes('reach-through')) return drive(LM.L_KNEE, { group: 'plankdrive' });
+        if (id.includes('arm-reach')) return drive(LM.L_WRIST, { group: 'amp-limb', near: 0.35, far: 0.55, alternate: true });
         return hold({ group: 'plank', align: 'spine' });
       }
       if (id.includes('side-plank-hip-dip')) return amp('hip', { group: 'amp', minAmp: 0.03 });
@@ -215,7 +219,7 @@
     step(session, lms, facingUser) {
       const d = session.detector;
       const now = performance.now();
-      const dt = session.lastFrameAt ? now - session.lastFrameAt : 33;
+      const dt = session.lastFrameAt ? Math.min(200, now - session.lastFrameAt) : 33; // سقف dt برای جلوگیری از جهش پس از بک‌گراند شدن تب
       session.lastFrameAt = now;
 
       const out = {
@@ -347,9 +351,7 @@
       // ---------------- مکانیزم B: شمارنده چرخه اندام ----------------
       else if (d.mech === 'limb') {
         const li = d.landmark;
-        const pairs = li === LM.L_KNEE || li === LM.L_HEEL || li === LM.L_WRIST
-          ? [[li, LM.L_HIP], [li + 1, LM.R_HIP]]
-          : [[li, LM.L_HIP], [li + 1, LM.R_HIP]];
+        const pairs = [[li, LM.L_HIP], [li + 1, LM.R_HIP]];
         let anyDrive = false;
         pairs.forEach((pr, i) => {
           const [end, root] = pr;
@@ -441,7 +443,15 @@
       // ---------------- مکانیزم D: تایمر نشست ----------------
       else if (d.mech === 'hold') {
         let inPosition = true;
-        if (d.align === 'spine') {
+        if (d.group === 'wallsit') {
+          const knee = bestAngle(lms, [LM.L_HIP, LM.R_HIP], [LM.L_KNEE, LM.R_KNEE], [LM.L_ANKLE, LM.R_ANKLE]);
+          if (knee !== null) {
+            session.angles.knee = Math.round(knee);
+            if (knee > d.bandHi) { inPosition = false; session.formOk = false; warn('deep', 'پایین‌تر برو! زانو ۹۰ درجه باشه'); }
+            else if (knee < d.bandLo) { inPosition = false; session.formOk = false; warn('shallow', 'کمی بالا بیا، زانو ۹۰ درجه'); }
+            else { clearWarn('deep'); clearWarn('shallow'); session.formOk = true; }
+          }
+        } else if (d.align === 'spine') {
           const sh = mid(lms[LM.L_SHOULDER], lms[LM.R_SHOULDER]);
           const hp = mid(lms[LM.L_HIP], lms[LM.R_HIP]);
           const kn = mid(lms[LM.L_KNEE], lms[LM.R_KNEE]);
@@ -456,14 +466,6 @@
             session.formOk = false;
             warn('pike', 'باسنت بالاست! خط بدن رو صاف کن');
           } else { clearWarn('sag'); clearWarn('pike'); session.formOk = true; }
-        } else if (d.group === 'wallsit') {
-          const knee = bestAngle(lms, [LM.L_HIP, LM.R_HIP], [LM.L_KNEE, LM.R_KNEE], [LM.L_ANKLE, LM.R_ANKLE]);
-          if (knee !== null) {
-            session.angles.knee = Math.round(knee);
-            if (knee > d.bandHi) { inPosition = false; session.formOk = false; warn('deep', 'پایین‌تر برو! زانو ۹۰ درجه باشه'); }
-            else if (knee < d.bandLo) { inPosition = false; session.formOk = false; warn('shallow', 'کمی بالا بیا، زانو ۹۰ درجه'); }
-            else { clearWarn('deep'); clearWarn('shallow'); session.formOk = true; }
-          }
         }
         if (inPosition) {
           session.holdMs += dt;

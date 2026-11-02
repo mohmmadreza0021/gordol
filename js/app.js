@@ -128,22 +128,25 @@
     },
 
     loadState() {
-      try {
-        const p = localStorage.getItem('gordol_profile_v3');
-        if (p) this.profile = JSON.parse(p);
-        const l = localStorage.getItem('gordol_logs_v3');
-        if (l) this.logs = JSON.parse(l);
-        const s = localStorage.getItem('gordol_swaps_v3');
-        if (s) this.swaps = JSON.parse(s);
-        if (!this.swaps.meals) this.swaps.meals = {};
-        if (!this.swaps.exercises) this.swaps.exercises = {};
-        const c = localStorage.getItem('gordol_chat_v3');
-        if (c) this.chat = JSON.parse(c);
-        const f = localStorage.getItem('gordol_fasting_v3');
-        if (f) this.fasting = JSON.parse(f);
-      } catch (e) {
-        console.error('load state', e);
-      }
+      // هر کلید جداگانه خوانده می‌شود تا خرابی یک کلید بقیه را از بین نبرد
+      const readJSON = (key) => {
+        try {
+          const raw = localStorage.getItem(key);
+          return raw ? JSON.parse(raw) : null;
+        } catch (e) { return null; }
+      };
+      const p = readJSON('gordol_profile_v3');
+      if (p && typeof p === 'object') this.profile = p;
+      const l = readJSON('gordol_logs_v3');
+      if (l && typeof l === 'object') this.logs = l;
+      const s = readJSON('gordol_swaps_v3');
+      if (s && typeof s === 'object') this.swaps = s;
+      if (!this.swaps.meals) this.swaps.meals = {};
+      if (!this.swaps.exercises) this.swaps.exercises = {};
+      const c = readJSON('gordol_chat_v3');
+      if (Array.isArray(c)) this.chat = c;
+      const f = readJSON('gordol_fasting_v3');
+      if (f && typeof f === 'object') this.fasting = f;
     },
 
     saveProfile() { try { localStorage.setItem('gordol_profile_v3', JSON.stringify(this.profile)); } catch (e) {} },
@@ -481,6 +484,13 @@
     },
 
     switchTab(tab) {
+      // قبل از ساخت پروفایل، هر تب غیر از مربی به آنبوردینگ برمی‌گردد (جریان از بین نمی‌رود)
+      if (!this.profile && tab !== 'coach') {
+        this.activeTab = 'today';
+        this.renderTabNav();
+        this.renderOnboardingStep();
+        return;
+      }
       this.activeTab = tab;
       this.renderTabNav();
       const main = document.querySelector('main.main-content');
@@ -840,15 +850,19 @@
       const deltaKg = Math.abs(d.weightKg - d.goalWeightKg);
       let weeklyRateKg = 0.7;
 
-      if (d.primaryGoal === 'lose_weight' || d.goalWeightKg < d.weightKg) {
+      if (p.primaryGoal === 'lose_weight' || p.goalWeightKg < p.weightKg) {
         targetKcal = Math.max(1350, tdee - 500);
         weeklyRateKg = d.weeklyCadence >= 4 ? 0.75 : 0.6;
       } else if (d.primaryGoal === 'gain_muscle' || d.goalWeightKg > d.weightKg) {
         targetKcal = tdee + 350;
         weeklyRateKg = 0.35;
+      } else {
+        // حفظ وزن — مسیر زمانی هدف ندارد
+        weeklyRateKg = 0;
       }
 
-      const targetWeeks = Math.max(4, Math.ceil(deltaKg / weeklyRateKg));
+      const deltaKgCalc = deltaKg;
+      const targetWeeks = (weeklyRateKg > 0 && deltaKgCalc > 0) ? Math.max(4, Math.ceil(deltaKgCalc / weeklyRateKg)) : 0;
       const estimatedTotalDays = targetWeeks * 7;
 
       const proteinG = Math.round(d.weightKg * 2.0);
@@ -1297,12 +1311,16 @@
     advanceSessionItem() {
       const sp = this.sessionPlayer;
       if (!sp) return;
+      // احتساب زمان واقعی اجراشده‌ی آیتم قبلی (نه زمان کامل در صورت رد کردن)
+      const prev = sp.items[sp.idx];
+      if (prev && prev.kind === 'work') {
+        sp.workedTotal += Math.max(0, prev.sec - Math.max(0, sp.remaining));
+      }
       sp.idx++;
       if (sp.idx >= sp.items.length) { this.endSessionPlayer(true); return; }
       const item = sp.items[sp.idx];
       sp.remaining = item.sec;
       sp.paused = false; // باگ: حرکت بعدی نباید مکث‌شده از آیتم قبل به ارث برسد
-      if (item.kind === 'work') sp.workedTotal += item.sec;
 
       const ex = item.exId ? (window.GORDOL_EXERCISES || []).find(e => e.id === (this.swaps.exercises[item.exId] || item.exId)) : null;
 
@@ -1385,7 +1403,7 @@
       if (completed) {
         const t = this.getDayLog(todayKey());
         const seen = {};
-        doneItems.forEach(id => { seen[id] = true; });
+        doneItems.forEach(id => { seen[this.swaps.exercises[id] || id] = true; });
         Object.keys(seen).forEach(id => {
           if (!t.exercises.some(x => x.exId === id)) t.exercises.push({ exId: id, reps: 0, source: 'session' });
         });
@@ -1417,7 +1435,7 @@
         </div>
         <div style="display:flex; gap:6px; margin-bottom:12px; flex-wrap:wrap;">
           <span class="macro-tag">🎯 ${esc(ex.targetFa || '')}</span>
-          <span class="macro-tag">📊 ${ex.difficulty === 'BEGINNER' ? 'مبتدی' : (ex.difficulty === 'NOVICE' ? 'متوسط' : 'پیشرفته')}</span>
+          <span class="macro-tag">📊 ${ex.difficulty === 'BEGINNER' ? 'مبتدی' : (ex.difficulty === 'INTERMEDIATE' ? 'متوسط' : (ex.difficulty === 'NOVICE' ? 'نیمه‌مبتدی' : 'پیشرفته'))}</span>
           <span class="macro-tag">${ex.measure === 'SECONDS' ? '⏱️ ' + faNum(ex.suggestedSeconds || 30) + ' ثانیه' : '🔁 ' + faNum(ex.suggestedReps || 12) + ' تکرار'}</span>
         </div>
         ${ex.summaryFa ? `<div style="background:rgba(156,107,255,0.1); border-radius:14px; padding:10px 12px; margin-bottom:12px; font-size:0.8rem; color:#fff; line-height:1.6;">${esc(ex.summaryFa)}</div>` : ''}
@@ -1786,6 +1804,7 @@ ${pool}
 
     renderDietTab(container) {
       const p = this.profile;
+      if (!p) return;
       const t = this.getDayLog(todayKey());
       const meals = (window.GORDOL_MEALS && window.GORDOL_MEALS.dailyMeals) || [];
       const grocery = window.GORDOL_GROCERY || [];
@@ -2477,6 +2496,7 @@ ${pool}
     // ================= بخش ۱۱: وزن و روز هدف =================
 
     openWeightModal() {
+      if (!this.profile) { toast('اول آنبوردینگ را کامل کن.', false); return; }
       const modal = document.getElementById('weight-modal');
       const p = this.profile;
       modal.querySelector('.modal-card').innerHTML = `
@@ -2509,9 +2529,14 @@ ${pool}
         modal.classList.remove('active');
         if (this.activeTab === 'today') this.renderTodayTab(document.querySelector('main.main-content'));
 
-        const reached = (p.primaryGoal === 'lose_weight' && p.weightKg <= p.goalWeightKg) ||
-                        (p.primaryGoal === 'gain_muscle' && p.weightKg >= p.goalWeightKg);
-        if (reached) this.showGoalCelebration();
+        const reached = !p.goalCelebrated && (
+          (p.primaryGoal === 'lose_weight' && p.weightKg <= p.goalWeightKg) ||
+          (p.primaryGoal === 'gain_muscle' && p.weightKg >= p.goalWeightKg));
+        if (reached) {
+          p.goalCelebrated = true;
+          this.saveProfile();
+          this.showGoalCelebration();
+        }
         else toast('وزن ثبت شد — پیش‌بینی هدف به‌روز شد ✅');
       });
     },

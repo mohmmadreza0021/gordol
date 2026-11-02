@@ -1382,7 +1382,7 @@ window.GORDOL_PLANS = [
               "floor-leg-raise",
               "russian-twist-heels-up",
               "plank-arm-reach",
-              "side-plank-hip-dips"
+              "side-plank-hip-dip"
             ],
             "cooldown": [
               "cobra-stretch",
@@ -1435,7 +1435,7 @@ window.GORDOL_PLANS = [
             ],
             "cooldown": [
               "butterfly-stretch",
-              "wall-glute-stretch"
+              "legs-up-wall-stretch"
             ]
           }
         ]
@@ -1510,7 +1510,7 @@ window.GORDOL_PLANS = [
               "heels-elevated-glute-bridge"
             ],
             "cooldown": [
-              "wall-glute-stretch",
+              "legs-up-wall-stretch",
               "standing-quad-stretch"
             ]
           }

@@ -50,13 +50,22 @@
     },
 
     async listModels(key) {
-      const url = `${API_BASE}/models?key=${encodeURIComponent(key)}&pageSize=100`;
-      const res = await fetch(url);
-      if (!res.ok) throw new Error('خطای دسترسی به فهرست مدل‌ها (' + res.status + ')');
-      const data = await res.json();
-      return (data.models || [])
-        .filter(m => (m.supportedGenerationMethods || []).includes('generateContent') && !/embedding|aqa|image|audio|tts|live/i.test(m.name))
-        .map(m => m.name.replace('models/', ''));
+      const ctrl = new AbortController();
+      const t = setTimeout(() => ctrl.abort(), 20000);
+      try {
+        const url = `${API_BASE}/models?key=${encodeURIComponent(key)}&pageSize=100`;
+        const res = await fetch(url, { signal: ctrl.signal });
+        if (!res.ok) throw new Error('خطای دسترسی به فهرست مدل‌ها (' + res.status + ')');
+        const data = await res.json();
+        return (data.models || [])
+          .filter(m => (m.supportedGenerationMethods || []).includes('generateContent') && !/embedding|aqa|image|audio|tts|live/i.test(m.name))
+          .map(m => m.name.replace('models/', ''));
+      } catch (e) {
+        if (e.name === 'AbortError') throw new Error('زمان دریافت فهرست مدل‌ها تمام شد');
+        throw e;
+      } finally {
+        clearTimeout(t);
+      }
     },
 
     // درخواست متنی ساده — خروجی: متن پاسخ
