@@ -310,12 +310,12 @@
           <h3 style="font-size:1rem; font-weight:800; color:#fff;">${window.GordolUtil.esc(day.title)}</h3>
           <div style="font-size:0.76rem; color:var(--text-muted); margin-top:3px;">${window.GordolUtil.esc(day.badge)} · ${window.GordolUtil.esc(day.duration)}</div>
         </div>
+        <div style="margin:14px 0 4px;">
+          <button class="btn-primary" style="width:100%; padding:13px;" id="btn-guided-start">${GordolIcon('play', 17)} شروع جلسه هدایت‌شده (ترتیبی با تایمر)</button>
+        </div>
         ${phase('۱. گرم کردن و روان‌سازی', 'var(--accent-purple)', day.warmup, 'warmup')}
         ${phase('۲. تمرینات اصلی قدرتی', 'var(--accent-coral)', day.main, 'main')}
         ${phase('۳. سرد کردن و کشش', 'var(--accent-emerald)', day.cooldown, 'cooldown')}
-        <div style="margin-top:20px;">
-          <button class="btn-primary" style="width:100%; padding:13px;" id="btn-guided-start">${GordolIcon('play', 17)} شروع جلسه هدایت‌شده (ترتیبی با تایمر استراحت)</button>
-        </div>
         <div style="margin:10px 0 10px;">
           <button class="btn-emerald" style="width:100%; padding:13px;" id="btn-strength-finish" ${logged ? 'disabled' : ''}>
             ${GordolIcon('check-circle', 16)} ${logged ? 'این جلسه ثبت شده است' : 'ثبت اتمام جلسه ' + fa(day.day) + ' (استریک +۱)'}
@@ -349,72 +349,108 @@
     },
 
   // ---------------- پلیر جلسه هدایت‌شده ترتیبی (درخواست کاربر) ----------------
-  // جریان: همه ست‌های حرکت ۱ → استراحت خودکار → حرکت ۲ → ... → پایان دور → دور بعد یا ثبت
+  // جریان: گرم کردن → حرکت ۱ (همه ست‌ها با استراحت بین‌شان و تایمر خود حرکت) → حرکت ۲ → ... → سرد کردن → پایان دور (تکرار یا ثبت)
 
-  player: null, // {day, exIndex, setIndex, round, phase:'work'|'rest'|'roundDone', restLeft, restTimerId, paused}
+  player: null, // {day, steps, i, round, phase, workLeft, restLeft, timerId, paused, onTimerDone}
 
   startGuidedSession(day) {
-    // شروع از اولین ستِ ناتمام (اگر از چک‌لیست تیکی خورده شده)
-    let exIndex = 0, setIndex = 0, found = false;
-    for (let i = 0; i < day.main.length && !found; i++) {
-      for (let sIdx = 0; sIdx < day.main[i].setsCount; sIdx++) {
-        if (!this.isSetDone(day.day, day.main[i].id, sIdx)) { exIndex = i; setIndex = sIdx; found = true; break; }
-      }
-    }
-    this.player = { day, exIndex, setIndex, round: 1, phase: 'work', restLeft: 0, restTimerId: null, paused: false };
+    this.player = { day, steps: this.buildSteps(day), i: 0, round: 1, phase: 'work', workLeft: 0, restLeft: 0, timerId: null, paused: false, onTimerDone: null };
     const modal = document.getElementById('session-player-modal');
     modal.querySelector('.modal-card').style.maxWidth = '480px';
     this.renderPlayer();
     modal.classList.add('active');
+    this.playerTimerStart(); // اگر گام اول تایمری باشد شروع می‌شود
   },
 
-  playerExercise() {
-    return this.player.day.main[this.player.exIndex];
+  // تبدیل روز برنامه به گام‌های ترتیبی پلیر
+  buildSteps(day) {
+    const steps = [];
+    const parseSec = (txt) => {
+      if (!txt || String(txt).indexOf('ثانیه') === -1) return null;
+      const fa = '۰۱۲۳۴۵۶۷۸۹';
+      const m = String(txt).replace(/[۰-۹]/g, d => fa.indexOf(d)).match(/\d+/);
+      return m ? parseInt(m[0], 10) : null;
+    };
+    (day.warmup || []).forEach(x => {
+      const sec = parseSec(x.reps) || 30;
+      steps.push({ kind: 'warmup', item: x, exId: x.id, sec, timed: true, setIndex: 0, setTotal: 1, restSec: x.restSec || 30 });
+    });
+    day.main.forEach(item => {
+      const ex = (window.GORDOL_EXERCISES || []).find(e => e.id === item.id) || {};
+      const timed = ex.measure === 'SECONDS';
+      for (let s = 0; s < item.setsCount; s++) {
+        steps.push({
+          kind: 'main', item, exId: item.id,
+          sec: timed ? (ex.suggestedSeconds || parseSec(item.reps) || 30) : null,
+          timed, setIndex: s, setTotal: item.setsCount,
+          restSec: item.restSec || 45, perSide: !!ex.perSide
+        });
+      }
+    });
+    (day.cooldown || []).forEach(x => {
+      const sec = parseSec(x.reps) || 30;
+      steps.push({ kind: 'cooldown', item: x, exId: x.id, sec, timed: true, setIndex: 0, setTotal: 1, restSec: x.restSec || 20 });
+    });
+    return steps;
+  },
+
+  playerStep() {
+    const pl = this.player;
+    return pl ? pl.steps[pl.i] : null;
   },
 
   renderPlayer() {
     const pl = this.player;
     if (!pl) return;
     const fa = window.GordolUtil.faNum;
-    const item = this.playerExercise();
-    const ex = (window.GORDOL_EXERCISES || []).find(e => e.id === item.id) || { id: item.id, nameFa: item.id, videoUrl: 'videos/' + item.id + '.mp4' };
-
+    const step = pl.steps[pl.i];
     const modal = document.getElementById('session-player-modal');
-    let body = '';
 
-    if (pl.phase === 'roundDone') {
-      // پایان یک دور کامل
-      body = `
-        <div style="text-align:center; padding:18px 0;">
-          <div style="color:var(--accent-emerald);">${GordolIcon('check-circle', 56)}</div>
-          <h3 style="font-size:1.2rem; font-weight:800; color:#fff; margin-top:10px;">یک دور کامل شد! 🔥</h3>
-          <p style="font-size:0.84rem; color:var(--text-muted); margin-top:8px; line-height:1.8;">همه ${fa(pl.day.main.length)} حرکت و ست‌هاشون رو انجام دادی. اگه توان داری، دور بعد رو بزن یا جلسه رو ثبت کن.</p>
-        </div>`;
-    } else if (pl.phase === 'rest') {
-      body = `
-        <div style="text-align:center; padding:8px 0;">
-          <div style="font-size:1rem; font-weight:800; color:#60a5fa;">⏳ استراحت — نفس بگیر</div>
-        </div>`;
-    } else {
-      // فاز تمرین
-      body = `
-        <div style="text-align:center; padding:6px 0;">
-          <div style="font-size:0.95rem; font-weight:800; color:#fff;">${window.GordolUtil.esc(item.reps || '')}</div>
-          ${ex.perSide ? '<div style="font-size:0.74rem; color:#c9b3ff; margin-top:3px;">هر طرف جداگانه اجرا شود</div>' : ''}
-        </div>`;
+    // پایان دور
+    if (pl.phase === 'done') {
+      modal.querySelector('.modal-card').innerHTML = `
+        <div class="modal-header">
+          <h3 class="modal-title">${GordolIcon('check-circle', 20)} یک دور کامل شد! 🔥</h3>
+          <button class="btn-close" id="gsp-close">×</button>
+        </div>
+        <div style="text-align:center; padding:14px 0;">
+          <div style="color:var(--accent-emerald);">${GordolIcon('trophy', 52)}</div>
+          <p style="font-size:0.86rem; color:var(--text-muted); margin-top:10px; line-height:1.9;">گرم کردن، ${fa(pl.day.main.length)} حرکت اصلی با همه ست‌ها و سرد کردن انجام شد.</p>
+        </div>
+        <div style="display:flex; gap:8px; margin-top:10px;">
+          <button class="btn-primary" style="flex:1;" id="gsp-next-round">${GordolIcon('refresh', 16)} دور بعد (${fa(pl.round + 1)})</button>
+          <button class="btn-emerald" style="flex:1;" id="gsp-finish">${GordolIcon('check-circle', 16)} ثبت پایان جلسه</button>
+        </div>
+        <button class="btn-secondary" style="width:100%; margin-top:10px; font-size:0.76rem; color:#ef4444; border-color:rgba(239,68,68,0.3);" id="gsp-end">بلى، و ثبت جلسه</button>
+      `;
+      const bind0 = (id, fn) => { const el = document.getElementById(id); if (el) el.addEventListener('click', fn); };
+      bind0('gsp-close', () => this.closePlayer());
+      bind0('gsp-next-round', () => { pl.round++; pl.i = 0; pl.phase = 'work'; this.renderPlayer(); this.playerTimerStart(); });
+      bind0('gsp-finish', () => this.playerFinish());
+      bind0('gsp-end', () => this.playerFinish());
+      return;
     }
+
+    const ex = (window.GORDOL_EXERCISES || []).find(e => e.id === step.exId) || { id: step.exId, nameFa: step.exId, videoUrl: 'videos/' + step.exId + '.mp4' };
+    const kindLabel = step.kind === 'warmup' ? 'گرم کردن' : (step.kind === 'cooldown' ? 'سرد کردن و کشش' : 'تمرین اصلی');
+    const counter = step.kind === 'main'
+      ? `ست ${fa(step.setIndex + 1)} از ${fa(step.setTotal)} · دور ${fa(pl.round)}`
+      : `${kindLabel} · دور ${fa(pl.round)}`;
+    const actionText = step.timed
+      ? (pl.phase === 'work' ? 'اجرا کن — تایمر روشنه!' : 'استراحت — نفس بگیر')
+      : (pl.phase === 'work' ? window.GordolUtil.esc(step.item.reps || 'اجرا کن و دکمه را بزن') : 'استراحت — نفس بگیر');
 
     modal.querySelector('.modal-card').innerHTML = `
       <div class="modal-header">
         <div>
           <h3 class="modal-title">${window.GordolUtil.esc(ex.nameFa)}</h3>
-          <div style="font-size:0.72rem; color:var(--text-muted); margin-top:2px;">ست ${fa(Math.min(pl.setIndex + 1, item.setsCount))} از ${fa(item.setsCount)} · دور ${fa(pl.round)} · حرکت ${fa(pl.exIndex + 1)} از ${fa(pl.day.main.length)}</div>
+          <div style="font-size:0.72rem; color:var(--text-muted); margin-top:2px;">${window.GordolUtil.esc(counter)} · حرکت ${fa(pl.i + 1)} از ${fa(pl.steps.length)}</div>
         </div>
         <button class="btn-close" id="gsp-close">×</button>
       </div>
       <div class="sp-video-box">
-        <video id="gsp-video" autoplay loop muted playsinline data-vposter="${window.GordolUtil.esc(ex.id)}"></video>
-        <div class="sp-phase-badge ${pl.phase === 'rest' ? 'rest' : ''}" id="gsp-phase">${pl.phase === 'rest' ? 'استراحت' : (pl.phase === 'roundDone' ? 'پایان دور' : 'تمرین اصلی')}</div>
+        <video id="gsp-video" autoplay loop muted playsinline></video>
+        <div class="sp-phase-badge ${pl.phase === 'rest' ? 'rest' : ''}" id="gsp-phase">${pl.phase === 'rest' ? 'استراحت' : kindLabel}</div>
       </div>
       <div style="display:flex; align-items:center; justify-content:center; margin:14px 0;">
         <div class="sp-timer-wrap">
@@ -425,146 +461,148 @@
           <div class="sp-timer-num" id="gsp-timer-num">—</div>
         </div>
       </div>
-      ${body}
-      <div style="display:flex; gap:8px; margin-top:14px;">
-        ${pl.phase === 'work' ? `<button class="btn-emerald" style="flex:1;" id="gsp-tick">${GordolIcon('check', 16)} ست انجام شد</button>` : ''}
-        ${pl.phase === 'work' ? `<button class="btn-secondary" style="width:auto; padding:0 14px;" id="gsp-skip" title="رد کردن">${GordolIcon('skip', 15)}</button>` : ''}
-        ${pl.phase === 'rest' ? `<button class="btn-secondary" style="flex:1;" id="gsp-pause">${GordolIcon('pause', 15)} مکث</button>` : ''}
-        ${pl.phase === 'rest' ? `<button class="btn-secondary" style="flex:1;" id="gsp-skip">رد استراحت ${GordolIcon('skip', 14)}</button>` : ''}
-        ${pl.phase === 'roundDone' ? `<button class="btn-primary" style="flex:1;" id="gsp-next-round">${GordolIcon('refresh', 16)} دور بعد (${fa(pl.round + 1)})</button>` : ''}
-        ${pl.phase === 'roundDone' ? `<button class="btn-emerald" style="flex:1;" id="gsp-finish">${GordolIcon('check-circle', 16)} ثبت پایان جلسه</button>` : ''}
+      <div style="text-align:center; min-height:44px;">
+        <div style="font-size:0.95rem; font-weight:800; color:#fff;">${actionText}</div>
+        ${step.perSide ? '<div style="font-size:0.74rem; color:#c9b3ff; margin-top:3px;">هر طرف جداگانه اجرا شود</div>' : ' '}
+      </div>
+      <div style="display:flex; gap:8px; margin-top:12px;">
+        ${pl.phase === 'work' && !step.timed && step.kind === 'main' ? `<button class="btn-emerald" style="flex:1;" id="gsp-tick">${GordolIcon('check', 16)} ست انجام شد</button>` : ' '}
+        ${pl.phase === 'work' && step.timed ? `<button class="btn-secondary" style="flex:1;" id="gsp-skip">رد کردن ${GordolIcon('skip', 14)}</button>` : ' '}
+        ${pl.phase === 'rest' ? `<button class="btn-secondary" style="flex:1;" id="gsp-pause">${GordolIcon('pause', 15)} مکث</button>` : ' '}
+        ${pl.phase === 'rest' ? `<button class="btn-secondary" style="flex:1;" id="gsp-skip">رد استراحت ${GordolIcon('skip', 14)}</button>` : ' '}
       </div>
       <button class="btn-secondary" style="width:100%; margin-top:10px; font-size:0.76rem; color:#ef4444; border-color:rgba(239,68,68,0.3);" id="gsp-end">پایان و ثبت جلسه</button>
     `;
 
-    // ویدیو
     const video = document.getElementById('gsp-video');
     if (video) {
-      video.setAttribute('src', ex.videoUrl);
-      video.load();
+      if ((video.getAttribute('src') || '').indexOf(ex.videoUrl) === -1) {
+        video.setAttribute('src', ex.videoUrl);
+        video.load();
+      }
       video.play().catch(() => {});
-      if (window.GordolThumbs) window.GordolThumbs.attachPoster(ex.id, video);
+      if (window.GordolThumbs) window.GordolThumbs.attachPoster(step.exId, video);
+      window.GordolApp.attachVideoOverlay(video);
     }
 
-    // تایمر دایره‌ای استراحت
-    if (pl.phase === 'rest') {
-      const num = document.getElementById('gsp-timer-num');
-      if (num) num.textContent = fa(pl.restLeft);
-      this.drawRestCircle();
+    const num = document.getElementById('gsp-timer-num');
+    const circle = document.getElementById('gsp-circle');
+    if (pl.phase === 'work' && step.timed) {
+      if (num) num.textContent = fa(Math.max(0, pl.workLeft));
+      this.drawCircle(pl.workLeft, step.sec);
+    } else if (pl.phase === 'rest') {
+      if (num) num.textContent = fa(Math.max(0, pl.restLeft));
+      this.drawCircle(pl.restLeft, step.restSec);
     } else if (pl.phase === 'work') {
-      const num = document.getElementById('gsp-timer-num');
-      if (num) num.textContent = fa(pl.setIndex + 1) + '/' + fa(item.setsCount);
-    } else {
-      const num = document.getElementById('gsp-timer-num');
-      if (num) num.textContent = '🔥';
+      if (num) num.textContent = fa(step.setIndex + 1) + '/' + fa(step.setTotal);
+      if (circle) { circle.style.strokeDasharray = 2 * Math.PI * 54; circle.style.strokeDashoffset = 0; }
     }
 
-    // رویدادها
     const bind = (id, fn) => { const el = document.getElementById(id); if (el) el.addEventListener('click', fn); };
     bind('gsp-close', () => this.closePlayer());
-    bind('gsp-tick', () => this.playerTick());
+    bind('gsp-tick', () => this.playerTickManual());
     bind('gsp-skip', () => this.playerSkip());
     bind('gsp-pause', () => {
       pl.paused = !pl.paused;
       const b = document.getElementById('gsp-pause');
       if (b) b.innerHTML = pl.paused ? GordolIcon('play', 15) + ' ادامه' : GordolIcon('pause', 15) + ' مکث';
     });
-    bind('gsp-next-round', () => {
-      pl.round++; pl.exIndex = 0; pl.setIndex = 0; pl.phase = 'work';
-      this.renderPlayer();
-    });
     bind('gsp-finish', () => this.playerFinish());
     bind('gsp-end', () => this.playerFinish());
   },
 
-  drawRestCircle() {
-    const pl = this.player;
-    if (!pl || pl.phase !== 'rest') return;
-    const total = this.playerExercise().restSec || 45;
+  drawCircle(left, total) {
     const circle = document.getElementById('gsp-circle');
     const num = document.getElementById('gsp-timer-num');
+    const fa = window.GordolUtil.faNum;
+    if (num) num.textContent = fa(Math.max(0, left));
     if (circle) {
       const c = 2 * Math.PI * 54;
       circle.style.strokeDasharray = c;
-      circle.style.strokeDashoffset = c * (1 - pl.restLeft / total);
-    }
-    if (num) num.textContent = window.GordolUtil.faNum(Math.max(0, pl.restLeft));
-  },
-
-  // تیک ست فعلی: ثبت → استراحت خودکار → ست/حرکت بعد
-  playerTick() {
-    const pl = this.player;
-    const item = this.playerExercise();
-    // ثبت اجباری تیک (idempotent) — سینک با چک‌لیست
-    if (!this.isSetDone(pl.day.day, item.id, pl.setIndex)) this.toggleSet(pl.day.day, item.id, pl.setIndex);
-    window.GordolApp.playBeep(880, 0.15);
-    this.playerAdvance();
-  },
-
-  playerSkip() {
-    const pl = this.player;
-    if (pl.phase === 'rest') {
-      // رد استراحت → مرحله بعد فوراً
-      if (pl.restTimerId) { clearInterval(pl.restTimerId); pl.restTimerId = null; }
-      this.playerAdvanceAfterRest();
-    } else {
-      // رد ست بدون تیک → ست بعد
-      this.playerAdvance();
+      circle.style.strokeDashoffset = c * (1 - Math.max(0, left) / Math.max(1, total));
     }
   },
 
-  playerAdvance() {
+  // تایمر عمومی پلیر — فاز work (تایمری/دستی) و rest را مدیریت می‌کند
+  playerTimerStart() {
     const pl = this.player;
-    const item = this.playerExercise();
-    if (pl.setIndex + 1 < item.setsCount) {
-      // ست بعدی همین حرکت — با استراحت خودکار
-      this.playerStartRest(item.restSec || 45, () => { pl.phase = 'work'; pl.setIndex++; this.renderPlayer(); });
-    } else if (pl.exIndex + 1 < pl.day.main.length) {
-      // حرکت تمام شد — استراحت بین حرکات
-      this.playerStartRest(item.restSec || 45, () => { pl.phase = 'work'; pl.exIndex++; pl.setIndex = 0; this.renderPlayer(); });
-    } else {
-      // دور کامل شد
-      pl.phase = 'roundDone';
-      window.GordolApp.playBeep(990, 0.25);
-      this.renderPlayer();
-    }
-  },
-
-  playerStartRest(seconds, onDone) {
-    const pl = this.player;
-    pl.phase = 'rest';
-    pl.restLeft = seconds;
-    pl.paused = false;
-    pl.onRestDone = onDone;
-    this.renderPlayer();
-    window.GordolApp.playBeep(660, 0.12);
-    if (pl.restTimerId) clearInterval(pl.restTimerId);
-    pl.restTimerId = setInterval(() => {
-      if (pl.paused) return;
-      pl.restLeft--;
-      if (pl.restLeft <= 3 && pl.restLeft > 0) window.GordolApp.playBeep(660, 0.08);
-      this.drawRestCircle();
-      if (pl.restLeft <= 0) {
-        clearInterval(pl.restTimerId);
-        pl.restTimerId = null;
+    if (!pl) return;
+    const step = pl.steps[pl.i];
+    if (pl.phase === 'work' && step.timed) {
+      pl.workLeft = step.sec;
+      this.runCountdown(pl.workLeft, step.sec, () => {
         window.GordolApp.playBeep(880, 0.2);
-        const fn = pl.onRestDone;
-        pl.onRestDone = null;
+        if (step.kind === 'main') this.markSetDone(pl.day.day, step.item.id, step.setIndex); // ست تایمری خودکار تیک می‌خورد
+        this.playerGoRest();
+      });
+    }
+  },
+
+  runCountdown(from, total, onDone) {
+    const pl = this.player;
+    if (pl.timerId) clearInterval(pl.timerId);
+    pl.paused = false;
+    pl.onTimerDone = onDone;
+    pl.timerId = setInterval(() => {
+      if (pl.paused) return;
+      if (pl.phase === 'work') { pl.workLeft--; this.drawCircle(pl.workLeft, total); }
+      else { pl.restLeft--; this.drawCircle(pl.restLeft, total); }
+      const left = pl.phase === 'work' ? pl.workLeft : pl.restLeft;
+      if (left <= 3 && left > 0) window.GordolApp.playBeep(660, 0.08);
+      if (left <= 0) {
+        clearInterval(pl.timerId);
+        pl.timerId = null;
+        window.GordolApp.playBeep(880, 0.2);
+        const fn = pl.onTimerDone;
+        pl.onTimerDone = null;
         if (fn) fn();
       }
     }, 1000);
   },
 
-  playerAdvanceAfterRest() {
+  markSetDone(dayNum, exId, setIdx) {
+    if (!this.isSetDone(dayNum, exId, setIdx)) this.toggleSet(dayNum, exId, setIdx);
+  },
+
+  playerTickManual() {
     const pl = this.player;
-    const fn = pl.onRestDone;
-    pl.onRestDone = null;
-    if (fn) fn();
+    const step = pl.steps[pl.i];
+    window.GordolApp.playBeep(880, 0.15);
+    if (step.kind === 'main') this.markSetDone(pl.day.day, step.item.id, step.setIndex);
+    this.playerGoRest();
+  },
+
+  // بعد از هر گام تمرین: استراحت (به‌جز آخرین گام کل جلسه)
+  playerGoRest() {
+    const pl = this.player;
+    const step = pl.steps[pl.i];
+    const isLast = pl.i >= pl.steps.length - 1;
+    if (isLast) { pl.phase = 'done'; this.renderPlayer(); return; }
+    pl.phase = 'rest';
+    pl.restLeft = step.restSec || 45;
+    this.renderPlayer();
+    this.runCountdown(pl.restLeft, step.restSec, () => { pl.i++; pl.phase = 'work'; this.renderPlayer(); this.playerTimerStart(); });
+  },
+
+  playerSkip() {
+    const pl = this.player;
+    if (pl.phase === 'rest') {
+      if (pl.timerId) { clearInterval(pl.timerId); pl.timerId = null; }
+      const fn = pl.onTimerDone;
+      pl.onTimerDone = null;
+      pl.i++; pl.phase = 'work';
+      this.renderPlayer();
+      this.playerTimerStart();
+    } else {
+      // رد کردن گام تمرین (بدون تیک) → استراحت و ادامه
+      if (pl.timerId) { clearInterval(pl.timerId); pl.timerId = null; }
+      this.playerGoRest();
+    }
   },
 
   playerFinish() {
     const pl = this.player;
-    if (pl.restTimerId) { clearInterval(pl.restTimerId); pl.restTimerId = null; }
+    if (pl.timerId) { clearInterval(pl.timerId); pl.timerId = null; }
     const day = pl.day;
     this.player = null;
     document.getElementById('session-player-modal').classList.remove('active');
@@ -580,7 +618,7 @@
 
   closePlayer() {
     const pl = this.player;
-    if (pl && pl.restTimerId) { clearInterval(pl.restTimerId); pl.restTimerId = null; }
+    if (pl && pl.timerId) { clearInterval(pl.timerId); pl.timerId = null; }
     this.player = null;
     document.getElementById('session-player-modal').classList.remove('active');
     window.GordolApp.toast('جلسه نیمه‌کاره رها شد — تیک‌ها سر جایشان هستند.', false);

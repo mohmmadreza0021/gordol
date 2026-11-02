@@ -1475,16 +1475,19 @@
       const restSec = Math.max(10, chapter.rest[templateIdx % chapter.rest.length] || 20);
 
       const items = [];
-      for (let r = 1; r <= chapter.rounds; r++) {
-        template.warmup.forEach(id => items.push({ exId: id, phase: 'گرم کردن', kind: 'work', sec: Math.min(workSec, 30), round: r }));
-        template.training.forEach(id => items.push({ exId: id, phase: 'تمرین اصلی', kind: 'work', sec: workSec, round: r }));
-        if (r < chapter.rounds) {
-          items.push({ exId: null, phase: 'استراحت', kind: 'rest', sec: restSec + 10, round: r });
+      // ساختار حرکت‌محور (درخواست کاربر): همه ست‌های هر حرکت با استراحت بین‌شان، بعد حرکت بعد
+      template.warmup.forEach(id => items.push({ exId: id, phase: 'گرم کردن', kind: 'work', sec: Math.min(workSec, 30), round: 1, setOf: 1, setTotal: 1 }));
+      const lastTrainingId = template.training[template.training.length - 1];
+      template.training.forEach(id => {
+        for (let r = 1; r <= chapter.rounds; r++) {
+          items.push({ exId: id, phase: 'تمرین اصلی', kind: 'work', sec: workSec, round: r, setOf: r, setTotal: chapter.rounds });
+          const isLastOfWorkout = (r === chapter.rounds && id === lastTrainingId);
+          if (!isLastOfWorkout) items.push({ exId: null, phase: 'استراحت', kind: 'rest', sec: restSec, round: r });
         }
-      }
+      });
       template.cooldown.forEach(id => {
         const hold = (chapter.coolHold || {})[id];
-        items.push({ exId: id, phase: 'کشش پایانی', kind: 'work', sec: hold || 40, round: chapter.rounds });
+        items.push({ exId: id, phase: 'کشش پایانی', kind: 'work', sec: hold || 40, round: 1, setOf: 1, setTotal: 1 });
       });
 
       this.sessionPlayer = {
@@ -1564,7 +1567,7 @@
       if (cnt) cnt.textContent = 'حرکت ' + faNum(sp.idx + 1) + ' از ' + faNum(sp.items.length);
       const roundTxt = item.kind === 'rest'
         ? 'استراحت'
-        : `${item.phase} · ست ${faNum(item.round)} از ${faNum(sp.totalRounds)}`;
+        : (item.setTotal > 1 ? `${item.phase} · ست ${faNum(item.setOf)} از ${faNum(item.setTotal)}` : item.phase);
       document.getElementById('sp-phase').textContent = roundTxt;
       document.getElementById('sp-phase').className = 'sp-phase-badge' + (item.kind === 'rest' ? ' rest' : '');
       const pauseBtn = document.getElementById('sp-pause');
@@ -1584,7 +1587,7 @@
       const nextItem = sp.items[sp.idx + 1];
       const nextEx = nextItem && nextItem.exId ? (window.GORDOL_EXERCISES || []).find(e => e.id === (this.swaps.exercises[nextItem.exId] || nextItem.exId)) : null;
       document.getElementById('sp-next').innerHTML = nextItem
-        ? `بعدی: ${nextItem.kind === 'rest' ? 'استراحت ' + faNum(nextItem.sec) + ' ثانیه‌ای' : esc(nextEx ? nextEx.nameFa : '') + ' (' + (nextEx && nextEx.measure === 'SECONDS' ? faNum(nextEx.suggestedSeconds || 30) + ' ثانیه' : faNum(nextEx ? nextEx.suggestedReps || 12 : 12) + ' تکرار') + ')'} <span style="opacity:0.7;">— ست ${faNum(nextItem.round)}/${faNum(sp.totalRounds)}</span>`
+        ? `بعدی: ${nextItem.kind === 'rest' ? 'استراحت ' + faNum(nextItem.sec) + ' ثانیه‌ای' : esc(nextEx ? nextEx.nameFa : '') + ' (' + (nextEx && nextEx.measure === 'SECONDS' ? faNum(nextEx.suggestedSeconds || 30) + ' ثانیه' : faNum(nextEx ? nextEx.suggestedReps || 12 : 12) + ' تکرار') + ')'} <span style="opacity:0.7;">${nextItem.setTotal > 1 ? '— ست ' + faNum(nextItem.setOf) + '/' + faNum(nextItem.setTotal) : ''}</span>`
         : '🎉 آخرین حرکت — تمومش کن!';
 
       if (ex && ex.videoUrl && video) {
@@ -1707,7 +1710,9 @@
         </div>
       `;
       modal.classList.add('active');
-      if (window.GordolThumbs) window.GordolThumbs.attachPoster(exId, modal.querySelector('video[data-vposter]'));
+      const exvVideo = modal.querySelector('video[data-vposter]');
+      if (window.GordolThumbs) window.GordolThumbs.attachPoster(exId, exvVideo);
+      if (exvVideo) App.attachVideoOverlay(exvVideo);
       modal.querySelector('.exv-close').addEventListener('click', () => modal.classList.remove('active'));
       document.getElementById('exv-eye').addEventListener('click', () => {
         modal.classList.remove('active');
@@ -3078,6 +3083,28 @@ ${mealLines}
         this.startNotificationScheduler();
       });
     }
+  };
+
+  // ویدیوی پلیرها: اگر مرورگر جلوی اتوپلی را گرفت، اورلی پخش دستی نمایش داده می‌شود
+  App.attachVideoOverlay = function (video) {
+    if (!video || video.dataset.overlayBound) return;
+    video.dataset.overlayBound = '1';
+    let overlay = null;
+    const show = () => {
+      if (!overlay) {
+        overlay = document.createElement('div');
+        overlay.className = 'video-play-overlay';
+        overlay.innerHTML = GordolIcon('play', 38);
+        overlay.addEventListener('click', () => { video.play().catch(() => {}); });
+        if (getComputedStyle(video.parentElement).position === 'static') video.parentElement.style.position = 'relative';
+        video.after(overlay);
+      }
+      overlay.style.display = 'flex';
+    };
+    const hide = () => { if (overlay) overlay.style.display = 'none'; };
+    video.addEventListener('pause', () => { if (video.currentTime > 0.1) show(); });
+    video.addEventListener('play', hide);
+    if (video.paused) show();
   };
 
   window.GordolApp = App;
