@@ -187,8 +187,8 @@
         </div>
 
         <div class="form-group">
-          <label class="form-label">کلید API خودت (AIza...):</label>
-          <input type="password" id="mand-api-key" class="form-input" dir="ltr" placeholder="AIzaSy..." autocomplete="off"/>
+          <label class="form-label">کلید API خودت:</label>
+          <input type="password" id="mand-api-key" class="form-input" dir="ltr" placeholder="AIzaSy... یا AQ.Ab8..." autocomplete="off"/>
         </div>
 
         <div id="mand-api-status" style="font-size:0.82rem; margin-bottom:12px; display:none; line-height:1.6;"></div>
@@ -211,10 +211,10 @@
       const btn = document.getElementById('btn-mand-verify');
 
       if (!key) { toast('لطفاً کلید API را وارد کنید.', false); return; }
-      if (!/^AIza[0-9A-Za-z\-_]{30,}$/.test(key)) {
+      if (!/^(AIza[0-9A-Za-z\-_]{30,}|AQ\.[A-Za-z0-9_\-]{20,})$/.test(key)) {
         status.style.display = 'block';
         status.style.color = '#ef4444';
-        status.textContent = 'فرمت کلید درست به نظر نمی‌رسد. کلید گوگل با «AIza» شروع می‌شود.';
+        status.textContent = 'فرمت کلید درست به نظر نمی‌رسد. کلید گوگل با «AIza» یا «AQ.» شروع می‌شود.';
         return;
       }
 
@@ -508,367 +508,499 @@
       else if (tab === 'coach') this.renderCoachTab(main);
     },
 
-    // ================= بخش ۵: آنبوردینگ (سوالات اورجینال گردول) =================
+    // ================= بخش ۵: آنبوردینگ — سوالات دقیق اورجینال گردول (ماژول ۳۲۸۹) =================
+    // گزینه‌ها و ترتیب، عیناً از کد پروداکشن اپ اصلی استخراج شده است.
+    // مراحل بازنشسته‌شده در اپ اصلی (water-check، eating-location، reminders، gordolak) حذف شده‌اند.
 
     onboardingData: {
-      step: 1,
-      primaryGoal: 'lose_weight',
-      motivation: 'energy',
-      obstacle: 'dont_continue',
-      trainingStyle: 'mastery',
-      trainingNow: 'sometimes',
-      trainingArea: 'full',
-      trainingMinutes: 20,
-      weeklyCadence: 4,
-      gender: 'male',
+      stepIndex: 0,
+      primaryGoal: 'lose_weight',      // PRIMARY_GOAL_OPTIONS
+      motivation: 'energy',            // MOTIVATION_OPTIONS
+      obstacle: 'dont_continue',       // OBSTACLE_OPTIONS
+      trainingInvite: 'yes',           // TRAINING_INVITE_OPTIONS
+      trainingStyle: 'mastery',        // TRAINING_STYLE_OPTIONS
+      trainingNow: 'sometimes',        // TRAINING_NOW_OPTIONS
+      trainingFocus: 'full',           // TRAINING_FOCUS_OPTIONS
+      trainingMinutes: 20,             // TRAINING_TIME_OPTIONS
+      weeklyCadence: 4,                // CADENCE_OPTIONS
+      gender: 'male',                  // GENDER_OPTIONS
       age: 26,
+      activity: 'lightly_active',      // ACTIVITY_OPTIONS
       heightCm: 178,
-      weightKg: 82,
-      goalWeightKg: 75,
-      waterCheck: '1_to_2',
-      reminderTime: '18:00',
-      eatingLocation: 'home',
-      diet: 'balanced',
-      exclusions: 'none'
+      weightKg: 80,
+      goalWeightKg: 74,
+      weightDirection: 'down',         // WEIGHT_DIRECTION_OPTIONS
+      nutritionInvite: 'yes',          // YES_NO_OPTIONS
+      trackingExperience: 'new',       // CALORIE_EXPERIENCE_OPTIONS
+      diet: 'balanced',                // DIET_OPTIONS
+      exclusions: [],                  // EXCLUSION_OPTIONS (چندانتخابی)
+      mealsPerDay: 3,                  // meal-structure
+      habitFocus: 'regular_meals',     // HABIT_FOCUS_OPTIONS
+      firstAction: 'open_training'     // FIRST_ACTION_OPTIONS
     },
 
-    startOnboarding() { this.onboardingData.step = 1; this.renderOnboardingStep(); },
+    // گزینه‌های عین اورجینال (متن فارسی عیناً از کد اصلی)
+    ONB: {
+      PRIMARY_GOAL: [
+        { v: 'get_stronger', t: 'قوی‌تر و آماده‌تر بشم' },
+        { v: 'stay_consistent', t: 'منظم تمرین کنم' },
+        { v: 'lose_weight', t: 'وزن کم کنم' },
+        { v: 'maintain_weight', t: 'وزنم رو حفظ کنم' },
+        { v: 'gain_weight', t: 'وزن اضافه کنم' },
+        { v: 'eat_better', t: 'سالم‌تر غذا بخورم' }
+      ],
+      MOTIVATION: [
+        { v: 'energy', t: 'انرژی بیشتر' },
+        { v: 'confidence', t: 'اعتمادبه‌نفس بیشتر' },
+        { v: 'health', t: 'رسیدگی به سلامتی‌ام' },
+        { v: 'daily_ease', t: 'راحت‌تر انجام دادن کارهای روزمره' },
+        { v: 'food_peace', t: 'حس بهتر نسبت به غذا' }
+      ],
+      OBSTACLE: [
+        { v: 'dont_know', t: 'نمی‌دونم از کجا شروع کنم' },
+        { v: 'dont_continue', t: 'شروع می‌کنم ولی ادامه نمی‌دم' },
+        { v: 'no_time', t: 'وقت کم میارم' },
+        { v: 'logging_hard', t: 'ثبت غذا برام سخته' },
+        { v: 'first_time', t: 'هنوز جدی امتحان نکردم' },
+        { v: 'none', t: 'مانع خاصی ندارم' }
+      ],
+      OBSTACLE_RESPONSE: {
+        dont_know: 'اینجا دقیقاً جاییه که گردول می‌درخشه — برنامه روزانه، هر حرکت با ویدیو، فقط دنبال کن.',
+        dont_continue: 'برای همین استریک و یادآورها ساختیم؛ زنجیره‌ات رو زنده نگه می‌داریم.',
+        no_time: 'تمرین‌های ۱۰ تا ۲۰ دقیقه‌ای، بدون تجهیزات؛ هر جای خانه.',
+        logging_hard: 'فقط عکس بگیر — هوش مصنوعی کالری و ماکرو رو خودش حساب می‌کنه.',
+        first_time: 'عالی که اینجا شروع کردی؛ از صفر و اصولی جلو می‌ریم.',
+        none: 'با این آمادگی، سریع‌تر از فکرت نتیجه می‌بینی!'
+      },
+      TRAINING_INVITE: [
+        { v: 'yes', t: 'آره، مسیرم رو انتخاب کنم' },
+        { v: 'no', t: 'فعلاً نه' }
+      ],
+      YES_NO: [
+        { v: 'yes', t: 'آره، بریم' },
+        { v: 'no', t: 'فعلاً نه' }
+      ],
+      TRAINING_STYLE: [
+        { v: 'mastery', t: 'مسیر تسلط', d: 'شنا، اسکوات، پلانک و دراز و نشست؛ ۳۰ سطح با تأیید دوربین.' },
+        { v: 'daily', t: 'مسیر روزانه', d: 'برنامه‌های چندروزه با تمرین‌های کوتاه؛ بدون تأیید دوربین.' }
+      ],
+      TRAINING_NOW: [
+        { v: 'none', t: 'تقریباً هیچی' },
+        { v: 'sometimes', t: 'گاهی، بی‌برنامه' },
+        { v: 'regular', t: 'هفته‌ای چند بار، منظم' }
+      ],
+      TRAINING_FOCUS: [
+        { v: 'core', t: 'شکم و مرکز بدن' },
+        { v: 'lower', t: 'باسن و پا' },
+        { v: 'full', t: 'کل بدن' }
+      ],
+      TRAINING_TIME: [
+        { v: '10', t: '۱۰ دقیقه' },
+        { v: '15', t: '۱۵ دقیقه' },
+        { v: '20', t: '۲۰ دقیقه' }
+      ],
+      CADENCE: [
+        { v: '1', t: '۱ روز' },
+        { v: '3', t: '۳ روز' },
+        { v: '4', t: '۴ روز' },
+        { v: '5', t: '۵ روز' },
+        { v: '7', t: 'هر روز' }
+      ],
+      GENDER: [
+        { v: 'female', t: 'زن' },
+        { v: 'male', t: 'مرد' },
+        { v: 'non_binary', t: 'غیردودویی' },
+        { v: 'prefer_not_to_say', t: 'ترجیح می‌دم نگم' }
+      ],
+      ACTIVITY: [
+        { v: 'not_active', t: 'کم‌تحرک', d: 'با بالا رفتن از پله هم نفسم تند می‌شه.' },
+        { v: 'lightly_active', t: 'کمی فعال', d: 'گاهی تمرین کوتاه یا پیاده‌روی دارم.' },
+        { v: 'moderately_active', t: 'فعالیت متوسط', d: 'هفته‌ای یک تا دو تمرین منظم دارم.' },
+        { v: 'highly_active', t: 'خیلی فعال', d: 'ورزش بخش ثابت سبک زندگی منه.' }
+      ],
+      WEIGHT_DIRECTION: [
+        { v: 'down', t: 'کم بشه' },
+        { v: 'hold', t: 'ثابت بمونه' },
+        { v: 'up', t: 'بیشتر بشه' },
+        { v: 'no_scale_goal', t: 'هدف وزنی ندارم' }
+      ],
+      CALORIE_EXPERIENCE: [
+        { v: 'new', t: 'تازه می‌خوام شروع کنم' },
+        { v: 'quit', t: 'قبلاً امتحان کردم و رها شد' },
+        { v: 'current', t: 'الان هم کالری می‌شمارم' }
+      ],
+      DIET: [
+        { v: 'balanced', t: 'متعادل' },
+        { v: 'vegetarian', t: 'گیاه‌خواری' },
+        { v: 'vegan', t: 'وگان' },
+        { v: 'paleo', t: 'پالئو' },
+        { v: 'keto', t: 'کتوژنیک' },
+        { v: 'high_protein', t: 'پروتئین بالا' }
+      ],
+      EXCLUSIONS: [
+        { v: 'all_meat', t: 'همه گوشت‌ها' },
+        { v: 'animal_products', t: 'محصولات حیوانی' },
+        { v: 'citrus', t: 'مرکبات' },
+        { v: 'dairy', t: 'لبنیات' },
+        { v: 'eggs', t: 'تخم‌مرغ' },
+        { v: 'fish', t: 'ماهی' },
+        { v: 'gluten', t: 'گلوتن' },
+        { v: 'nuts', t: 'مغزها' },
+        { v: 'red_meat', t: 'گوشت قرمز' },
+        { v: 'seafood', t: 'غذای دریایی' },
+        { v: 'seeds', t: 'دانه‌ها' },
+        { v: 'shellfish', t: 'صدف' },
+        { v: 'soy', t: 'سویا' }
+      ],
+      HABIT_FOCUS: [
+        { v: 'less_sugar', t: 'نوشیدنی‌های شیرین رو کمتر کنم' },
+        { v: 'less_fast_food', t: 'کمتر سراغ فست‌فود و تنقلات برم' },
+        { v: 'regular_meals', t: 'وعده‌هام منظم‌تر باشه' },
+        { v: 'more_produce', t: 'میوه و سبزی بیشتری بخورم' },
+        { v: 'just_learn', t: 'فعلاً فقط غذاهام رو بهتر بشناسم' }
+      ],
+      HABIT_FIRST_STEP: {
+        less_sugar: 'امروز یکی از نوشیدنی‌های شیرینت رو با آب عوض کن.',
+        less_fast_food: 'برای یکی از وعده‌های امروز، یک گزینهٔ خونگی انتخاب کن.',
+        regular_meals: 'یکی از وعده‌هات رو امروز سر ساعت همیشگی بخور.',
+        more_produce: 'به یکی از وعده‌های امروزت یک میوه یا سبزی اضافه کن.',
+        just_learn: 'اولین وعده‌ات رو ثبت کن و ببین چی توشه.'
+      },
+      FIRST_ACTION: [
+        { v: 'open_training', t: 'مسیر تمرینم رو باز کنم' },
+        { v: 'log_meal', t: 'اولین وعده‌ام رو با عکس ثبت کنم' },
+        { v: 'view_plan', t: 'برنامهٔ وعده‌هام رو ببینم' },
+        { v: 'explore', t: 'فعلاً اپ رو ببینم' }
+      ]
+    },
 
-    optionCard(icon, title, selected, action) {
-      return `
-        <div class="swap-card-item ${selected ? 'selected' : ''}" data-action="${esc(action)}">
-          <div style="display:flex; align-items:center; gap:10px;">
-            <span style="font-size:1.4rem;">${icon}</span>
-            <span style="font-size:0.95rem; font-weight:800;">${esc(title)}</span>
+    // ترتیب مراحل — منطبق بر جریان واقعی اپ اصلی (بدون مراحل بازنشسته/پرداخت/گوردولک)
+    onboardingSteps: [
+      'welcome', 'primary-goal', 'motivation', 'obstacle', 'obstacle-response',
+      'training-invite', 'training-style', 'training-now', 'training-focus', 'training-time', 'training-cadence',
+      'gender', 'age', 'activity', 'height', 'current-weight', 'target-weight', 'weight-direction',
+      'plan', 'nutrition-invite', 'tracking-experience', 'diet', 'restrictions', 'meal-structure',
+      'habit-focus', 'starting-point', 'preparing'
+    ],
+
+    startOnboarding() {
+      this.onboardingData.stepIndex = 0;
+      this.renderOnboardingStep();
+    },
+
+    onbNav(stepEl, back) {
+      const d = this.onboardingData;
+      d.stepIndex = Math.max(0, Math.min(this.onboardingSteps.length - 1, d.stepIndex + (back ? -1 : 1)));
+      // پرش از مراحل شرطی
+      const step = this.onboardingSteps[d.stepIndex];
+      if (!back && step === 'training-style' && d.trainingInvite === 'no') d.stepIndex += 5; // از تمام مراحل تمرین رد شو
+      if (back && (this.onboardingSteps[d.stepIndex] === 'training-invite') && d.trainingInvite === 'no') { /* عادی */ }
+      if (!back && step === 'nutrition-invite' && d.weightDirection === 'no_scale_goal' && false) { /* نگه داشتن جریان */ }
+      this.renderOnboardingStep();
+    },
+
+    onbOptionList(key, field, stepBack) {
+      // رندر لیست گزینه‌های تک‌انتخابی اورجینال
+      const d = this.onboardingData;
+      return this.ONB[key].map(o => `
+        <div class="swap-card-item ${String(d[field]) === String(o.v) ? 'selected' : ''}" data-onb-v="${esc(o.v)}">
+          <div style="text-align:right;">
+            <div style="font-size:0.95rem; font-weight:800;">${esc(o.t)}</div>
+            ${o.d ? `<div style="font-size:0.78rem; color:var(--text-muted); margin-top:3px;">${esc(o.d)}</div>` : ''}
           </div>
-          <span>⬅️</span>
-        </div>
-      `;
+          <span class="onb-check">✓</span>
+        </div>`).join('');
+    },
+
+    onbChrome(title, subtitle, bodyHtml, showBack, nextLabel, nextId) {
+      return `
+        <div class="onb-progress"><div class="onb-progress-bar" style="width:${Math.round(((this.onboardingData.stepIndex + 1) / this.onboardingSteps.length) * 100)}%"></div></div>
+        <div class="card onb-card">
+          <h2 class="onb-title">${esc(title)}</h2>
+          ${subtitle ? `<p class="onb-subtitle">${esc(subtitle)}</p>` : ''}
+          ${bodyHtml}
+          <div class="onb-nav-row">
+            ${showBack ? '<button class="btn-secondary onb-back" style="width:auto; padding:0 18px;">→ قبلی</button>' : '<span></span>'}
+            ${nextLabel ? `<button class="btn-primary onb-next" id="${esc(nextId || 'onb-next')}" style="flex:1;">${esc(nextLabel)}</button>` : ''}
+          </div>
+        </div>`;
     },
 
     renderOnboardingStep() {
       const main = document.querySelector('main.main-content');
       if (!main) return;
       const d = this.onboardingData;
+      const step = this.onboardingSteps[d.stepIndex];
+      const O = this.ONB;
 
-      const bindActions = () => {
-        main.querySelectorAll('[data-action]').forEach(el => {
+      const pickList = (key, field, backTarget) => {
+        main.innerHTML = this.onbChrome('', '', `<div style="display:flex; flex-direction:column; gap:10px;">${this.onbOptionList(key, field)}</div>`, true, null);
+        main.querySelectorAll('[data-onb-v]').forEach(el => {
           el.addEventListener('click', () => {
-            const [kind, value] = el.dataset.action.split('|');
-            if (kind === 'goal') { d.primaryGoal = value; d.step = 2; }
-            else if (kind === 'mot') { d.motivation = value; d.step = 3; }
-            else if (kind === 'obs') { d.obstacle = value; d.step = 4; }
-            else if (kind === 'style') { d.trainingStyle = value; d.step = 5; }
-            this.renderOnboardingStep();
+            d[field] = el.dataset.onbV;
+            this.onbNav(main, false);
           });
         });
+        main.querySelector('.onb-back').addEventListener('click', () => this.onbNav(main, true));
+        return;
       };
 
-      if (d.step === 1) {
-        const opts = [
-          ['lose_weight', '🔥', 'وزن کم کنم و چربی‌سوزی داشته باشم'],
-          ['gain_muscle', '⚡', 'عضله‌سازی و خوش‌فرم شدن بدن'],
-          ['get_stronger', '🏋️', 'قوی‌تر و آماده‌تر بشم'],
-          ['maintain_weight', '⚖️', 'وزنم رو حفظ کنم و فیت بمونم'],
-          ['eat_better', '🥗', 'سالم‌تر غذا بخورم و نظم پیدا کنم']
-        ];
-        main.innerHTML = `
-          <div class="card text-center" style="margin-top:15px;">
-            <div style="font-size:2.8rem; margin-bottom:8px;">🎯</div>
-            <h2 style="font-size:1.3rem; font-weight:900; margin-bottom:6px;">به گردول خوش اومدی!</h2>
-            <p style="color:var(--text-muted); font-size:0.88rem; margin-bottom:20px;">هدف اصلی‌ت از پیوستن به گردول چیه؟</p>
-            <div style="display:flex; flex-direction:column; gap:10px;">
-              ${opts.map(([id, ic, t]) => this.optionCard(ic, t, d.primaryGoal === id, 'goal|' + id)).join('')}
-            </div>
-          </div>`;
-        bindActions();
-      }
+      switch (step) {
+        case 'welcome': {
+          main.innerHTML = this.onbChrome(
+            'به گردول خوش اومدی! 🥜',
+            'مربی هوش مصنوعی ورزش و تغذیه — قراره با هم به هدفت برسیم. چند سؤال کوتاه ازت می‌پرسم تا برنامه دقیق تو ساخته بشه.',
+            `<div style="display:flex; flex-direction:column; gap:10px; margin-bottom:16px;">
+              <div class="onb-feature"><span>🏋️</span><span>تمرین روزانه با ویدیو و چشم هوشمند</span></div>
+              <div class="onb-feature"><span>📸</span><span>ثبت غذا فقط با عکس یا تایپ</span></div>
+              <div class="onb-feature"><span>🎯</span><span>پیش‌بینی روز رسیدن به هدفت</span></div>
+            </div>`, false, 'شروع کنیم ➡️', 'onb-start');
+          document.getElementById('onb-start').addEventListener('click', () => this.onbNav(main, false));
+          break;
+        }
 
-      else if (d.step === 2) {
-        const opts = [
-          ['energy', '🔋', 'انرژی روزانه بیشتر و سرزندگی'],
-          ['confidence', '😎', 'اعتمادبه‌نفس بیشتر و حس خوب در لباس‌ها'],
-          ['health', '❤️', 'رسیدگی به سلامتی و پیشگیری از بیماری‌ها'],
-          ['daily_ease', '🏃', 'راحت‌تر انجام دادن کارهای روزمره و سبک‌بالی'],
-          ['food_peace', '🧘', 'حس بهتر و آرامش نسبت به تغذیه و غذا']
-        ];
-        main.innerHTML = `
-          <div class="card text-center" style="margin-top:15px;">
-            <div style="font-size:2.5rem; margin-bottom:8px;">✨</div>
-            <h2 style="font-size:1.25rem; font-weight:900; margin-bottom:6px;">چی بیشترین انگیزه رو بهت می‌ده؟</h2>
-            <p style="color:var(--text-muted); font-size:0.86rem; margin-bottom:20px;">شناخت انگیزه به مربی هوش مصنوعی کمک می‌کنه برنامه دقیق‌تری برات بسازه.</p>
-            <div style="display:flex; flex-direction:column; gap:10px;">
-              ${opts.map(([id, ic, t]) => this.optionCard(ic, t, d.motivation === id, 'mot|' + id)).join('')}
-            </div>
-          </div>`;
-        bindActions();
-      }
+        case 'primary-goal':
+          main.innerHTML = this.onbChrome('هدف اصلی‌ات از اومدن به گردول چیه؟', '', `<div style="display:flex; flex-direction:column; gap:10px;">${this.onbOptionList('PRIMARY_GOAL', 'primaryGoal')}</div>`, true);
+          main.querySelectorAll('[data-onb-v]').forEach(el => el.addEventListener('click', () => { d.primaryGoal = el.dataset.onbV; this.onbNav(main, false); }));
+          main.querySelector('.onb-back').addEventListener('click', () => this.onbNav(main, true));
+          break;
 
-      else if (d.step === 3) {
-        const opts = [
-          ['dont_continue', '🔄', 'شروع می‌کنم ولی ادامه نمی‌دم و سرد می‌شم'],
-          ['no_time', '⏳', 'وقت کم میارم و کارها بهم می‌ریزه'],
-          ['dont_know', '❓', 'نمی‌دونم از کجا شروع کنم و چی بخورم'],
-          ['logging_hard', '📝', 'ثبت کالری و غذاها برام خسته‌کننده بوده'],
-          ['none', '💪', 'مانع خاصی ندارم، کاملاً آماده‌ام!']
-        ];
-        main.innerHTML = `
-          <div class="card text-center" style="margin-top:15px;">
-            <div style="font-size:2.5rem; margin-bottom:8px;">🚧</div>
-            <h2 style="font-size:1.25rem; font-weight:900; margin-bottom:6px;">بزرگ‌ترین مانع تا امروز چی بوده؟</h2>
-            <p style="color:var(--text-muted); font-size:0.86rem; margin-bottom:20px;">برنامه‌ت رو جوری می‌چینیم که این مانع نتونه متوقفت کنه.</p>
-            <div style="display:flex; flex-direction:column; gap:10px;">
-              ${opts.map(([id, ic, t]) => this.optionCard(ic, t, d.obstacle === id, 'obs|' + id)).join('')}
-            </div>
-          </div>`;
-        bindActions();
-      }
+        case 'motivation':
+          main.innerHTML = this.onbChrome('چی بیشترین انگیزه رو بهت می‌ده؟', 'شناخت انگیزه به مربی کمک می‌کنه دقیق‌تر برنامه بسازه.', `<div style="display:flex; flex-direction:column; gap:10px;">${this.onbOptionList('MOTIVATION', 'motivation')}</div>`, true);
+          main.querySelectorAll('[data-onb-v]').forEach(el => el.addEventListener('click', () => { d.motivation = el.dataset.onbV; this.onbNav(main, false); }));
+          main.querySelector('.onb-back').addEventListener('click', () => this.onbNav(main, true));
+          break;
 
-      else if (d.step === 4) {
-        main.innerHTML = `
-          <div class="card text-center" style="margin-top:15px;">
-            <div style="font-size:2.5rem; margin-bottom:8px;">👁️</div>
-            <h2 style="font-size:1.25rem; font-weight:900; margin-bottom:6px;">سبک تمرینی مورد علاقه‌ت چیه؟</h2>
-            <p style="color:var(--text-muted); font-size:0.86rem; margin-bottom:20px;">می‌تونی با دوربین هوشمند تمرین کنی یا طبق مسیر روزانه جلو بری.</p>
-            <div style="display:flex; flex-direction:column; gap:12px;">
-              <div class="swap-card-item" data-action="style|mastery">
-                <div style="text-align:right;">
-                  <div style="font-size:1rem; font-weight:900; color:#10b981;">👁️ مسیر تسلط با چشم گردول</div>
-                  <div style="font-size:0.8rem; color:var(--text-muted); margin-top:4px;">شمارش خودکار تکرارها با دوربین و تصحیح زوایای بدن، روی همه حرکات.</div>
-                </div>
-                <span>⬅️</span>
-              </div>
-              <div class="swap-card-item" data-action="style|daily">
-                <div style="text-align:right;">
-                  <div style="font-size:1rem; font-weight:900; color:var(--accent-purple);">🏃 مسیر روزانه گردول</div>
-                  <div style="font-size:0.8rem; color:var(--text-muted); margin-top:4px;">برنامه‌های مدون با ویدیوهای راهنما و تایمر خودکار، بدون نیاز به دوربین.</div>
-                </div>
-                <span>⬅️</span>
-              </div>
-            </div>
-          </div>`;
-        bindActions();
-      }
+        case 'obstacle':
+          main.innerHTML = this.onbChrome('بزرگ‌ترین مانع تا امروزت چی بوده؟', 'برنامه‌ت رو جوری می‌چینیم که این مانع نتونه متوقفت کنه.', `<div style="display:flex; flex-direction:column; gap:10px;">${this.onbOptionList('OBSTACLE', 'obstacle')}</div>`, true);
+          main.querySelectorAll('[data-onb-v]').forEach(el => el.addEventListener('click', () => { d.obstacle = el.dataset.onbV; this.onbNav(main, false); }));
+          main.querySelector('.onb-back').addEventListener('click', () => this.onbNav(main, true));
+          break;
 
-      else if (d.step === 5) {
-        main.innerHTML = `
-          <div class="card">
-            <h3 style="font-size:1.2rem; font-weight:900; margin-bottom:16px;">⚡ سابقه و تمرکز عضلانی</h3>
-            <div class="form-group">
-              <label class="form-label">الان چقدر فعالیت ورزشی داری؟</label>
-              <select id="inp-training-now" class="form-select">
-                <option value="none">تقریباً هیچی (کم‌تحرک)</option>
-                <option value="sometimes" selected>گاهی و بی‌برنامه</option>
-                <option value="regular">هفته‌ای چند بار، منظم و باسابقه</option>
-              </select>
-            </div>
-            <div class="form-group">
-              <label class="form-label">بیشتر روی کدوم بخش بدنت می‌خوای تمرکز کنی؟</label>
-              <select id="inp-training-area" class="form-select">
-                <option value="full" selected>کل بدن (تناسب کلی و متوازن)</option>
-                <option value="core">شکم و مرکز بدن (سیکس‌پک و پهلو)</option>
-                <option value="lower">باسن و ران‌ها (فرم‌دهی پا)</option>
-              </select>
-            </div>
-            <div style="display:flex; gap:10px; margin-top:24px;">
-              <button class="btn-secondary" style="width:auto; padding:0 16px;" id="ob5-back">⬅️ قبلی</button>
-              <button class="btn-primary" id="ob5-next">مرحله بعد ➡️</button>
-            </div>
-          </div>`;
-        document.getElementById('inp-training-now').value = d.trainingNow;
-        document.getElementById('inp-training-area').value = d.trainingArea;
-        document.getElementById('ob5-back').addEventListener('click', () => { d.step = 4; this.renderOnboardingStep(); });
-        document.getElementById('ob5-next').addEventListener('click', () => {
-          d.trainingNow = document.getElementById('inp-training-now').value;
-          d.trainingArea = document.getElementById('inp-training-area').value;
-          d.step = 6; this.renderOnboardingStep();
-        });
-      }
+        case 'obstacle-response': {
+          const resp = O.OBSTACLE_RESPONSE[d.obstacle] || 'بریم جلو!';
+          main.innerHTML = this.onbChrome('', resp, `<div style="text-align:center; font-size:2.6rem; padding:12px 0;">💪</div>`, true, 'ادامه ➡️');
+          main.querySelector('.onb-back').addEventListener('click', () => this.onbNav(main, true));
+          document.getElementById('onb-next').addEventListener('click', () => this.onbNav(main, false));
+          break;
+        }
 
-      else if (d.step === 6) {
-        main.innerHTML = `
-          <div class="card">
-            <h3 style="font-size:1.2rem; font-weight:900; margin-bottom:16px;">⏱️ زمان‌بندی و روزهای تمرین</h3>
-            <div class="form-group">
-              <label class="form-label">هر جلسه تمرین چقدر می‌تونی وقت بذاری؟</label>
-              <select id="inp-minutes" class="form-select">
-                <option value="10">۱۰ دقیقه (خیلی سریع و موثر)</option>
-                <option value="15">۱۵ دقیقه (استاندارد روزانه)</option>
-                <option value="20" selected>۲۰ دقیقه (پیشرفته چربی‌سوزی)</option>
-                <option value="30">۳۰ دقیقه یا بیشتر (حرفه‌ای)</option>
-              </select>
-            </div>
-            <div class="form-group">
-              <label class="form-label">چند روز در هفته می‌خوای تمرین کنی؟</label>
-              <select id="inp-cadence" class="form-select">
-                <option value="3">۳ روز در هفته (متعادل)</option>
-                <option value="4" selected>۴ روز در هفته (پیشنهاد طلایی)</option>
-                <option value="5">۵ روز در هفته (سریع‌ترین نتیجه)</option>
-                <option value="7">هر روز (چالش بی‌وقفه)</option>
-              </select>
-            </div>
-            <div style="display:flex; gap:10px; margin-top:24px;">
-              <button class="btn-secondary" style="width:auto; padding:0 16px;" id="ob6-back">⬅️ قبلی</button>
-              <button class="btn-primary" id="ob6-next">مرحله بعد ➡️</button>
-            </div>
-          </div>`;
-        document.getElementById('inp-minutes').value = String(d.trainingMinutes);
-        document.getElementById('inp-cadence').value = String(d.weeklyCadence);
-        document.getElementById('ob6-back').addEventListener('click', () => { d.step = 5; this.renderOnboardingStep(); });
-        document.getElementById('ob6-next').addEventListener('click', () => {
-          d.trainingMinutes = parseInt(document.getElementById('inp-minutes').value, 10) || 20;
-          d.weeklyCadence = parseInt(document.getElementById('inp-cadence').value, 10) || 4;
-          d.step = 7; this.renderOnboardingStep();
-        });
-      }
+        case 'training-invite':
+          main.innerHTML = this.onbChrome('می‌خوای مسیر تمرینی هم برات بچینم؟', '', `<div style="display:flex; flex-direction:column; gap:10px;">${this.onbOptionList('TRAINING_INVITE', 'trainingInvite')}</div>`, true);
+          main.querySelectorAll('[data-onb-v]').forEach(el => el.addEventListener('click', () => { d.trainingInvite = el.dataset.onbV; this.onbNav(main, false); }));
+          main.querySelector('.onb-back').addEventListener('click', () => this.onbNav(main, true));
+          break;
 
-      else if (d.step === 7) {
-        main.innerHTML = `
-          <div class="card">
-            <h3 style="font-size:1.2rem; font-weight:900; margin-bottom:16px;">📏 مشخصات فیزیکی شما</h3>
-            <div class="form-group">
-              <label class="form-label">جنسیت:</label>
-              <div style="display:flex; gap:10px;">
-                <button type="button" class="btn-secondary onb-gender" data-g="male" style="flex:1; font-weight:800;">🧔 مرد</button>
-                <button type="button" class="btn-secondary onb-gender" data-g="female" style="flex:1; font-weight:800;">👩 زن</button>
-              </div>
-            </div>
-            <div class="form-group"><label class="form-label">سن شما (سال):</label><input type="number" id="inp-age" class="form-input" min="13" max="85"/></div>
-            <div class="form-group"><label class="form-label">قد شما (سانتی‌متر):</label><input type="number" id="inp-height" class="form-input" min="120" max="230"/></div>
-            <div class="form-group"><label class="form-label">وزن فعلی (کیلوگرم):</label><input type="number" id="inp-weight" class="form-input" min="35" max="250"/></div>
-            <div class="form-group"><label class="form-label">وزن هدف شما (کیلوگرم):</label><input type="number" id="inp-goal-weight" class="form-input" min="35" max="250"/></div>
-            <div style="display:flex; gap:10px; margin-top:24px;">
-              <button class="btn-secondary" style="width:auto; padding:0 16px;" id="ob7-back">⬅️ قبلی</button>
-              <button class="btn-primary" id="ob7-next">مرحله بعد ➡️</button>
-            </div>
-          </div>`;
-        const markGender = () => main.querySelectorAll('.onb-gender').forEach(b => {
-          b.style.borderColor = b.dataset.g === d.gender ? 'var(--accent-purple)' : 'var(--border-color)';
-        });
-        markGender();
-        main.querySelectorAll('.onb-gender').forEach(b => b.addEventListener('click', () => { d.gender = b.dataset.g; markGender(); }));
-        document.getElementById('inp-age').value = d.age;
-        document.getElementById('inp-height').value = d.heightCm;
-        document.getElementById('inp-weight').value = d.weightKg;
-        document.getElementById('inp-goal-weight').value = d.goalWeightKg;
-        document.getElementById('ob7-back').addEventListener('click', () => { d.step = 6; this.renderOnboardingStep(); });
-        document.getElementById('ob7-next').addEventListener('click', () => {
-          d.age = parseInt(document.getElementById('inp-age').value, 10) || 26;
-          d.heightCm = parseFloat(document.getElementById('inp-height').value) || 178;
-          d.weightKg = parseFloat(document.getElementById('inp-weight').value) || 80;
-          d.goalWeightKg = parseFloat(document.getElementById('inp-goal-weight').value) || 75;
-          d.step = 8; this.renderOnboardingStep();
-        });
-      }
+        case 'training-style':
+          main.innerHTML = this.onbChrome('سبک تمرینی مورد علاقه‌ت چیه؟', '', `<div style="display:flex; flex-direction:column; gap:10px;">${this.onbOptionList('TRAINING_STYLE', 'trainingStyle')}</div>`, true);
+          main.querySelectorAll('[data-onb-v]').forEach(el => el.addEventListener('click', () => { d.trainingStyle = el.dataset.onbV; this.onbNav(main, false); }));
+          main.querySelector('.onb-back').addEventListener('click', () => this.onbNav(main, true));
+          break;
 
-      else if (d.step === 8) {
-        main.innerHTML = `
-          <div class="card">
-            <h3 style="font-size:1.2rem; font-weight:900; margin-bottom:16px;">💧 آب و زمان یادآور روزانه</h3>
-            <div class="form-group">
-              <label class="form-label">معمولاً در طول روز چقدر آب می‌نوشی؟</label>
-              <select id="inp-water-check" class="form-select">
-                <option value="<1">کمتر از ۱ لیتر (کم‌آبی)</option>
-                <option value="1_to_2">۱ تا ۲ لیتر (متوسط)</option>
-                <option value="2_to_3">۲ تا ۳ لیتر (خوب و مناسب)</option>
-                <option value=">3">بیشتر از ۳ لیتر (عالی و هیدراته)</option>
-              </select>
-            </div>
-            <div class="form-group">
-              <label class="form-label">بهترین زمان یادآور تمرین برای شما:</label>
-              <input type="time" id="inp-reminder-time" class="form-input"/>
-            </div>
-            <div style="display:flex; gap:10px; margin-top:24px;">
-              <button class="btn-secondary" style="width:auto; padding:0 16px;" id="ob8-back">⬅️ قبلی</button>
-              <button class="btn-primary" id="ob8-next">مرحله بعد ➡️</button>
-            </div>
-          </div>`;
-        document.getElementById('inp-water-check').value = d.waterCheck;
-        document.getElementById('inp-reminder-time').value = d.reminderTime;
-        document.getElementById('ob8-back').addEventListener('click', () => { d.step = 7; this.renderOnboardingStep(); });
-        document.getElementById('ob8-next').addEventListener('click', () => {
-          d.waterCheck = document.getElementById('inp-water-check').value;
-          d.reminderTime = document.getElementById('inp-reminder-time').value || '18:00';
-          d.step = 9; this.renderOnboardingStep();
-        });
-      }
+        case 'training-now':
+          main.innerHTML = this.onbChrome('الان چقدر فعالیت ورزشی داری؟', '', `<div style="display:flex; flex-direction:column; gap:10px;">${this.onbOptionList('TRAINING_NOW', 'trainingNow')}</div>`, true);
+          main.querySelectorAll('[data-onb-v]').forEach(el => el.addEventListener('click', () => { d.trainingNow = el.dataset.onbV; this.onbNav(main, false); }));
+          main.querySelector('.onb-back').addEventListener('click', () => this.onbNav(main, true));
+          break;
 
-      else if (d.step === 9) {
-        main.innerHTML = `
-          <div class="card">
-            <h3 style="font-size:1.2rem; font-weight:900; margin-bottom:16px;">🥗 عادات و الگوی غذایی</h3>
-            <div class="form-group">
-              <label class="form-label">بیشتر وعده‌هات رو چطور تامین می‌کنی؟</label>
-              <select id="inp-eating-loc" class="form-select">
-                <option value="home">در خانه آشپزی می‌کنم</option>
-                <option value="delivery">غذا سفارش می‌دم</option>
-                <option value="outside">بیرون یا در محل کار غذا می‌خورم</option>
-              </select>
-            </div>
-            <div class="form-group">
-              <label class="form-label">الگوی رژیم غذایی دلخواه شما:</label>
-              <select id="inp-diet-type" class="form-select">
-                <option value="balanced">متعادل (سفره مرسوم ایرانی)</option>
-                <option value="high_protein">پروتئین بالا (ورزشی و فرم‌دهی)</option>
-                <option value="vegetarian">گیاه‌خواری (بدون گوشت)</option>
-                <option value="keto">کتوژنیک (کربوهیدرات خیلی پایین)</option>
-              </select>
-            </div>
-            <div class="form-group">
-              <label class="form-label">محدودیت یا پرهیز سلامتی:</label>
-              <select id="inp-exclusions" class="form-select">
-                <option value="none">بدون پرهیز خاص</option>
-                <option value="no-dairy">عدم تحمل لاکتوز (بدون شیر/لبنیات)</option>
-                <option value="gluten-free">بدون گلوتن (حساس به گندم)</option>
-                <option value="diabetes">دیابت یا قند خون بالا</option>
-              </select>
-            </div>
-            <div style="display:flex; gap:10px; margin-top:24px;">
-              <button class="btn-secondary" style="width:auto; padding:0 16px;" id="ob9-back">⬅️ قبلی</button>
-              <button class="btn-emerald" style="flex:1;" id="ob9-finish">محاسبه و دریافت برنامه من 🚀</button>
-            </div>
-          </div>`;
-        document.getElementById('inp-eating-loc').value = d.eatingLocation;
-        document.getElementById('inp-diet-type').value = d.diet;
-        document.getElementById('inp-exclusions').value = d.exclusions;
-        document.getElementById('ob9-back').addEventListener('click', () => { d.step = 8; this.renderOnboardingStep(); });
-        document.getElementById('ob9-finish').addEventListener('click', () => this.finishOnboarding());
+        case 'training-focus':
+          main.innerHTML = this.onbChrome('بیشتر روی کدوم بخش بدنت می‌خوای تمرکز کنی؟', '', `<div style="display:flex; flex-direction:column; gap:10px;">${this.onbOptionList('TRAINING_FOCUS', 'trainingFocus')}</div>`, true);
+          main.querySelectorAll('[data-onb-v]').forEach(el => el.addEventListener('click', () => { d.trainingFocus = el.dataset.onbV; this.onbNav(main, false); }));
+          main.querySelector('.onb-back').addEventListener('click', () => this.onbNav(main, true));
+          break;
+
+        case 'training-time':
+          main.innerHTML = this.onbChrome('هر جلسه تمرین چقدر می‌تونی وقت بذاری؟', '', `<div style="display:flex; flex-direction:column; gap:10px;">${this.onbOptionList('TRAINING_TIME', 'trainingMinutes')}</div>`, true);
+          main.querySelectorAll('[data-onb-v]').forEach(el => el.addEventListener('click', () => { d.trainingMinutes = parseInt(el.dataset.onbV, 10); this.onbNav(main, false); }));
+          main.querySelector('.onb-back').addEventListener('click', () => this.onbNav(main, true));
+          break;
+
+        case 'training-cadence':
+          main.innerHTML = this.onbChrome('چند روز در هفته می‌خوای تمرین کنی؟', '', `<div style="display:flex; flex-direction:column; gap:10px;">${this.onbOptionList('CADENCE', 'weeklyCadence')}</div>`, true);
+          main.querySelectorAll('[data-onb-v]').forEach(el => el.addEventListener('click', () => { d.weeklyCadence = parseInt(el.dataset.onbV, 10); this.onbNav(main, false); }));
+          main.querySelector('.onb-back').addEventListener('click', () => this.onbNav(main, true));
+          break;
+
+        case 'gender':
+          main.innerHTML = this.onbChrome('جنسیتت؟', 'برای دقت فرمول‌های متابولیسم لازمش داریم.', `<div style="display:flex; flex-direction:column; gap:10px;">${this.onbOptionList('GENDER', 'gender')}</div>`, true);
+          main.querySelectorAll('[data-onb-v]').forEach(el => el.addEventListener('click', () => { d.gender = el.dataset.onbV; this.onbNav(main, false); }));
+          main.querySelector('.onb-back').addEventListener('click', () => this.onbNav(main, true));
+          break;
+
+        case 'age':
+          main.innerHTML = this.onbChrome('چند سالته؟', '',
+            `<div class="form-group"><input type="number" id="onb-age" class="form-input onb-big-input" value="${esc(d.age)}" min="13" max="90"/></div>`, true, 'ادامه ➡️');
+          main.querySelector('.onb-back').addEventListener('click', () => this.onbNav(main, true));
+          document.getElementById('onb-next').addEventListener('click', () => {
+            d.age = parseInt(document.getElementById('onb-age').value, 10) || 26;
+            this.onbNav(main, false);
+          });
+          break;
+
+        case 'activity':
+          main.innerHTML = this.onbChrome('در حالت عادی روزانه‌ات چقدر فعالی؟', 'جواب صادقانه = محاسبه دقیق کالری.', `<div style="display:flex; flex-direction:column; gap:10px;">${this.onbOptionList('ACTIVITY', 'activity')}</div>`, true);
+          main.querySelectorAll('[data-onb-v]').forEach(el => el.addEventListener('click', () => { d.activity = el.dataset.onbV; this.onbNav(main, false); }));
+          main.querySelector('.onb-back').addEventListener('click', () => this.onbNav(main, true));
+          break;
+
+        case 'height':
+          main.innerHTML = this.onbChrome('قدت چقدره؟', '',
+            `<div class="form-group"><input type="number" id="onb-height" class="form-input onb-big-input" value="${esc(d.heightCm)}" min="120" max="230"/><div class="onb-unit">سانتی‌متر</div></div>`, true, 'ادامه ➡️');
+          main.querySelector('.onb-back').addEventListener('click', () => this.onbNav(main, true));
+          document.getElementById('onb-next').addEventListener('click', () => {
+            d.heightCm = parseFloat(document.getElementById('onb-height').value) || 178;
+            this.onbNav(main, false);
+          });
+          break;
+
+        case 'current-weight':
+          main.innerHTML = this.onbChrome('وزن فعلیت چقدره؟', '',
+            `<div class="form-group"><input type="number" id="onb-weight" class="form-input onb-big-input" value="${esc(d.weightKg)}" min="35" max="300" step="0.1"/><div class="onb-unit">کیلوگرم</div></div>`, true, 'ادامه ➡️');
+          main.querySelector('.onb-back').addEventListener('click', () => this.onbNav(main, true));
+          document.getElementById('onb-next').addEventListener('click', () => {
+            d.weightKg = parseFloat(document.getElementById('onb-weight').value) || 80;
+            this.onbNav(main, false);
+          });
+          break;
+
+        case 'target-weight':
+          main.innerHTML = this.onbChrome('به چه وزنی برسی خوشحال می‌شی؟', '',
+            `<div class="form-group"><input type="number" id="onb-goal-weight" class="form-input onb-big-input" value="${esc(d.goalWeightKg)}" min="35" max="300" step="0.1"/><div class="onb-unit">کیلوگرم</div></div>`, true, 'ادامه ➡️');
+          main.querySelector('.onb-back').addEventListener('click', () => this.onbNav(main, true));
+          document.getElementById('onb-next').addEventListener('click', () => {
+            d.goalWeightKg = parseFloat(document.getElementById('onb-goal-weight').value) || 74;
+            this.onbNav(main, false);
+          });
+          break;
+
+        case 'weight-direction':
+          main.innerHTML = this.onbChrome('وزنت رو می‌خوای چی بشه؟', '', `<div style="display:flex; flex-direction:column; gap:10px;">${this.onbOptionList('WEIGHT_DIRECTION', 'weightDirection')}</div>`, true);
+          main.querySelectorAll('[data-onb-v]').forEach(el => el.addEventListener('click', () => { d.weightDirection = el.dataset.onbV; this.onbNav(main, false); }));
+          main.querySelector('.onb-back').addEventListener('click', () => this.onbNav(main, true));
+          break;
+
+        case 'plan': {
+          // پیش‌نمایش برنامه — مثل مرحله plan اپ اصلی
+          const preview = this.computeOnboardingPlan();
+          main.innerHTML = this.onbChrome('برنامه‌ات آماده‌ست! 🎉', 'این چیزیه که گردول بر اساس جواب‌هات برایت چیده:',
+            `<div style="display:flex; flex-direction:column; gap:10px;">
+              <div class="onb-plan-row"><span>🔥 کالری روزانه</span><b>${faNum(preview.targetKcal)} kcal</b></div>
+              <div class="onb-plan-row"><span>🥩 پروتئین</span><b>${faNum(preview.proteinG)} گرم</b></div>
+              <div class="onb-plan-row"><span>🌾 کربوهیدرات</span><b>${faNum(preview.carbsG)} گرم</b></div>
+              <div class="onb-plan-row"><span>🥑 چربی</span><b>${faNum(preview.fatG)} گرم</b></div>
+              <div class="onb-plan-row"><span>💧 آب</span><b>${faNum(preview.waterMl)} میلی‌لیتر</b></div>
+              <div class="onb-plan-row"><span>🏋️ مسیر تمرین</span><b>${esc(preview.pathTitle)}</b></div>
+            </div>`, true, 'عالیه، ادامه بده ➡️');
+          main.querySelector('.onb-back').addEventListener('click', () => this.onbNav(main, true));
+          document.getElementById('onb-next').addEventListener('click', () => this.onbNav(main, false));
+          break;
+        }
+
+        case 'nutrition-invite':
+          main.innerHTML = this.onbChrome('حالا بریم سراغ تغذیه؟', 'برنامه غذایی ایرانی + ثبت عکس غذا منتظرته.', `<div style="display:flex; flex-direction:column; gap:10px;">${this.onbOptionList('YES_NO', 'nutritionInvite')}</div>`, true);
+          main.querySelectorAll('[data-onb-v]').forEach(el => el.addEventListener('click', () => { d.nutritionInvite = el.dataset.onbV; this.onbNav(main, false); }));
+          main.querySelector('.onb-back').addEventListener('click', () => this.onbNav(main, true));
+          break;
+
+        case 'tracking-experience':
+          main.innerHTML = this.onbChrome('سابقه کالری‌شماریت چیه؟', '', `<div style="display:flex; flex-direction:column; gap:10px;">${this.onbOptionList('CALORIE_EXPERIENCE', 'trackingExperience')}</div>`, true);
+          main.querySelectorAll('[data-onb-v]').forEach(el => el.addEventListener('click', () => { d.trackingExperience = el.dataset.onbV; this.onbNav(main, false); }));
+          main.querySelector('.onb-back').addEventListener('click', () => this.onbNav(main, true));
+          break;
+
+        case 'diet':
+          main.innerHTML = this.onbChrome('الگوی غذایی‌ات چیه؟', '', `<div style="display:flex; flex-direction:column; gap:10px;">${this.onbOptionList('DIET', 'diet')}</div>`, true);
+          main.querySelectorAll('[data-onb-v]').forEach(el => el.addEventListener('click', () => { d.diet = el.dataset.onbV; this.onbNav(main, false); }));
+          main.querySelector('.onb-back').addEventListener('click', () => this.onbNav(main, true));
+          break;
+
+        case 'restrictions': {
+          const opts = O.EXCLUSIONS.map(o => `
+            <div class="swap-card-item ${d.exclusions.includes(o.v) ? 'selected' : ''}" data-excl="${esc(o.v)}">
+              <div style="font-size:0.92rem; font-weight:800;">${esc(o.t)}</div>
+              <span class="onb-check">${d.exclusions.includes(o.v) ? '✓' : '+'}</span>
+            </div>`).join('');
+          main.innerHTML = this.onbChrome('محدودیت یا پرهیز غذایی داری؟', 'هر چند تا که لازمه انتخاب کن — یا رد شو.', opts, true, 'ادامه ➡️');
+          main.querySelectorAll('[data-excl]').forEach(el => el.addEventListener('click', () => {
+            const v = el.dataset.excl;
+            const i = d.exclusions.indexOf(v);
+            if (i >= 0) d.exclusions.splice(i, 1); else d.exclusions.push(v);
+            el.classList.toggle('selected');
+            el.querySelector('.onb-check').textContent = d.exclusions.includes(v) ? '✓' : '+';
+          }));
+          main.querySelector('.onb-back').addEventListener('click', () => this.onbNav(main, true));
+          document.getElementById('onb-next').addEventListener('click', () => this.onbNav(main, false));
+          break;
+        }
+
+        case 'meal-structure':
+          main.innerHTML = this.onbChrome('ساختار وعده‌هات در یک روز معمولی چطوره؟', '',
+            `<div style="display:flex; flex-direction:column; gap:10px;">
+              ${[2, 3, 4, 5].map(n => `
+                <div class="swap-card-item ${d.mealsPerDay === n ? 'selected' : ''}" data-meals="${n}">
+                  <div style="font-size:0.95rem; font-weight:800;">${faNum(n)} وعده</div>
+                  <span class="onb-check">✓</span>
+                </div>`).join('')}
+            </div>`, true);
+          main.querySelectorAll('[data-meals]').forEach(el => el.addEventListener('click', () => {
+            d.mealsPerDay = parseInt(el.dataset.meals, 10);
+            this.onbNav(main, false);
+          }));
+          main.querySelector('.onb-back').addEventListener('click', () => this.onbNav(main, true));
+          break;
+
+        case 'habit-focus':
+          main.innerHTML = this.onbChrome('دوست داری اول روی کدوم عادت تمرکز کنیم؟', '', `<div style="display:flex; flex-direction:column; gap:10px;">${this.onbOptionList('HABIT_FOCUS', 'habitFocus')}</div>`, true);
+          main.querySelectorAll('[data-onb-v]').forEach(el => el.addEventListener('click', () => { d.habitFocus = el.dataset.onbV; this.onbNav(main, false); }));
+          main.querySelector('.onb-back').addEventListener('click', () => this.onbNav(main, true));
+          break;
+
+        case 'starting-point':
+          main.innerHTML = this.onbChrome('از کجا شروع کنیم؟', '', `<div style="display:flex; flex-direction:column; gap:10px;">${this.onbOptionList('FIRST_ACTION', 'firstAction')}</div>`, true);
+          main.querySelectorAll('[data-onb-v]').forEach(el => el.addEventListener('click', () => { d.firstAction = el.dataset.onbV; this.onbNav(main, false); }));
+          main.querySelector('.onb-back').addEventListener('click', () => this.onbNav(main, true));
+          break;
+
+        case 'preparing': {
+          const firstStep = O.HABIT_FIRST_STEP[d.habitFocus] || '';
+          this.finishOnboarding();
+          main.innerHTML = `
+            <div class="onb-preparing">
+              <div style="font-size:3rem; animation:pulse-ai 1.4s infinite;">🥜</div>
+              <h2 style="font-size:1.25rem; font-weight:900; margin-top:12px;">در حال آماده‌سازی برنامه تو...</h2>
+              <p style="font-size:0.85rem; color:var(--text-muted); margin-top:8px; line-height:1.8;">
+                ${esc(firstStep ? 'قدم اول امروزت: ' + firstStep : '')}
+              </p>
+            </div>`;
+          // هدایت خودکار بر اساس starting-point
+          setTimeout(() => {
+            if (d.firstAction === 'open_training') this.switchTab('workout');
+            else if (d.firstAction === 'log_meal') { this.switchTab('diet'); this.openFoodScannerModal(); }
+            else if (d.firstAction === 'view_plan') this.switchTab('diet');
+            else this.switchTab('today');
+          }, 1800);
+          break;
+        }
+
+        default:
+          this.onbNav(main, false);
       }
     },
 
-    finishOnboarding() {
+    // محاسبات برنامه در حین آنبوردینگ (بدون ذخیره)
+    computeOnboardingPlan() {
       const d = this.onboardingData;
-      d.eatingLocation = document.getElementById('inp-eating-loc').value;
-      d.diet = document.getElementById('inp-diet-type').value;
-      d.exclusions = document.getElementById('inp-exclusions').value;
-
-      // فرمول بالینی Mifflin-St Jeor
       let bmr = (10 * d.weightKg) + (6.25 * d.heightCm) - (5 * d.age);
-      bmr += d.gender === 'male' ? 5 : -161;
+      bmr += d.gender === 'male' ? 5 : (d.gender === 'female' ? -161 : -78);
+      const PAL = { not_active: 1.2, lightly_active: 1.375, moderately_active: 1.55, highly_active: 1.725 };
+      const tdee = Math.round(bmr * (PAL[d.activity] || 1.375));
 
-      let actFactor = 1.2;
-      if (d.weeklyCadence >= 3 && d.weeklyCadence <= 4) actFactor = 1.4;
-      else if (d.weeklyCadence >= 5) actFactor = 1.6;
-
-      const tdee = Math.round(bmr * actFactor);
+      const dir = d.weightDirection === 'down' || (d.goalWeightKg < d.weightKg) ? 'down'
+        : (d.weightDirection === 'up' || (d.goalWeightKg > d.weightKg) ? 'up' : 'hold');
       let targetKcal = tdee;
-      const deltaKg = Math.abs(d.weightKg - d.goalWeightKg);
-      let weeklyRateKg = 0.7;
-
-      if (d.primaryGoal === 'lose_weight' || d.goalWeightKg < d.weightKg) {
-        targetKcal = Math.max(1350, tdee - 500);
-        weeklyRateKg = d.weeklyCadence >= 4 ? 0.75 : 0.6;
-      } else if (d.primaryGoal === 'gain_muscle' || d.goalWeightKg > d.weightKg) {
-        targetKcal = tdee + 350;
-        weeklyRateKg = 0.35;
-      } else {
-        // حفظ وزن — مسیر زمانی هدف ندارد
-        weeklyRateKg = 0;
-      }
-
-      const deltaKgCalc = deltaKg;
-      const targetWeeks = (weeklyRateKg > 0 && deltaKgCalc > 0) ? Math.max(4, Math.ceil(deltaKgCalc / weeklyRateKg)) : 0;
-      const estimatedTotalDays = targetWeeks * 7;
+      let weeklyRateKg = 0;
+      if (dir === 'down') { targetKcal = Math.max(1350, tdee - 500); weeklyRateKg = d.weeklyCadence >= 4 ? 0.75 : 0.6; }
+      else if (dir === 'up') { targetKcal = tdee + 350; weeklyRateKg = 0.35; }
 
       const proteinG = Math.round(d.weightKg * 2.0);
       const fatG = Math.round((targetKcal * 0.25) / 9);
@@ -876,34 +1008,51 @@
 
       let waterMl = Math.round(d.weightKg * 35);
       if (d.trainingMinutes >= 20) waterMl += 500;
-      if (d.waterCheck === '<1') waterMl = Math.max(waterMl, 2500);
 
-      // مسیر تمرینی هوشمند
       let selectedPath;
-      if (d.trainingNow === 'none' && d.trainingArea === 'full') selectedPath = 'starter-path';
-      else if (d.trainingArea === 'core') selectedPath = 'core-path';
-      else if (d.trainingArea === 'lower') selectedPath = 'glute-path';
-      else if (d.primaryGoal === 'gain_muscle') selectedPath = 'fullbody-path';
+      if (d.trainingInvite === 'no') selectedPath = 'fatburn-path';
+      else if (d.trainingNow === 'none' && d.trainingFocus === 'full') selectedPath = 'starter-path';
+      else if (d.trainingFocus === 'core') selectedPath = 'core-path';
+      else if (d.trainingFocus === 'lower') selectedPath = 'glute-path';
+      else if (dir === 'up' || d.primaryGoal === 'get_stronger') selectedPath = 'fullbody-path';
       else selectedPath = 'fatburn-path';
 
+      const planTitle = ((window.GORDOL_PLANS || []).find(p => p.slug === selectedPath) || {}).titleFa || 'چالش چربی‌سوزی';
+
+      return { bmr: Math.round(bmr), tdee, targetKcal, proteinG, carbsG, fatG, waterMl, selectedPath, pathTitle: planTitle, dir, weeklyRateKg };
+    },
+
+    finishOnboarding() {
+      const d = this.onboardingData;
+      const plan = this.computeOnboardingPlan();
+
+      const deltaKg = Math.abs(d.weightKg - d.goalWeightKg);
+      const targetWeeks = (plan.weeklyRateKg > 0 && deltaKg > 0) ? Math.max(4, Math.ceil(deltaKg / plan.weeklyRateKg)) : 0;
+      const estimatedTotalDays = targetWeeks * 7;
+
       this.profile = {
+        // پاسخ‌های دقیق آنبوردینگ اورجینال
         primaryGoal: d.primaryGoal, motivation: d.motivation, obstacle: d.obstacle,
-        trainingStyle: d.trainingStyle, trainingNow: d.trainingNow, trainingArea: d.trainingArea,
-        trainingMinutes: d.trainingMinutes, weeklyCadence: d.weeklyCadence,
-        gender: d.gender, age: d.age, heightCm: d.heightCm, weightKg: d.weightKg, goalWeightKg: d.goalWeightKg,
-        waterCheck: d.waterCheck, reminderTime: d.reminderTime,
-        eatingLocation: d.eatingLocation, diet: d.diet, exclusions: d.exclusions,
-        bmr: Math.round(bmr), tdee, targetKcal, proteinG, carbsG, fatG, waterMl,
-        selectedPath, currentDay: 1,
+        trainingInvite: d.trainingInvite, trainingStyle: d.trainingStyle, trainingNow: d.trainingNow,
+        trainingFocus: d.trainingFocus, trainingMinutes: d.trainingMinutes, weeklyCadence: d.weeklyCadence,
+        gender: d.gender, age: d.age, activity: d.activity,
+        heightCm: d.heightCm, weightKg: d.weightKg, goalWeightKg: d.goalWeightKg,
+        weightDirection: d.weightDirection, nutritionInvite: d.nutritionInvite,
+        trackingExperience: d.trackingExperience, diet: d.diet, exclusions: d.exclusions.slice(),
+        mealsPerDay: d.mealsPerDay, habitFocus: d.habitFocus, firstAction: d.firstAction,
+        // مقادیر محاسباتی
+        bmr: plan.bmr, tdee: plan.tdee, targetKcal: plan.targetKcal,
+        proteinG: plan.proteinG, carbsG: plan.carbsG, fatG: plan.fatG, waterMl: plan.waterMl,
+        selectedPath: plan.selectedPath, currentDay: 1,
         startDate: todayKey(),
-        deltaKg, weeklyRateKg, targetWeeks, estimatedTotalDays,
+        deltaKg, weeklyRateKg: plan.weeklyRateKg, targetWeeks, estimatedTotalDays,
+        reminderTime: '18:00',
         weightHistory: [{ date: todayKey(), kg: d.weightKg }]
       };
 
       this.saveProfile();
       this.renderHeader();
       this.initNotificationSystem();
-      this.switchTab('today');
       toast('پروفایل تو ساخته شد؛ برنامه شخصی‌ات آماده است! 🎉');
     },
 
@@ -912,9 +1061,11 @@
       const p = this.profile;
       if (!p) return;
       p.deltaKg = Math.abs(p.weightKg - p.goalWeightKg);
+      const dir = p.weightDirection === 'down' || (p.goalWeightKg < p.weightKg) ? 'down'
+        : (p.weightDirection === 'up' || (p.goalWeightKg > p.weightKg) ? 'up' : 'hold');
       let rate;
-      if (p.primaryGoal === 'lose_weight' || p.goalWeightKg < p.weightKg) rate = p.weeklyCadence >= 4 ? 0.75 : 0.6;
-      else if (p.primaryGoal === 'gain_muscle' || p.goalWeightKg > p.weightKg) rate = 0.35;
+      if (dir === 'down') rate = p.weeklyCadence >= 4 ? 0.75 : 0.6;
+      else if (dir === 'up') rate = 0.35;
       else rate = 0;
       p.weeklyRateKg = rate;
       if (rate > 0 && p.deltaKg > 0) {
@@ -1057,7 +1208,7 @@
             <span style="font-size:0.75rem; color:var(--text-muted);">${t.dayCompleted ? '✅ ثبت شده' : 'در انتظار انجام'}</span>
           </div>
           <p style="color:var(--text-muted); font-size:0.84rem; margin-bottom:12px;">
-            مدت: ${faNum(p.trainingMinutes)} دقیقه | تمرکز: ${p.trainingArea === 'core' ? 'شکم و پهلو' : (p.trainingArea === 'lower' ? 'باسن و پا' : 'کل بدن')} | سبک: ${p.trainingStyle === 'mastery' ? 'چشم گردول 👁️' : 'مسیر روزانه 🏃'}
+            مدت: ${faNum(p.trainingMinutes)} دقیقه | تمرکز: ${p.trainingFocus === 'core' ? 'شکم و مرکز بدن' : (p.trainingFocus === 'lower' ? 'باسن و پا' : 'کل بدن')} | سبک: ${p.trainingStyle === 'mastery' ? 'چشم گردول 👁️' : 'مسیر روزانه 🏃'}
           </p>
           <button class="btn-primary" id="btn-go-workout">ورود به تمرینات روز ${faNum(p.currentDay)} 🔥</button>
         </div>
@@ -1175,6 +1326,7 @@
       `;
 
       const renderList = (listEl, ids) => {
+        const restSec = Math.max(10, chapter.rest[templateIdx % chapter.rest.length] || 20);
         ids.forEach(rawId => {
           const finalId = this.swaps.exercises[rawId] || rawId;
           const e = (window.GORDOL_EXERCISES || []).find(x => x.id === finalId) || { id: finalId, nameFa: finalId, targetFa: 'عمومی' };
@@ -1190,8 +1342,10 @@
                   ${this.swaps.exercises[rawId] ? '<span style="font-size:0.62rem; background:var(--accent-purple); color:#fff; padding:1px 6px; border-radius:6px;">جایگزین</span>' : ''}
                   ${done ? '<span style="font-size:0.62rem; background:rgba(16,185,129,0.25); color:#10b981; padding:1px 6px; border-radius:6px;">✔ انجام شد</span>' : ''}
                 </div>
-                <div style="font-size:0.74rem; color:var(--text-muted); margin-top:3px;">
-                  ${esc(e.targetFa || 'عضلات هدف')} | ${e.measure === 'SECONDS' ? faNum(e.suggestedSeconds || 30) + ' ثانیه' : faNum(e.suggestedReps || 12) + ' تکرار'}
+                <div style="font-size:0.74rem; color:var(--text-muted); margin-top:3px;">${esc(e.targetFa || 'عضلات هدف')}</div>
+                <div style="display:flex; gap:5px; margin-top:6px; flex-wrap:wrap;">
+                  <span class="macro-tag" style="font-size:0.7rem;">🔁 ${faNum(chapter.rounds)} ست × ${e.measure === 'SECONDS' ? faNum(e.suggestedSeconds || 30) + ' ثانیه' : faNum(e.suggestedReps || 12) + ' تکرار'}</span>
+                  <span class="macro-tag" style="font-size:0.7rem;">⏸ استراحت ${faNum(restSec)} ثانیه</span>
                 </div>
               </div>
               <div style="display:flex; gap:5px; flex-shrink:0;">
@@ -1262,7 +1416,8 @@
 
       this.sessionPlayer = {
         items, idx: -1, remaining: 0, timerId: null, paused: false,
-        startedAt: Date.now(), workedTotal: 0
+        startedAt: Date.now(), workedTotal: 0,
+        totalRounds: chapter.rounds, workSec, restSec
       };
 
       const modal = document.getElementById('session-player-modal');
@@ -1331,7 +1486,10 @@
       const ex = item.exId ? (window.GORDOL_EXERCISES || []).find(e => e.id === (this.swaps.exercises[item.exId] || item.exId)) : null;
 
       document.getElementById('sp-title').textContent = ex ? ex.nameFa : (item.phase || 'استراحت');
-      document.getElementById('sp-phase').textContent = item.kind === 'rest' ? 'استراحت' : item.phase;
+      const roundTxt = item.kind === 'rest'
+        ? 'استراحت'
+        : `${item.phase} · ست ${faNum(item.round)} از ${faNum(sp.totalRounds)}`;
+      document.getElementById('sp-phase').textContent = roundTxt;
       document.getElementById('sp-phase').className = 'sp-phase-badge' + (item.kind === 'rest' ? ' rest' : '');
       const pauseBtn = document.getElementById('sp-pause');
       if (pauseBtn) pauseBtn.textContent = '⏸ مکث';
@@ -1350,7 +1508,7 @@
       const nextItem = sp.items[sp.idx + 1];
       const nextEx = nextItem && nextItem.exId ? (window.GORDOL_EXERCISES || []).find(e => e.id === (this.swaps.exercises[nextItem.exId] || nextItem.exId)) : null;
       document.getElementById('sp-next').innerHTML = nextItem
-        ? `بعدی: ${nextItem.kind === 'rest' ? 'استراحت ' + faNum(nextItem.sec) + ' ثانیه‌ای' : esc(nextEx ? nextEx.nameFa : '')} <span style="opacity:0.7;">(راند ${faNum(nextItem.round)})</span>`
+        ? `بعدی: ${nextItem.kind === 'rest' ? 'استراحت ' + faNum(nextItem.sec) + ' ثانیه‌ای' : esc(nextEx ? nextEx.nameFa : '') + ' (' + (nextEx && nextEx.measure === 'SECONDS' ? faNum(nextEx.suggestedSeconds || 30) + ' ثانیه' : faNum(nextEx ? nextEx.suggestedReps || 12 : 12) + ' تکرار') + ')'} <span style="opacity:0.7;">— ست ${faNum(nextItem.round)}/${faNum(sp.totalRounds)}</span>`
         : '🎉 آخرین حرکت — تمومش کن!';
 
       if (ex && ex.videoUrl && video) {
@@ -1900,14 +2058,13 @@ ${pool}
 
     renderMealCard(meal, todayLog) {
       const active = this.swaps.meals[meal.id] || {
-        name: meal.name, desc: meal.current, cal: meal.cal, p: meal.p, c: meal.c || 0, f: meal.f || 0
+        name: meal.name, desc: meal.current, cal: meal.cal, p: meal.p, c: meal.c || 0, f: meal.f || 0, image: meal.image
       };
-      const emoji = MEAL_EMOJI[meal.id] || '🍽️';
       const loggedCount = todayLog.meals.filter(m => m.mealType === meal.id).length;
       return `
         <div class="meal-card-rich">
-          <div class="meal-card-banner" style="background:${MEAL_GRADIENT[meal.id] || 'var(--bg-elevated)'}; display:flex; align-items:center; justify-content:center;">
-            <span style="font-size:3.4rem;">${emoji}</span>
+          <div class="meal-card-banner" style="background:${MEAL_GRADIENT[meal.id] || 'var(--bg-elevated)'};">
+            <img src="${esc(active.image || meal.image || '')}" alt="${esc(active.name)}" loading="lazy" onerror="this.style.display='none'"/>
             <div class="meal-badge-time">⏰ ${esc(meal.time)}</div>
             ${loggedCount ? `<div class="meal-badge-time" style="top:10px; left:10px; right:auto; background:rgba(16,185,129,0.85); color:#0c0d14;">✓ ${faNum(loggedCount)} ثبت</div>` : ''}
           </div>
@@ -1973,7 +2130,7 @@ ${pool}
           ${(meal.swaps || []).map((sw, i) => `
             <div class="swap-card-item ${active && active.name === sw.name ? 'selected' : ''}" data-swap-idx="${i}">
               <div style="display:flex; align-items:center; gap:10px;">
-                <span style="font-size:1.6rem;">${MEAL_EMOJI[mealId] || '🍽️'}</span>
+                <img src="${esc(sw.image || meal.image || '')}" alt="${esc(sw.name)}" class="swap-thumb" loading="lazy" onerror="this.style.display='none'"/>
                 <div>
                   <div style="font-size:0.88rem; font-weight:800; color:#fff;">${esc(sw.name)}</div>
                   <div style="font-size:0.74rem; color:var(--text-muted); margin-top:2px;">${esc(sw.desc)}</div>
@@ -2015,7 +2172,7 @@ ${pool}
         btn.textContent = '⏳ ...';
         try {
           const p = this.profile;
-          const prompt = `برای وعده «${meal.name}» کاربر (کالری هدف روزانه ${p.targetKcal}، رژیم ${p.diet}، پرهیز: ${p.exclusions}) یک جایگزین ایرانی سالم پیشنهاد بده با کالری حدود ${meal.cal} و پروتئین حدود ${meal.p} گرم.
+          const prompt = `برای وعده «${meal.name}» کاربر (کالری هدف روزانه ${p.targetKcal}، رژیم ${p.diet}، پرهیز: ${(Array.isArray(p.exclusions) && p.exclusions.length) ? p.exclusions.join('، ') : 'ندارد'}) یک جایگزین ایرانی سالم پیشنهاد بده با کالری حدود ${meal.cal} و پروتئین حدود ${meal.p} گرم.
 فقط JSON با کلیدها برگردان: name (نام فارسی کوتاه), desc (مواد دقیق با مقادیر), cal (عدد), p (عدد), c (عدد), f (عدد).`;
           const res = await GordolAI.generateJSON(prompt, ['name', 'desc', 'cal', 'p', 'c', 'f'],
             { numericKeys: ['cal', 'p', 'c', 'f'] });
@@ -2446,18 +2603,52 @@ ${pool}
       const p = this.profile || this.onboardingData;
       const t = this.getDayLog(todayKey());
       const loggedCal = t.meals.reduce((s, m) => s + (m.cal || 0), 0);
+      const loggedP = t.meals.reduce((s, m) => s + (m.p || 0), 0);
+      const loggedC = t.meals.reduce((s, m) => s + (m.c || 0), 0);
+      const loggedF = t.meals.reduce((s, m) => s + (m.f || 0), 0);
       const streak = this.calcStreak();
-      return `تو «مربی ارشد گردول» هستی: دلسوز، پرانرژی، متخصص بدنسازی و تغذیه بالینی. همیشه به فارسی روان با لحن مربی پاسخ بده و از ایموجی مناسب استفاده کن.
-پرونده کاربر:
-- جنسیت: ${p.gender === 'male' ? 'مرد' : 'زن'} | سن: ${p.age} | قد: ${p.heightCm} سانتی‌متر | وزن: ${p.weightKg} کیلو | وزن هدف: ${p.goalWeightKg} کیلو
-- کالری روزانه مجاز: ${p.targetKcal} kcal | پروتئین هدف: ${p.proteinG} گرم | آب هدف: ${p.waterMl} میلی‌لیتر
-- امروز ${faNum(loggedCal)} کالری ثبت کرده. استریک تمرین: ${streak} روز. روز فعلی برنامه: ${p.currentDay} (${p.selectedPath})
-- رژیم: ${p.diet} | پرهیزها: ${p.exclusions}
-دستورالعمل‌ها:
-۱. برای سوال غذایی (مثل پیتزا، استیک، برنج): کالری واقع‌بینانه بگو و راهکار مدیریت در سقف ${p.targetKcal} کالری ارائه کن — هرگز سرزنش نکن.
+      const mealLines = t.meals.length
+        ? t.meals.map(m => `  · [${this.mealTypeFa(m.mealType)} ${m.time || ''}] ${m.name} — ${m.cal} kcal (P${m.p}/C${m.c}/F${m.f})`).join('\n')
+        : '  (هنوز چیزی ثبت نشده)';
+      const exLines = (t.exercises || []).length
+        ? t.exercises.map(x => {
+            const e = (window.GORDOL_EXERCISES || []).find(y => y.id === x.exId);
+            return `  · ${e ? e.nameFa : x.exId}${x.reps ? ' — ' + x.reps + ' تکرار/ثانیه' : ''} (${x.source === 'eye' ? 'با چشم گردول' : x.source === 'session' ? 'با جلسه تایمر' : 'دستی'})`;
+          }).join('\n')
+        : '  (امروز تمرینی ثبت نشده)';
+      const goalDateText = p.estimatedTotalDays > 0
+        ? faDateLong(new Date(new Date((p.startDate || todayKey()) + 'T00:00:00').getTime() + p.estimatedTotalDays * 86400000))
+        : '—';
+
+      return `تو «مربی ارشد گردول» هستی — یک مربی حرفه‌ای بدنسازی و تغذیه بالینی ایرانی که داخل اپ گردول کار می‌کنی. هویتت: مربی دلسوز، پرانرژی، سخت‌کوش و علمی که پرونده کامل کاربرش را دارد. همیشه به فارسی روان با لحن مربی پاسخ بده و ایموجی مناسب به کار ببر. خودت را معرفی نکن مگر بپرسند؛ در پاسخ‌ها نقش مربیِ او را حفظ کن.
+
+═══ پرونده کاربر ═══
+- جنسیت: ${p.gender === 'male' ? 'مرد' : p.gender === 'female' ? 'زن' : 'نگفته'} | سن: ${p.age} | قد: ${p.heightCm} سانتی‌متر
+- وزن فعلی: ${p.weightKg} کیلو | وزن هدف: ${p.goalWeightKg} کیلو (${p.weightDirection === 'down' ? 'کاهش' : p.weightDirection === 'up' ? 'افزایش' : 'حفظ'})
+- هدف اصلی: ${p.primaryGoal === 'lose_weight' ? 'کاهش وزن' : p.primaryGoal === 'gain_weight' ? 'افزایش وزن' : p.primaryGoal === 'maintain_weight' ? 'حفظ وزن' : p.primaryGoal === 'get_stronger' ? 'قوی‌تر شدن' : p.primaryGoal === 'stay_consistent' ? 'نظم تمرینی' : 'غذای سالم‌تر'} | انگیزه: ${p.motivation} | مانع قبلی: ${p.obstacle}
+- اهداف روزانه: کالری ${p.targetKcal} kcal | پروتئین ${p.proteinG}g | کربوهیدرات ${p.carbsG}g | چربی ${p.fatG}g | آب ${p.waterMl}ml
+- رژیم: ${p.diet} | پرهیزها: ${(Array.isArray(p.exclusions) && p.exclusions.length) ? p.exclusions.join('، ') : 'ندارد'}
+- برنامه تمرین: روز ${p.currentDay} از مسیر «${p.selectedPath}» | سبک: ${p.trainingStyle === 'mastery' ? 'تسلط با چشم گردول' : 'روزانه'} | ${p.weeklyCadence} روز در هفته
+- سابقه کالری‌شماری: ${p.trackingExperience === 'new' ? 'تازه‌کار' : p.trackingExperience === 'quit' ? 'قبلاً رها کرده' : 'فعال می‌شمارد'}
+- تاریخ پیش‌بینی‌شده رسیدن به هدف: ${goalDateText} | استریک فعلی: ${streak} روز
+
+═══ گزارش کامل امروز (${todayKey()}) ═══
+- تمرین امروز: ${t.dayCompleted ? '✅ کامل شده (' + Math.round((t.workoutSeconds || 0) / 60) + ' دقیقه)' : '❌ هنوز کامل نشده'}
+- تمرین‌های ثبت‌شده:
+${exLines}
+- کالری مصرفی امروز: ${loggedCal} از ${p.targetKcal} kcal (${loggedCal >= p.targetKcal ? 'سقف پر شده' : 'باقی‌مانده: ' + Math.max(0, p.targetKcal - loggedCal) + ' kcal'})
+- پروتئین: ${loggedP}/${p.proteinG} گرم | کربوهیدرات: ${loggedC}/${p.carbsG} گرم | چربی: ${loggedF}/${p.fatG} گرم
+- آب: ${t.waterMl}/${p.waterMl} میلی‌لیتر
+- وعده‌های ثبت‌شده:
+${mealLines}
+- کالری سوزانده تقریبی تمرین امروز: ${Math.round((t.workoutSeconds || 0) * 0.12)} kcal
+
+═══ دستورالعمل پاسخگویی ═══
+۱. برای سوال غذایی: کالری واقع‌بینانه بگو و راهکار جا دادن در سقف ${p.targetKcal} کالریِ امروز (با احتساب ${loggedCal} مصرف‌شده) ارائه کن — هرگز سرزنش نکن.
 ۲. اگر عکسی فرستاده شد، مستقیم تحلیلش کن (بشقاب غذا، دستگاه، فرم بدن).
-۳. برای سوال تمرینی، دقیق و بیومکانیک‌محور جواب بده و در صورت لزوم به حرکات موجود برنامه ارجاع بده.
-۴. پاسخ‌ها خوانا، پرانرژی و علمی باشند. درخواست‌های خارج از حوزه سلامت را مؤدبانه رد کن.`;
+۳. سوال تمرینی را بیومکانیک‌محور جواب بده و به حرکات برنامه‌اش ارجاع بده.
+۴. به وضعیت امروز او مسلطی — اگر پرسید یا مربوط شد، از گزارش بالا استفاده کن (مثلاً «چون امروز فقط ${loggedP} گرم پروتئین خوردی...»).
+۵. درخواست خارج از حوزه سلامت را مؤدبانه رد کن. پاسخ‌ها خوانا و پرانرژی باشند.`;
     },
 
     async sendCoachMessage() {
@@ -2634,7 +2825,7 @@ ${pool}
 
       const modelSel = document.getElementById('set-model');
       const fillModels = (models, preferred) => {
-        modelSel.innerHTML = (models || ['gemini-2.0-flash', 'gemini-2.0-flash-lite', 'gemini-1.5-flash'])
+        modelSel.innerHTML = (models || ['gemini-flash-lite-latest', 'gemini-flash-latest', 'gemini-3.5-flash-lite', 'gemini-3.5-flash', 'gemini-3.8-flash'])
           .map(m => `<option value="${esc(m)}" ${m === preferred ? 'selected' : ''}>${esc(m)}</option>`).join('');
       };
       fillModels(null, GordolAI.config.model);

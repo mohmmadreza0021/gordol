@@ -1,4 +1,4 @@
-// بانک تغذیه اورجینال گردول (بدون هیچ تصویر خارجی)
+// بانک تغذیه اورجینال گردول — همه تصاویر کاملاً لوکال (بدون هیچ درخواست خارجی)
 window.GORDOL_MEALS = {
   "dailyMeals": [
     {
@@ -17,7 +17,8 @@ window.GORDOL_MEALS = {
           "p": 42,
           "c": 52,
           "f": 14,
-          "cal": 520
+          "cal": 520,
+          "image": "assets/food/1525351484163-7529414344d8.jpg"
         },
         {
           "name": "پنیر کم‌چرب و تخم‌مرغ آب‌پز با نان جو",
@@ -25,7 +26,8 @@ window.GORDOL_MEALS = {
           "p": 38,
           "c": 45,
           "f": 16,
-          "cal": 510
+          "cal": 510,
+          "image": "assets/food/1582169505937-b9992bd01ed9.jpg"
         },
         {
           "name": "ماست ایسلندی / یونانی با جودوسر",
@@ -33,7 +35,8 @@ window.GORDOL_MEALS = {
           "p": 35,
           "c": 60,
           "f": 8,
-          "cal": 490
+          "cal": 490,
+          "image": "assets/food/1488477181946-6428a0291777.jpg"
         },
         {
           "name": "شیک پروتئینی صبحگاهی گردول",
@@ -41,9 +44,11 @@ window.GORDOL_MEALS = {
           "p": 40,
           "c": 48,
           "f": 12,
-          "cal": 530
+          "cal": 530,
+          "image": "assets/food/1553530666-ba11a7da3888.jpg"
         }
-      ]
+      ],
+      "image": "assets/food/1525351484163-7529414344d8.jpg"
     },
     {
       "id": "snack1",
@@ -61,7 +66,8 @@ window.GORDOL_MEALS = {
           "p": 15,
           "c": 28,
           "f": 3,
-          "cal": 200
+          "cal": 200,
+          "image": "assets/food/1568702846914-96b305d2aaeb.jpg"
         },
         {
           "name": "هویج خلالی با حمس خانگی",
@@ -69,7 +75,8 @@ window.GORDOL_MEALS = {
           "p": 8,
           "c": 24,
           "f": 6,
-          "cal": 180
+          "cal": 180,
+          "image": "assets/food/1540420773420-3366772f4999.jpg"
         },
         {
           "name": "پرتقال تازه با سفیده تخم‌مرغ",
@@ -77,7 +84,8 @@ window.GORDOL_MEALS = {
           "p": 12,
           "c": 20,
           "f": 1,
-          "cal": 190
+          "cal": 190,
+          "image": "assets/food/1618897996318-5a901fa6ca71.jpg"
         },
         {
           "name": "توت خشک با بادام درختی",
@@ -85,9 +93,11 @@ window.GORDOL_MEALS = {
           "p": 6,
           "c": 26,
           "f": 8,
-          "cal": 210
+          "cal": 210,
+          "image": "assets/food/1599599810769-bcde5a160d32.jpg"
         }
-      ]
+      ],
+      "image": "assets/food/1568702846914-96b305d2aaeb.jpg"
     },
     {
       "id": "lunch",
@@ -105,7 +115,8 @@ window.GORDOL_MEALS = {
           "p": 55,
           "c": 72,
           "f": 18,
-          "cal": 680
+          "cal": 680,
+          "image": "assets/food/1604908176997-125f25cc6f3d.jpg"
         },
         {
           "name": "کباب تابه‌ای فیله با برنج",
@@ -113,7 +124,8 @@ window.GORDOL_MEALS = {
           "p": 52,
           "c": 70,
           "f": 22,
-          "cal": 700
+          "cal": 700,
+          "image": "assets/food/1544025162-d76694265947.jpg"
         },
         {
           "name": "کنسرو ماهی تن رژیمی با برنج کته",
@@ -121,7 +133,8 @@ window.GORDOL_MEALS = {
           "p": 48,
           "c": 68,
           "f": 14,
-          "cal": 660
+          "cal": 660,
+          "image": "assets/food/1544025162-d76694265947.jpg"
         },
         {
           "name": "خوراک عدسی رژیمی با قارچ و نان سنگک",
@@ -129,9 +142,11 @@ window.GORDOL_MEALS = {
           "p": 38,
           "c": 85,
           "f": 10,
-          "cal": 640
+          "cal": 640,
+          "image": "assets/food/1547592166-23ac45744acd.jpg"
         }
-      ]
+      ],
+      "image": "assets/food/1604908176997-125f25cc6f3d.jpg"
     },
     {
       "id": "snack2",
@@ -149,7 +164,8 @@ window.GORDOL_MEALS = {
           "p": 16,
           "c": 24,
           "f": 6,
-          "cal": 220
+          "cal": 220,
+          "image": "assets/food/1599599810769-bcde5a160d32.jpg"
         },
         {
           "name": "نان جو با کره بادام‌زمینی و دارچین",
@@ -157,7 +173,8 @@ window.GORDOL_MEALS = {
           "p": 10,
           "c": 22,
           "f": 11,
-          "cal": 215
+          "cal": 215,
+          "image": "assets/food/snack2-toast.jpg"
         },
         {
           "name": "ماست پروبیوتیک با دانه چیا و توت‌فرنگی",
@@ -165,9 +182,11 @@ window.GORDOL_MEALS = {
           "p": 14,
           "c": 18,
           "f": 4,
-          "cal": 190
+          "cal": 190,
+          "image": "assets/food/1488477181946-6428a0291777.jpg"
         }
-      ]
+      ],
+      "image": "assets/food/1599599810769-bcde5a160d32.jpg"
     },
     {
       "id": "dinner",
@@ -185,7 +204,8 @@ window.GORDOL_MEALS = {
           "p": 45,
           "c": 32,
           "f": 12,
-          "cal": 480
+          "cal": 480,
+          "image": "assets/food/1544025162-d76694265947.jpg"
         },
         {
           "name": "خوراک ماهی قزل‌آلا کبابی با سبزیجات بخارپز",
@@ -193,7 +213,8 @@ window.GORDOL_MEALS = {
           "p": 42,
           "c": 18,
           "f": 15,
-          "cal": 470
+          "cal": 470,
+          "image": "assets/food/1519708227418-c8fd9a32b7a2.jpg"
         },
         {
           "name": "سالاد تن‌ماهی با تخم‌مرغ و سبزیجات",
@@ -201,7 +222,8 @@ window.GORDOL_MEALS = {
           "p": 46,
           "c": 12,
           "f": 14,
-          "cal": 460
+          "cal": 460,
+          "image": "assets/food/1512621776951-a57141f2eefd.jpg"
         },
         {
           "name": "سوپ جو غلیظ با سینه مرغ ریش‌ریش",
@@ -209,9 +231,11 @@ window.GORDOL_MEALS = {
           "p": 36,
           "c": 48,
           "f": 8,
-          "cal": 450
+          "cal": 450,
+          "image": "assets/food/1547592166-23ac45744acd.jpg"
         }
-      ]
+      ],
+      "image": "assets/food/1544025162-d76694265947.jpg"
     }
   ],
   "foodsDatabase": [

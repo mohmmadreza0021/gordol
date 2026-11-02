@@ -1012,6 +1012,104 @@ nav.bottom-nav {
   background: rgba(60, 20, 24, 0.97);
 }
 
+/* آنبوردینگ اورجینال */
+.onb-progress {
+  height: 4px;
+  background: var(--bg-elevated);
+  border-radius: 2px;
+  overflow: hidden;
+  margin-bottom: 16px;
+}
+
+.onb-progress-bar {
+  height: 100%;
+  background: linear-gradient(90deg, var(--accent-purple), var(--accent-coral));
+  border-radius: 2px;
+  transition: width 0.3s ease;
+}
+
+.onb-card { padding: 22px 18px; }
+
+.onb-title {
+  font-size: 1.25rem;
+  font-weight: 900;
+  color: #fff;
+  margin-bottom: 8px;
+  text-align: center;
+}
+
+.onb-subtitle {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  text-align: center;
+  line-height: 1.7;
+  margin-bottom: 18px;
+}
+
+.onb-nav-row {
+  display: flex;
+  gap: 10px;
+  margin-top: 22px;
+  align-items: center;
+}
+
+.onb-check {
+  color: var(--accent-emerald);
+  font-weight: 900;
+  font-size: 1rem;
+  opacity: 0;
+  transition: opacity 0.15s;
+}
+
+.swap-card-item.selected .onb-check { opacity: 1; }
+
+.onb-big-input {
+  font-size: 2rem !important;
+  font-weight: 900;
+  text-align: center;
+  padding: 16px !important;
+}
+
+.onb-unit {
+  text-align: center;
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  margin-top: 6px;
+  font-weight: 700;
+}
+
+.onb-feature {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-color);
+  border-radius: 14px;
+  padding: 12px 14px;
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+
+.onb-feature span:first-child { font-size: 1.3rem; }
+
+.onb-plan-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 10px 14px;
+  font-size: 0.85rem;
+}
+
+.onb-plan-row b { color: var(--accent-emerald); }
+
+.onb-preparing {
+  text-align: center;
+  padding: 60px 20px;
+}
+
 /* اسکرول‌بار */
 ::-webkit-scrollbar { width: 6px; }
 ::-webkit-scrollbar-track { background: transparent; }

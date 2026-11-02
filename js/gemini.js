@@ -11,7 +11,8 @@
   'use strict';
 
   const API_BASE = 'https://generativelanguage.googleapis.com/v1beta';
-  const DEFAULT_MODEL = 'gemini-2.0-flash';
+  // مدل پیش‌فرض «جدیدترین فلش‌لایت» — در تست واقعی پایدارترین پاسخ را داد (نوامبر ۲۰۲۶)
+  const DEFAULT_MODEL = 'gemini-flash-lite-latest';
   const TIMEOUT_MS = 45000;
 
   const GordolAI = {
