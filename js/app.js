@@ -1295,12 +1295,17 @@
 
       container.innerHTML = `
         <div class="card" style="background:linear-gradient(135deg, rgba(156,107,255,0.15), rgba(255,127,92,0.15)); border-color:var(--accent-purple);">
-          <h3 style="font-size:1.1rem; font-weight:900; color:#fff;">${esc(plan.titleFa)} — روز ${faNum(p.currentDay)}</h3>
-          <p style="font-size:0.82rem; color:var(--text-muted); margin-top:4px;">${esc(template.name)} · ${esc(plan.subtitle)}</p>
-          <div style="display:flex; gap:8px; margin-top:12px; font-size:0.78rem; font-weight:700;">
-            <span class="macro-tag">⏱️ ${faNum(p.trainingMinutes)} دقیقه</span>
-            <span class="macro-tag">🔄 ${faNum(chapter.rounds)} راند</span>
-            <span class="macro-tag">💪 ${faNum(template.training.length)} حرکت اصلی</span>
+          <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:8px;">
+            <div style="flex:1;">
+              <h3 style="font-size:1.1rem; font-weight:900; color:#fff;">${esc(plan.titleFa)} — روز ${faNum(p.currentDay)}</h3>
+              <p style="font-size:0.82rem; color:var(--text-muted); margin-top:4px;">${esc(template.name)} · ${esc(plan.subtitle)}</p>
+              <div style="display:flex; gap:8px; margin-top:12px; font-size:0.78rem; font-weight:700; flex-wrap:wrap;">
+                <span class="macro-tag">⏱️ ${faNum(p.trainingMinutes)} دقیقه</span>
+                <span class="macro-tag">🔄 ${faNum(chapter.rounds)} راند</span>
+                <span class="macro-tag">💪 ${faNum(template.training.length)} حرکت اصلی</span>
+              </div>
+            </div>
+            <button class="btn-secondary" style="width:auto; padding:7px 12px; font-size:0.74rem; flex-shrink:0;" id="btn-switch-program">🔄 تغییر مسیر</button>
           </div>
         </div>
 
@@ -1367,6 +1372,7 @@
       renderList(document.getElementById('list-cooldown'), template.cooldown);
 
       document.getElementById('btn-start-session').addEventListener('click', () => this.startSessionPlayer());
+      document.getElementById('btn-switch-program').addEventListener('click', () => this.openProgramSwitcher());
       document.getElementById('btn-manual-complete').addEventListener('click', () => {
         if (confirm(`تمام تمرینات روز ${p.currentDay} را انجام داده‌ای؟`)) {
           this.completeWorkoutDay(Math.round(p.trainingMinutes * 60));
@@ -1390,6 +1396,47 @@
       this.sendLocalNotification('🏆 یک روز دیگر به هدف نزدیک‌تر شدی!', `روز ${faNum(p.currentDay - 1)} کامل شد. استریک تو ادامه دارد 🔥`);
       toast(`آفرین قهرمان! روز ${faNum(p.currentDay - 1)} ثبت شد 💪`);
       this.switchTab('workout');
+    },
+
+    // ---------- سوییچر ۱۰ برنامه تمرینی اورجینال ----------
+    openProgramSwitcher() {
+      if (!this.profile) return;
+      const modal = document.getElementById('program-switcher-modal');
+      const plans = window.GORDOL_PLANS || [];
+      modal.querySelector('.modal-card').innerHTML = `
+        <div class="modal-header">
+          <h3 class="modal-title">🔄 انتخاب مسیر تمرینی</h3>
+          <button class="btn-close progs-close">×</button>
+        </div>
+        <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:12px;">
+          هر ۱۰ برنامه اورجینال گردول با دیتای کامل فصل‌ها. روز فعلی تو حفظ می‌شود.
+        </p>
+        <div style="display:flex; flex-direction:column; gap:10px; max-height:60vh; overflow-y:auto;">
+          ${plans.map(pl => `
+            <div class="swap-card-item ${this.profile.selectedPath === pl.slug ? 'selected' : ''}" data-prog="${esc(pl.slug)}">
+              <div style="display:flex; align-items:center; gap:10px;">
+                <span style="font-size:1.6rem;">${pl.icon || '🏋️'}</span>
+                <div>
+                  <div style="font-size:0.9rem; font-weight:800; color:#fff;">${esc(pl.titleFa)}</div>
+                  <div style="font-size:0.74rem; color:var(--text-muted); margin-top:2px;">${esc(pl.subtitle || '')}</div>
+                </div>
+              </div>
+              ${this.profile.selectedPath === pl.slug ? '<span style="color:#10b981; font-weight:900;">✓ فعال</span>' : '<button class="btn-secondary" style="width:auto; padding:4px 10px; font-size:0.72rem;">انتخاب</button>'}
+            </div>
+          `).join('')}
+        </div>
+      `;
+      modal.classList.add('active');
+      modal.querySelector('.progs-close').addEventListener('click', () => modal.classList.remove('active'));
+      modal.querySelectorAll('[data-prog]').forEach(el => {
+        el.addEventListener('click', () => {
+          this.profile.selectedPath = el.dataset.prog;
+          this.saveProfile();
+          modal.classList.remove('active');
+          this.renderWorkoutTab(document.querySelector('main.main-content'));
+          toast('مسیر تمرینی تغییر کرد ✅');
+        });
+      });
     },
 
     // ---------- پلیر جلسه تمرین (تایمر خودکار) ----------
