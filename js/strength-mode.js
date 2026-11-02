@@ -108,19 +108,21 @@
       });
       app.saveLogs();
       app.saveProfile();
-      this.maybeWeekAdvance();
       return true;
     },
 
     // پیشروی هفته: ۵ جلسه کامل → تأیید ورود به هفته بعد (عین v3)
+    // خروجی true یعنی هفته جلو رفت (تا بعد از رندر ثبت جلسه، دوباره رندر شود)
     maybeWeekAdvance() {
       const st = this.state();
       const total = window.GORDOL_STRENGTH.sessionsPerWeek;
       if (st.sessionsDone >= total && st.week < window.GORDOL_STRENGTH.totalWeeks) {
         if (confirm('تبریک! تمام ' + total + ' جلسه هفته ' + st.week + ' را کامل کردی. وارد هفته ' + (st.week + 1) + ' شوی؟ (اوردلود و فرم‌دهی جدید فعال می‌شود)')) {
           this.advanceWeek();
+          return true;
         }
       }
+      return false;
     },
 
     advanceWeek() {
@@ -241,7 +243,9 @@
         if (this.logSession(selDay)) {
           app.sendLocalNotification('جلسه قدرتی امروز ثبت شد!', selDay.title + ' کامل شد. آفرین قهرمان!');
           app.toast('جلسه تمرین ثبت شد! استریک تو ادامه دارد.');
-          this.render(container);
+          this.render(container); // همیشه ابتدا وضعیت «ثبت شده» را نشان بده
+          // ورود به هفته بعد فقط بعد از رندر ثبت جلسه؛ در صورت پیشروی، نمای تازه رندر می‌شود
+          if (this.maybeWeekAdvance()) this.render(container);
         } else {
           app.toast('این جلسه قبلاً ثبت شده است.', false);
         }

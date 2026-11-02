@@ -276,6 +276,9 @@
       } catch (e) {}
     },
 
+    // پل عمومی توست برای ماژول‌های جدید (حالت قدرتی) — نسخه داخلی تابع خصوصی است
+    toast(msg, ok) { toast(msg, ok); },
+
     initPwaInstall() {
       window.addEventListener('beforeinstallprompt', (e) => {
         e.preventDefault();
