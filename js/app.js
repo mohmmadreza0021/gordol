@@ -428,7 +428,7 @@
         this.requestNotificationPermission();
       } else {
         this.sendLocalNotification('🔥 وقت تمرین گردول است!', 'روز چالش امروز در انتظار توست. بیا با هم بترکونیم!');
-        toast('نوتیفیکیشن تستی ارسال شد!');
+        toast('🔔 نوتیف تستی ارسال شد — نوار اعلان گوشی یا ویندوز را چک کن!');
       }
     },
 
@@ -1254,6 +1254,11 @@
         </div>
         <div class="sp-video-box">
           <video id="sp-video" autoplay loop muted playsinline></video>
+          <div class="sp-rest-overlay" id="sp-rest-overlay" style="display:none;">
+            <div style="font-size:2.6rem; animation:pulse-ai 2s infinite;">💨</div>
+            <div style="font-size:1.1rem; font-weight:900; color:#fff; margin-top:8px;">نفس بگیر و آب بنوش</div>
+            <div style="font-size:0.78rem; color:var(--text-muted); margin-top:4px;">عضلاتت رو ریلکس کن — حرکت بعدی نزدیکه</div>
+          </div>
           <div class="sp-phase-badge" id="sp-phase">—</div>
         </div>
         <div style="display:flex; align-items:center; justify-content:center; margin:14px 0;">
@@ -1296,6 +1301,7 @@
       if (sp.idx >= sp.items.length) { this.endSessionPlayer(true); return; }
       const item = sp.items[sp.idx];
       sp.remaining = item.sec;
+      sp.paused = false; // باگ: حرکت بعدی نباید مکث‌شده از آیتم قبل به ارث برسد
       if (item.kind === 'work') sp.workedTotal += item.sec;
 
       const ex = item.exId ? (window.GORDOL_EXERCISES || []).find(e => e.id === (this.swaps.exercises[item.exId] || item.exId)) : null;
@@ -1303,6 +1309,19 @@
       document.getElementById('sp-title').textContent = ex ? ex.nameFa : (item.phase || 'استراحت');
       document.getElementById('sp-phase').textContent = item.kind === 'rest' ? 'استراحت' : item.phase;
       document.getElementById('sp-phase').className = 'sp-phase-badge' + (item.kind === 'rest' ? ' rest' : '');
+      const pauseBtn = document.getElementById('sp-pause');
+      if (pauseBtn) pauseBtn.textContent = '⏸ مکث';
+
+      // کادر ویدیو: در استراحت به جای ویدیوی سیاه، اورلی تنفس نمایش داده می‌شود
+      const restOverlay = document.getElementById('sp-rest-overlay');
+      const video = document.getElementById('sp-video');
+      if (item.kind === 'rest') {
+        if (video) video.style.display = 'none';
+        if (restOverlay) restOverlay.style.display = 'flex';
+      } else {
+        if (restOverlay) restOverlay.style.display = 'none';
+        if (video) video.style.display = '';
+      }
 
       const nextItem = sp.items[sp.idx + 1];
       const nextEx = nextItem && nextItem.exId ? (window.GORDOL_EXERCISES || []).find(e => e.id === (this.swaps.exercises[nextItem.exId] || nextItem.exId)) : null;
@@ -1310,19 +1329,25 @@
         ? `بعدی: ${nextItem.kind === 'rest' ? 'استراحت ' + faNum(nextItem.sec) + ' ثانیه‌ای' : esc(nextEx ? nextEx.nameFa : '')} <span style="opacity:0.7;">(راند ${faNum(nextItem.round)})</span>`
         : '🎉 آخرین حرکت — تمومش کن!';
 
-      const video = document.getElementById('sp-video');
-      if (video) {
-        if (ex && ex.videoUrl) {
-          video.style.display = '';
-          const expected = ex.videoUrl;
-          if (!video.getAttribute('src') || !video.getAttribute('src').endsWith(expected)) {
-            video.setAttribute('src', expected);
-            video.load();
-          }
-          video.play().catch(() => {});
-        } else {
-          video.style.display = 'none';
+      if (ex && ex.videoUrl && video) {
+        const expected = ex.videoUrl;
+        if (!video.getAttribute('src') || !video.getAttribute('src').endsWith(expected)) {
+          video.setAttribute('src', expected);
+          video.load();
         }
+        video.play().catch(() => {});
+      } else if (video) {
+        video.removeAttribute('src');
+      }
+
+      // نمایش فوری شمارنده (بدون انتظار برای اولین تیک)
+      const numNow = document.getElementById('sp-timer-num');
+      const circleNow = document.getElementById('sp-timer-circle');
+      if (numNow) numNow.textContent = faNum(item.sec);
+      if (circleNow) {
+        const cFull = 2 * Math.PI * 54;
+        circleNow.style.strokeDasharray = cFull;
+        circleNow.style.strokeDashoffset = 0;
       }
 
       this.playBeep(item.kind === 'rest' ? 440 : 880, 0.18);
@@ -1532,7 +1557,7 @@ ${pool}
       card.style.maxWidth = '480px';
       card.innerHTML = `
         <div class="modal-header">
-          <h3 class="modal-title">👁️ چشم گِردول</h3>
+          <h3 class="modal-title">👁️ چشم گردول</h3>
           <button class="btn-close" id="pose-close">×</button>
         </div>
 
@@ -1604,10 +1629,13 @@ ${pool}
     async restartPoseEngine() {
       const ex = (window.GORDOL_EXERCISES || []).find(e => e.id === this.poseExId) || {};
       const detector = window.GordolEye.resolveDetector(this.poseExId);
+      const goalText = detector.mech === 'hold'
+        ? 'حالت نشست: ثانیه‌شمار فعال است، فرم بدن را حفظ کن'
+        : (ex.measure === 'SECONDS'
+          ? `هدف: ${faNum(ex.suggestedSeconds || 30)} ثانیه اجرای پیوسته`
+          : `هدف: ${faNum(ex.suggestedReps || 12)} تکرار`);
       document.getElementById('pose-goal-hint').textContent =
-        (ex.nameFa || this.poseExId) + ' — ' + (detector.mech === 'hold'
-          ? 'حالت نشست: ثانیه‌شمار فعال است، فرم بدن را حفظ کن'
-          : 'هدف: ' + faNum(ex.suggestedReps || 12) + ' تکرار');
+        (ex.nameFa || this.poseExId) + ' — ' + goalText;
       document.getElementById('pose-counter').textContent = detector.mech === 'hold' ? '۰ ثانیه' : '۰';
 
       try {
@@ -2110,7 +2138,10 @@ ${pool}
         this.renderScannedFoodResult(res);
         btn.textContent = '⚡ تحلیل مجدد';
       } catch (e) {
-        toast('خطا در تحلیل: ' + e.message, false);
+        // خطای ماندگار داخل کارت نتیجه
+        const card = document.getElementById('food-scan-result-card');
+        card.style.display = 'block';
+        card.innerHTML = `<div class="chat-bubble-msg error" style="max-width:100%;">⚠️ ${esc(e.message)}<br/><span style="font-size:0.72rem;">دوباره تلاش کن یا از تنظیمات، کلید و اتصال را بررسی کن.</span></div>`;
         btn.textContent = '⚡ تلاش مجدد';
       }
       btn.disabled = false;
@@ -2210,7 +2241,10 @@ ${pool}
             toast(`«${res.foodName}» ثبت شد ✅`);
           });
         } catch (e) {
-          toast('خطا: ' + e.message, false);
+          // خطا به صورت ماندگار داخل مودال نمایش داده می‌شود (نه توست زودگذر)
+          const box = document.getElementById('food-text-result');
+          box.style.display = 'block';
+          box.innerHTML = `<div class="chat-bubble-msg error" style="max-width:100%;">⚠️ ${esc(e.message)}<br/><span style="font-size:0.72rem;">دوباره تلاش کن یا از تنظیمات، کلید و اتصال را بررسی کن.</span></div>`;
         }
         btn.disabled = false;
         btn.textContent = '⚡ تحلیل با هوش مصنوعی';
@@ -2244,7 +2278,7 @@ ${pool}
       }
       return `
         <div class="card">
-          <div class="card-title"><span>⏳ ردیاب فستینگ (۱۶:۸)</span></div>
+          <div class="card-title"><span>⏳ ردیاب فستینگ ۱۶:۸ (اختیاری)</span></div>
           ${inner}
         </div>
       `;
