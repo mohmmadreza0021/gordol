@@ -1150,7 +1150,7 @@
             </div>
           </div>
           <p style="font-size:0.7rem; color:var(--text-muted); margin-top:8px;">
-            ⚠️ پیشرفت روز فقط با تکمیل تمرین ثبت می‌شود — وزن‌کشی منظم دقت پیش‌بینی را بالاتر می‌برد.
+            پیشرفت روز فقط با تکمیل تمرین ثبت می‌شود — وزن‌کشی منظم دقت پیش‌بینی را بالاتر می‌برد.
           </p>
         </div>
 
@@ -1217,7 +1217,7 @@
             <span style="font-size:0.75rem; color:var(--text-muted);">${t.dayCompleted ? '✅ ثبت شده' : 'در انتظار انجام'}</span>
           </div>
           <p style="color:var(--text-muted); font-size:0.84rem; margin-bottom:12px;">
-            مدت: ${faNum(p.trainingMinutes)} دقیقه | تمرکز: ${p.trainingFocus === 'core' ? 'شکم و مرکز بدن' : (p.trainingFocus === 'lower' ? 'باسن و پا' : 'کل بدن')} | سبک: ${p.trainingStyle === 'mastery' ? 'چشم گردول 👁️' : 'مسیر روزانه 🏃'}
+            مدت: ${faNum(p.trainingMinutes)} دقیقه | تمرکز: ${p.trainingFocus === 'core' ? 'شکم و مرکز بدن' : (p.trainingFocus === 'lower' ? 'باسن و پا' : 'کل بدن')} | سبک: ${p.trainingStyle === 'mastery' ? 'چشم گردول' : 'مسیر روزانه'}
           </p>
           <button class="btn-primary" id="btn-go-workout">${GordolIcon('play', 17)} شروع تمرین امروز</button>
         </div>
@@ -1403,7 +1403,7 @@
       this.saveProfile();
       this.renderHeader();
       this.sendLocalNotification('یک روز دیگر به هدف نزدیک‌تر شدی!', `روز ${faNum(p.currentDay - 1)} کامل شد. استریک تو ادامه دارد 🔥`);
-      toast(`آفرین قهرمان! روز ${faNum(p.currentDay - 1)} ثبت شد 💪`);
+      toast(`آفرین قهرمان! روز ${faNum(p.currentDay - 1)} ثبت شد`);
       this.switchTab('workout');
     },
 
@@ -2389,7 +2389,7 @@ ${pool}
         // خطای ماندگار داخل کارت نتیجه
         const card = document.getElementById('food-scan-result-card');
         card.style.display = 'block';
-        card.innerHTML = `<div class="chat-bubble-msg error" style="max-width:100%;">⚠️ ${esc(e.message)}<br/><span style="font-size:0.72rem;">دوباره تلاش کن یا از تنظیمات، کلید و اتصال را بررسی کن.</span></div>`;
+        card.innerHTML = `<div class="chat-bubble-msg error" style="max-width:100%;">${GordolIcon('triangle-alert', 15)} ${esc(e.message)}<br/><span style="font-size:0.72rem;">دوباره تلاش کن یا از تنظیمات، کلید و اتصال را بررسی کن.</span></div>`;
         btn.textContent = 'تلاش مجدد';
       }
       btn.disabled = false;
@@ -2493,7 +2493,7 @@ ${pool}
           // خطا به صورت ماندگار داخل مودال نمایش داده می‌شود (نه توست زودگذر)
           const box = document.getElementById('food-text-result');
           box.style.display = 'block';
-          box.innerHTML = `<div class="chat-bubble-msg error" style="max-width:100%;">⚠️ ${esc(e.message)}<br/><span style="font-size:0.72rem;">دوباره تلاش کن یا از تنظیمات، کلید و اتصال را بررسی کن.</span></div>`;
+          box.innerHTML = `<div class="chat-bubble-msg error" style="max-width:100%;">${GordolIcon('triangle-alert', 15)} ${esc(e.message)}<br/><span style="font-size:0.72rem;">دوباره تلاش کن یا از تنظیمات، کلید و اتصال را بررسی کن.</span></div>`;
         }
         btn.disabled = false;
         btn.textContent = '⚡ تحلیل با هوش مصنوعی';
@@ -2752,7 +2752,7 @@ ${mealLines}
       } catch (e) {
         const lEl = document.getElementById(loadingId);
         if (lEl) lEl.remove();
-        chatBox.insertAdjacentHTML('beforeend', `<div class="chat-bubble-msg error">⚠️ ${esc(e.message)}</div>`);
+        chatBox.insertAdjacentHTML('beforeend', `<div class="chat-bubble-msg error">${GordolIcon('triangle-alert', 15)} ${esc(e.message)}</div>`);
         chatBox.scrollTop = chatBox.scrollHeight;
       }
     },
