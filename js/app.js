@@ -340,6 +340,13 @@
           this.startNotificationScheduler();
         } else if (Notification.permission === 'default' && !asked) {
           this.openNotificationPromptModal();
+        } else if (Notification.permission === 'denied') {
+          // دسترسی مرورگر مسدود است ولی یادآورها داخل خود اپ (توست) فعال می‌مانند
+          this.startNotificationScheduler();
+          if (localStorage.getItem('gordol_notif_denied_warned') !== todayKey()) {
+            localStorage.setItem('gordol_notif_denied_warned', todayKey());
+            setTimeout(() => toast('⚠️ اعلان مرورگر مسدود شده — یادآورها فعلاً فقط داخل اپ می‌آیند. برای اعلان واقعی گوشی، از تنظیمات مرورگر اجازه بده.', false), 2500);
+          }
         }
       } catch (e) {}
     },
@@ -388,7 +395,11 @@
     },
 
     sendLocalNotification(title, body) {
-      if (!('Notification' in window) || Notification.permission !== 'granted') return;
+      if (!('Notification' in window) || Notification.permission !== 'granted') {
+        // جایگزین داخل‌اپ — یادآور حتی بدون اجازه اعلان مرورگر دیده می‌شود
+        toast('🔔 ' + title, true);
+        return;
+      }
       try {
         new Notification(title, {
           body, icon: 'assets/icons/icon-192.svg', badge: 'assets/icons/favicon.svg', dir: 'rtl', lang: 'fa'
@@ -428,19 +439,22 @@
         const p = this.profile;
         if (!p) return;
 
-        // یادآور تمرین روزانه در ساعت انتخابی کاربر
-        if (hm === p.reminderTime && !this.notifSentToday('workout')) {
+        // یادآور تمرین روزانه — پنجره ۹۰ دقیقه‌ای (اگر اپ سرِ لحظه باز نبود، تا ۹۰ دقیقه بعد فرصت دارد)
+        if (hm >= p.reminderTime && this.minutesBetween(hm, p.reminderTime) <= 90 && !this.notifSentToday('workout')) {
           this.markNotifSent('workout');
           this.sendLocalNotification('🏋️ وقت تمرین امروز گردول است!', `روز ${faNum(p.currentDay)} در انتظار توست. ${faNum(p.trainingMinutes)} دقیقه فقط! بیا شروع کنیم 💪`);
         }
-        // یادآورهای آب
-        if (['10:00', '13:00', '16:00', '19:00'].includes(hm) && !this.notifSentToday('water-' + hm)) {
-          this.markNotifSent('water-' + hm);
-          const t = this.getDayLog(todayKey());
-          const left = Math.max(0, Math.round((p.waterMl - t.waterMl) / 250));
-          this.sendLocalNotification('💧 وقت نوشیدن آب است!', left > 0
-            ? `${faNum(left)} لیوان دیگر تا هدف آب امروزت مونده. یک لیوان آب بنوش!`
-            : 'هدف آب امروز رو زدی! عالی بودی 🎉');
+        // یادآورهای آب — پنجره ۹۰ دقیقه‌ای برای هر اسلات
+        for (const ws of ['10:00', '13:00', '16:00', '19:00']) {
+          if (hm >= ws && this.minutesBetween(hm, ws) <= 90 && !this.notifSentToday('water-' + ws)) {
+            this.markNotifSent('water-' + ws);
+            const t = this.getDayLog(todayKey());
+            const left = Math.max(0, Math.round((p.waterMl - t.waterMl) / 250));
+            this.sendLocalNotification('💧 وقت نوشیدن آب است!', left > 0
+              ? `${faNum(left)} لیوان دیگر تا هدف آب امروزت مونده. یک لیوان آب بنوش!`
+              : 'هدف آب امروز رو زدی! عالی بودی 🎉');
+            break;
+          }
         }
         // یادآور وعده‌های غذایی (برنامه اورجینال گردول — با پنجره ۹۰ دقیقه‌ای)
         const mealSlots = [
@@ -458,7 +472,7 @@
         }
 
         // یادآور ثبت شام
-        if (hm === '21:00' && !this.notifSentToday('dinner')) {
+        if (hm >= '21:00' && this.minutesBetween(hm, '21:00') <= 90 && !this.notifSentToday('dinner')) {
           this.markNotifSent('dinner');
           const t = this.getDayLog(todayKey());
           if (t.meals.filter(m => m.mealType === 'dinner').length === 0) {
@@ -466,13 +480,13 @@
           }
         }
         // خواب و ثبت استریک (اورجینال)
-        if (hm === '23:00' && !this.notifSentToday('sleep')) {
+        if (hm >= '23:00' && this.minutesBetween(hm, '23:00') <= 59 && !this.notifSentToday('sleep')) {
           this.markNotifSent('sleep');
           this.sendLocalNotification('🌙 خواب و ثبت استریک', 'جلسات امروز را تیک زدی؟ خواب ۷ تا ۸ ساعته کلید چربی‌سوزی پایدار است.');
         }
 
         // هشدار استریک در خطر
-        if (hm === '20:00' && !this.notifSentToday('streak')) {
+        if (hm >= '20:00' && this.minutesBetween(hm, '20:00') <= 59 && !this.notifSentToday('streak')) {
           const streak = this.calcStreak();
           if (streak >= 2 && !this.getDayLog(todayKey()).dayCompleted) {
             this.markNotifSent('streak');
