@@ -83,7 +83,14 @@
     loadError: null,
 
     async ensureLoaded() {
-      if (this.loaded || this.loading) return this.loading;
+      if (this.loaded) return true;
+      if (!this.loadPromise) {
+        this.loadPromise = this._doLoad().catch((e) => { this.loadPromise = null; throw e; });
+      }
+      return this.loadPromise;
+    },
+
+    async _doLoad() {
       this.loading = true;
       this.loadError = null;
       try {
@@ -102,7 +109,7 @@
         this.loaded = true;
       } catch (e) {
         console.error('[GordolEye] load failed', e);
-        this.loadError = e && e.message ? e.message : String(e);
+        this.loadError = (e && (e.message || e.name)) ? (e.message || e.name) : String(e);
       } finally {
         this.loading = false;
       }

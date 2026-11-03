@@ -1532,6 +1532,8 @@
         </div>
       `;
       modal.classList.add('active');
+      const spVideo = document.getElementById('sp-video');
+      if (spVideo) this.attachVideoOverlay(spVideo);
 
       document.getElementById('sp-close').addEventListener('click', () => this.endSessionPlayer(false));
       document.getElementById('sp-end').addEventListener('click', () => this.endSessionPlayer(false));
