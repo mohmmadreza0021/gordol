@@ -1270,3 +1270,14 @@ button, a, input, select, textarea, .swap-card-item, .nav-item, .nav-center-btn,
   cursor: pointer; font-family: inherit; transition: all 0.15s;
 }
 .suggestion-chip:hover { background: rgba(156, 107, 255, 0.14); }
+/* دکمه ارسال چت — مربع استاندارد با گرادیان برند */
+.btn-send-chat {
+  width: 46px; height: 46px; border-radius: 14px; flex-shrink: 0;
+  background: linear-gradient(135deg, var(--accent-purple), #7c3aed);
+  color: #fff; border: none; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 4px 14px rgba(156, 107, 255, 0.35);
+  transition: transform 0.15s, box-shadow 0.15s;
+}
+.btn-send-chat:active { transform: scale(0.92); }
+.btn-send-chat:hover { box-shadow: 0 6px 20px rgba(156, 107, 255, 0.5); }

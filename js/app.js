@@ -2152,9 +2152,10 @@ ${pool}
       const listEl = document.getElementById('today-meals-list');
       t.meals.forEach((m, i) => {
         const row = document.createElement('div');
-        row.style.cssText = 'display:flex; justify-content:space-between; align-items:center; background:var(--bg-elevated); border-radius:12px; padding:8px 12px;';
+        row.style.cssText = 'display:flex; justify-content:space-between; align-items:center; gap:8px; background:var(--bg-elevated); border-radius:12px; padding:8px 12px;';
         row.innerHTML = `
-          <div>
+          <img class="meal-photo-round" style="width:44px; height:44px;" src="${window.GordolFoodPhotos.for(m.name)}" alt="" loading="lazy" onerror="this.style.visibility='hidden'"/>
+          <div style="flex:1; min-width:0;">
             <span style="font-size:0.85rem; font-weight:800; color:#fff;">${esc(m.name)}</span>
             <span style="font-size:0.7rem; color:var(--text-muted); margin-right:6px;">(${esc(this.mealTypeFa(m.mealType))})</span>
             <div style="font-size:0.7rem; color:var(--text-muted); margin-top:2px;">🥩 ${faNum(m.p)}g · 🌾 ${faNum(m.c)}g · 🥑 ${faNum(m.f)}g</div>
@@ -2713,7 +2714,7 @@ ${pool}
           <div class="coach-input-bar">
             <button class="btn-attach" id="coach-attach-btn" title="ارسال عکس برای مربی">${GordolIcon('camera', 19)}</button>
             <input type="text" id="coach-user-msg" class="form-input" placeholder="پیامت رو بنویس..."/>
-            <button class="btn-primary" style="width:auto; padding:0 18px;" id="coach-send" title="ارسال">${GordolIcon('send', 17)}</button>
+            <button class="btn-send-chat" id="coach-send" title="ارسال">${GordolIcon('send', 17)}</button>
           </div>
         </div>
       `;

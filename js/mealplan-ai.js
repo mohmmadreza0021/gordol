@@ -80,6 +80,7 @@
       if (!container) return;
       if (!plan) { container.innerHTML = '<p style="font-size:0.78rem; color:var(--text-muted);">هنوز برنامه‌ای تولید نشده.</p>'; return; }
       const fa = window.GordolUtil.faNum;
+      const FP = window.GordolFoodPhotos;
       const esc = window.GordolUtil.esc;
 
       container.innerHTML = plan.days.map((d, di) => {
@@ -92,7 +93,8 @@
             </div>
             ${d.meals.map(m => `
               <div style="display:flex; justify-content:space-between; align-items:center; gap:8px; padding:6px 0; border-top:1px solid var(--border-color);">
-                <div style="min-width:0;">
+                <img class="meal-photo-round" style="width:44px; height:44px;" src="${FP.for(m.name)}" alt="${esc(m.name)}" loading="lazy" onerror="this.style.visibility='hidden'"/>
+                <div style="min-width:0; flex:1;">
                   <div style="font-size:0.78rem; font-weight:800; color:#fff;">${EMOJI[m.mealType] || '🍽️'} ${esc(m.name)}</div>
                   <div style="font-size:0.68rem; color:var(--text-muted); margin-top:1px;">${esc(m.desc)}</div>
                 </div>
