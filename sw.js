@@ -8,7 +8,7 @@
 //  - ویدیوها (حجیم): CACHE-FIRST بدون revalidate → جلوگیری از دانلود مجدد
 //  - skipWaiting + clients.claim → آپدیت بی‌درنگ فعال می‌شود و sw-register.js صفحه را رفرش می‌کند
 
-const CACHE_NAME = 'gordol-v21';
+const CACHE_NAME = 'gordol-v22';
 const CORE_ASSETS = [
   './',
   './index.html',

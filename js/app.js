@@ -157,7 +157,9 @@
     saveChat() {
       try {
         while (this.chat.length > 20) this.chat.shift();
-        localStorage.setItem('gordol_chat_v3', JSON.stringify(this.chat));
+        // عکس فقط در ۲ پیام آخر می‌ماند — base64 حافظه را پر می‌کند
+        const slim = this.chat.map((m, i, arr) => (m.img && i < arr.length - 2) ? { role: m.role, text: m.text, time: m.time } : m);
+        localStorage.setItem('gordol_chat_v3', JSON.stringify(slim));
       } catch (e) {}
     },
 
@@ -2673,24 +2675,33 @@ ${pool}
 
     renderCoachTab(container) {
       container.innerHTML = `
-        <div class="card" style="padding:16px; margin-bottom:12px; background:linear-gradient(135deg, rgba(156,107,255,0.15), rgba(16,185,129,0.15)); border-color:var(--accent-purple);">
-          <div style="display:flex; align-items:center; justify-content:space-between;">
-            <div style="display:flex; align-items:center; gap:10px;">
-              <span style="color:var(--accent-purple);">${GordolIcon('bot', 30)}</span>
-              <div>
-                <h4 style="font-size:1rem; font-weight:800; color:#fff;">مربی هوشمند گردول</h4>
-                <p style="font-size:0.74rem; color:var(--text-muted);">با آگاهی کامل از پرونده تو — حتی عکس بفرست تا تحلیل کنه</p>
-              </div>
+        <div class="coach-header-card">
+          <div class="coach-avatar">${GordolIcon('bot', 26)}</div>
+          <div style="flex:1; min-width:0;">
+            <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+              <h4 style="font-size:0.95rem; font-weight:800; color:#fff;">مربی گردول</h4>
+              <span class="coach-online"><span class="online-dot"></span>آنلاین</span>
             </div>
-            <button class="btn-clear-chat" id="coach-clear">${GordolIcon('trash', 13)} پاک کردن</button>
+            <p style="font-size:0.72rem; color:var(--text-muted); margin-top:3px;">پاسخ‌گوی تمرین، تغذیه و تحلیل عکس — پرونده کامل تو را دارد</p>
           </div>
+          <button class="btn-clear-chat" id="coach-clear" title="پاک کردن گفتگو">${GordolIcon('trash', 15)}</button>
         </div>
 
         <div id="coach-chat-box" class="coach-chat-box">
           ${this.chat.length === 0 ? `
-            <div class="chat-bubble-msg coach">سلام قهرمان! من مربی هوش مصنوعی گردول هستم. قد، وزن، کالری و برنامه تمرینی‌ت رو کامل در پرونده دارم. هر سؤالی درباره تغذیه، فست‌فودها، جایگزینی غذا، درد و فرم تمرین داری بپرس — یا عکس غذا و دستگاه بدنسازی بفرست تا تحلیلش کنم.</div>
-          ` : this.chat.map(m => this.renderChatBubble(m)).join('')}
+            <div class="chat-msg-row coach-row">
+              <div class="coach-mini-avatar">${GordolIcon('bot', 12)}</div>
+              <div class="chat-bubble-msg coach">سلام قهرمان! من مربی هوش مصنوعی گردول هستم. قد، وزن، کالری و برنامه تمرینی‌ت رو کامل در پرونده دارم. هر سؤالی درباره تغذیه، فست‌فودها، جایگزینی غذا، درد و فرم تمرین داری بپرس — یا عکس غذا و دستگاه بدنسازی بفرست تا تحلیلش کنم! 💪</div>
+            </div>` : this.chat.map(m => this.renderChatBubble(m)).join('')}
         </div>
+
+        ${this.chat.length === 0 ? `
+        <div class="coach-suggestions">
+          <button class="suggestion-chip" data-sug="برنامه تمرین امروز چیه؟">برنامه امروز؟</button>
+          <button class="suggestion-chip" data-sug="می‌تونم پیتزا بخورم؟">می‌تونم پیتزا بخورم؟</button>
+          <button class="suggestion-chip" data-sug="برای شام چی پیشنهاد داری؟">پیشنهاد شام</button>
+          <button class="suggestion-chip" data-sug="ناهار خوردم برنج و مرغ">ثبت ناهار</button>
+        </div>` : ''}
 
         <div class="coach-input-container">
           <div id="coach-attach-chip" class="coach-attach-preview" style="display:none;">
@@ -2701,8 +2712,8 @@ ${pool}
           <input type="file" id="coach-file-input" accept="image/*" style="display:none;"/>
           <div class="coach-input-bar">
             <button class="btn-attach" id="coach-attach-btn" title="ارسال عکس برای مربی">${GordolIcon('camera', 19)}</button>
-            <input type="text" id="coach-user-msg" class="form-input" placeholder="سوالت رو بنویس (مثلاً پیتزا بخورم؟)..."/>
-            <button class="btn-primary" style="width:auto; padding:0 18px;" id="coach-send">${GordolIcon('send', 16)}</button>
+            <input type="text" id="coach-user-msg" class="form-input" placeholder="پیامت رو بنویس..."/>
+            <button class="btn-primary" style="width:auto; padding:0 18px;" id="coach-send" title="ارسال">${GordolIcon('send', 17)}</button>
           </div>
         </div>
       `;
@@ -2716,15 +2727,30 @@ ${pool}
       document.getElementById('coach-send').addEventListener('click', () => this.sendCoachMessage());
       document.getElementById('coach-user-msg').addEventListener('keydown', (e) => { if (e.key === 'Enter') this.sendCoachMessage(); });
       document.getElementById('coach-clear').addEventListener('click', () => {
-        this.chat = [];
-        this.saveChat();
-        this.renderCoachTab(container);
+        if (!this.chat.length) { this.toast('گفتگو از قبل خالی است.', false); return; }
+        if (confirm('کل گفتگو با مربی پاک شود؟ (تمرین‌ها و برنامه‌ها حفظ می‌شوند)')) {
+          this.chat = [];
+          this.saveChat();
+          this.renderCoachTab(container);
+          this.toast('گفتگو پاک شد.');
+        }
+      });
+      container.querySelectorAll('.suggestion-chip').forEach(ch => {
+        ch.addEventListener('click', () => {
+          const inp = document.getElementById('coach-user-msg');
+          inp.value = ch.dataset.sug;
+          inp.focus();
+        });
       });
     },
 
     renderChatBubble(m) {
+      const time = m.time ? `<span class="chat-time">${esc(m.time)}</span>` : '';
       const imgHtml = m.img ? `<img src="data:image/jpeg;base64,${esc(m.img)}" style="width:100%; max-height:150px; object-fit:cover; border-radius:10px; margin-bottom:6px;"/>` : '';
-      return `<div class="chat-bubble-msg ${m.role === 'user' ? 'user' : 'coach'}">${imgHtml}<span style="white-space:pre-wrap;">${esc(m.text)}</span></div>`;
+      if (m.role === 'user') {
+        return `<div class="chat-msg-row user-row"><div class="chat-bubble-msg user">${imgHtml}<span style="white-space:pre-wrap;">${esc(m.text)}</span>${time}</div></div>`;
+      }
+      return `<div class="chat-msg-row coach-row"><div class="coach-mini-avatar">${GordolIcon('bot', 12)}</div><div class="chat-bubble-msg coach">${imgHtml}<span style="white-space:pre-wrap;">${esc(m.text)}</span>${time}</div></div>`;
     },
 
     handleCoachImageAttach(e) {
@@ -2826,14 +2852,14 @@ ${mealLines}
 
       const chatBox = document.getElementById('coach-chat-box');
       const img = this.coachAttachedBase64;
-      this.chat.push({ role: 'user', text: msg || '(عکس ارسال شد)', img });
+      this.chat.push({ role: 'user', text: msg || '(عکس ارسال شد)', img, time: new Date().toTimeString().slice(0, 5) });
       chatBox.insertAdjacentHTML('beforeend', this.renderChatBubble(this.chat[this.chat.length - 1]));
       this.removeCoachAttachedImage();
       input.value = '';
       chatBox.scrollTop = chatBox.scrollHeight;
 
       const loadingId = 'coach-loading-' + Date.now();
-      chatBox.insertAdjacentHTML('beforeend', `<div class="chat-bubble-msg coach" id="${loadingId}">در حال فکر کردن...</div>`);
+      chatBox.insertAdjacentHTML('beforeend', `<div class="chat-msg-row coach-row" id="${loadingId}"><div class="coach-mini-avatar">${GordolIcon('bot', 12)}</div><div class="chat-bubble-msg coach typing-bubble"><span class="tdot"></span><span class="tdot"></span><span class="tdot"></span></div></div>`);
       chatBox.scrollTop = chatBox.scrollHeight;
 
       const history = this.chat.slice(-9, -1).map(m => ({
@@ -2879,9 +2905,9 @@ ${mealLines}
             }
           } catch (e) { /* تشخیص ناموفق — چت عادی ادامه دارد */ }
         }
-        this.chat.push({ role: 'coach', text: reply });
+        this.chat.push({ role: 'coach', text: reply, time: new Date().toTimeString().slice(0, 5) });
         this.saveChat();
-        chatBox.insertAdjacentHTML('beforeend', `<div class="chat-bubble-msg coach"><span style="white-space:pre-wrap;">${esc(reply)}</span></div>`);
+        chatBox.insertAdjacentHTML('beforeend', this.renderChatBubble({ role: 'coach', text: reply, time: new Date().toTimeString().slice(0, 5) }));
         chatBox.scrollTop = chatBox.scrollHeight;
       } catch (e) {
         const lEl = document.getElementById(loadingId);
