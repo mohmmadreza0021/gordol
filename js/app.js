@@ -2069,6 +2069,13 @@ ${pool}
         </div>
 
         <div class="card">
+          <div class="card-title"><span>${GordolIcon('sparkles', 17)} برنامه هفتگی هوشمند AI</span></div>
+          <p style="font-size:0.78rem; color:var(--text-muted); margin-bottom:10px; line-height:1.7;">برنامه ۷ روزه اختصاصی بر اساس اهداف، رژیم و پرهیزهای تو — با امکان ثبت هر وعده با یک لمس.</p>
+          <div id="weekly-plan-container"></div>
+          <button class="btn-primary" id="btn-weekly-plan" style="margin-top:10px;">${GordolIcon('sparkles', 16)} تولید برنامه هفتگی با هوش مصنوعی</button>
+        </div>
+
+        <div class="card">
           <div class="card-title"><span>${GordolIcon('flame', 17)} ثبت‌شده‌های امروز</span>
             <span style="font-size:0.85rem; color:var(--accent-purple); font-weight:800;">
               ${faNum(t.meals.reduce((s, m) => s + (m.cal || 0), 0))} / ${faNum(p.targetKcal)} kcal
@@ -2122,6 +2129,21 @@ ${pool}
       document.getElementById('diet-scan-photo').addEventListener('click', () => this.openFoodScannerModal());
       document.getElementById('diet-scan-text').addEventListener('click', () => this.openFoodTextModal());
 
+      // برنامه هفتگی هوشمند (ماژول mealplan-ai.js)
+      const wpBtn = document.getElementById('btn-weekly-plan');
+      const wpBox = document.getElementById('weekly-plan-container');
+      if (wpBtn && window.GordolMealPlan) {
+        if (window.GordolMealPlan.getWeek()) window.GordolMealPlan.render(wpBox);
+        wpBtn.addEventListener('click', async () => {
+          wpBtn.disabled = true;
+          wpBtn.innerHTML = GordolIcon('sparkles', 16) + ' در حال تولید ۷ روز برنامه...';
+          try { await window.GordolMealPlan.generate(); window.GordolMealPlan.render(wpBox); }
+          catch (e) { window.GordolApp.toast('خطا: ' + e.message, false); }
+          wpBtn.disabled = false;
+          wpBtn.innerHTML = GordolIcon('sparkles', 16) + ' تولید دوباره برنامه';
+        });
+      }
+
       container.querySelectorAll('[data-meal-swap]').forEach(b => {
         b.addEventListener('click', () => this.openMealSwapModal(b.dataset.mealSwap));
       });
@@ -2133,6 +2155,15 @@ ${pool}
       });
 
       if (this.fasting && this.fasting.startTs && !this.fasting.endTs) this.startFastingTicker();
+    },
+
+    guessMealType() {
+      const h = new Date().getHours();
+      if (h < 11) return 'breakfast';
+      if (h < 14) return 'snack1';
+      if (h < 17) return 'lunch';
+      if (h < 20) return 'snack2';
+      return 'dinner';
     },
 
     mealTypeFa(t) {
@@ -2776,6 +2807,32 @@ ${mealLines}
         const lEl = document.getElementById(loadingId);
         if (lEl) lEl.remove();
         if (!reply) reply = 'الان نتونستم جواب بدم؛ دوباره تلاش کن.';
+
+        // ثبت خودکار غذا: اگر کاربر گفت چیزی خورده، همان‌جا در وعده ثبت می‌شود
+        if (msg) {
+          try {
+            const mealTypes = ['breakfast', 'snack1', 'lunch', 'snack2', 'dinner'];
+            const det = await GordolAI.generateJSON(
+              'پیام آخر کاربر در چت مربی گردول: «' + msg + '»\n' +
+              'آیا کاربر گفته که غذایی خورده یا می‌خورد؟ (مثل: «ناهارم خوردم»، «یه برگر خوردم»، «شام پیتزا بود»)?\n' +
+              'اگر بله، آن غذا را به‌عنوان کارشناس تغذیه تحلیل کن و mealType را با توجه به ساعت فعلی (' + new Date().toTimeString().slice(0, 5) + ') و محتوای پیام حدس بزن.\n' +
+              'اگر اصلاً اشاره‌ای به خوردن نکرده، ate=false بده.',
+              ['ate', 'foodName', 'calories', 'protein', 'carbs', 'fat', 'mealType'],
+              { numericKeys: ['calories', 'protein', 'carbs', 'fat'] }
+            );
+            const isAte = det.ate === true || det.ate === 'true';
+            const mt = mealTypes.includes(det.mealType) ? det.mealType : this.guessMealType();
+            if (isAte && det.foodName) {
+              const cm = (v, hi) => Math.max(0, Math.min(hi, Math.round(Number(v) || 0)));
+              this.logMeal(mt, det.foodName, cm(det.calories, 5000), cm(det.protein, 500), cm(det.carbs, 800), cm(det.fat, 400));
+              chatBox.insertAdjacentHTML('beforeend',
+                '<div class="chat-bubble-msg coach" style="border-color:rgba(16,185,129,0.5); background:rgba(16,185,129,0.08);">' +
+                GordolIcon('check-circle', 15) + ' «' + esc(det.foodName) + '» به‌عنوان ' + esc(this.mealTypeFa(mt)) +
+                ' ثبت شد (' + faNum(det.calories) + ' kcal) — در تب تغذیه قابل مشاهده است.</div>');
+              chatBox.scrollTop = chatBox.scrollHeight;
+            }
+          } catch (e) { /* تشخیص ناموفق — چت عادی ادامه دارد */ }
+        }
         this.chat.push({ role: 'coach', text: reply });
         this.saveChat();
         chatBox.insertAdjacentHTML('beforeend', `<div class="chat-bubble-msg coach"><span style="white-space:pre-wrap;">${esc(reply)}</span></div>`);
