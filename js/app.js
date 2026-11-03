@@ -3106,7 +3106,7 @@ ${mealLines}
         const key = document.getElementById('set-api-key').value.trim();
         const status = document.getElementById('set-status');
         status.style.display = 'block'; status.style.color = '#3b82f6';
-        status.textContent = 'در حال تست اتصال...';
+        status.textContent = 'در حال تست اتصال... (با اینترنت کند ممکن است تا ۹۰ ثانیه طول بکشد — منتظر بمان)';
         try {
           const ok = await GordolAI.validateKey(key);
           status.style.color = ok ? '#10b981' : '#ef4444';

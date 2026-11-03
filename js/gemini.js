@@ -51,23 +51,29 @@
     },
 
     async listModels(key) {
-      const ctrl = new AbortController();
-      const t = setTimeout(() => ctrl.abort(), 20000);
-      try {
-        // کلید در هدر ارسال می‌شود تا در URL (لاگ واسط‌ها) ظاهر نشود
-        const url = `${API_BASE}/models?pageSize=100`;
-        const res = await fetch(url, { signal: ctrl.signal, headers: { 'x-goog-api-key': key } });
-        if (!res.ok) throw new Error('خطای دسترسی به فهرست مدل‌ها (' + res.status + ')');
-        const data = await res.json();
-        return (data.models || [])
-          .filter(m => (m.supportedGenerationMethods || []).includes('generateContent') && !/embedding|aqa|image|audio|tts|live/i.test(m.name))
-          .map(m => m.name.replace('models/', ''));
-      } catch (e) {
-        if (e.name === 'AbortError') throw new Error('زمان دریافت فهرست مدل‌ها تمام شد');
-        throw e;
-      } finally {
-        clearTimeout(t);
+      // تایم‌اوت ۴۵ ثانیه + تلاش مجدد — سازگار با اینترنت کند و پروکسی
+      let lastErr = null;
+      for (let attempt = 0; attempt < 2; attempt++) {
+        if (attempt > 0) await new Promise(r => setTimeout(r, 900));
+        const ctrl = new AbortController();
+        const t = setTimeout(() => ctrl.abort(), TIMEOUT_MS);
+        try {
+          // کلید در هدر ارسال می‌شود تا در URL (لاگ واسط‌ها) ظاهر نشود
+          const url = `${API_BASE}/models?pageSize=100`;
+          const res = await fetch(url, { signal: ctrl.signal, headers: { 'x-goog-api-key': key } });
+          if (!res.ok) throw new Error('خطای دسترسی به فهرست مدل‌ها (' + res.status + ')');
+          const data = await res.json();
+          return (data.models || [])
+            .filter(m => (m.supportedGenerationMethods || []).includes('generateContent') && !/embedding|aqa|image|audio|tts|live/i.test(m.name))
+            .map(m => m.name.replace('models/', ''));
+        } catch (e) {
+          if (e.name === 'AbortError') lastErr = new Error('زمان دریافت فهرست مدل‌ها تمام شد (اینترنت کند — دوباره تلاش کن)');
+          else lastErr = e;
+        } finally {
+          clearTimeout(t);
+        }
       }
+      throw lastErr;
     },
 
     // درخواست متنی ساده — خروجی: متن پاسخ
@@ -137,37 +143,46 @@
     },
 
     async _fetch(url, body, apiKey) {
-      const ctrl = new AbortController();
-      const t = setTimeout(() => ctrl.abort(), TIMEOUT_MS);
-      let res;
-      try {
-        res = await fetch(url, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            // کلید فقط در هدر — هرگز در URL نمی‌آید
-            'x-goog-api-key': apiKey
-          },
-          body: JSON.stringify(body),
-          signal: ctrl.signal
-        });
-      } catch (e) {
+      // تلاش مجدد خودکار (۱ بار) — اتصال اینترنت کند/پروکسی ممکن است بار اول معلق یا قطع شود
+      let lastErr = null;
+      for (let attempt = 0; attempt < 2; attempt++) {
+        if (attempt > 0) await new Promise(r => setTimeout(r, 900));
+        const ctrl = new AbortController();
+        const t = setTimeout(() => ctrl.abort(), TIMEOUT_MS);
+        let res;
+        try {
+          res = await fetch(url, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              // کلید فقط در هدر — هرگز در URL نمی‌آید
+              'x-goog-api-key': apiKey
+            },
+            body: JSON.stringify(body),
+            signal: ctrl.signal
+          });
+        } catch (e) {
+          clearTimeout(t);
+          lastErr = e.name === 'AbortError'
+            ? new Error('پاسخ هوش مصنوعی بیش از حد طول کشید (اینترنت کند — دوباره تلاش کن)')
+            : new Error('اتصال به سرور هوش مصنوعی برقرار نشد (اینترنت یا کلید را بررسی کن)');
+          continue;
+        }
         clearTimeout(t);
-        if (e.name === 'AbortError') throw new Error('پاسخ هوش مصنوعی بیش از حد طول کشید');
-        throw new Error('اتصال به سرور هوش مصنوعی برقرار نشد (اینترنت یا کلید را بررسی کن)');
+        let data;
+        try { data = await res.json(); } catch (e) {
+          lastErr = new Error('پاسخ نامعتبر از سرور گوگل (' + res.status + ')');
+          continue;
+        }
+        if (data.error) {
+          const msg = data.error.message || 'خطای ناشناخته سرویس';
+          if (res.status === 400 && /API key not valid/i.test(msg)) throw new Error('کلید API نامعتبر است');
+          if (res.status === 429) throw new Error('محدودیت نرخ درخواست — چند لحظه بعد دوباره تلاش کن');
+          throw new Error(msg);
+        }
+        return data;
       }
-      clearTimeout(t);
-      let data;
-      try { data = await res.json(); } catch (e) {
-        throw new Error('پاسخ نامعتبر از سرور گوگل (' + res.status + ')');
-      }
-      if (data.error) {
-        const msg = data.error.message || 'خطای ناشناخته سرویس';
-        if (res.status === 400 && /API key not valid/i.test(msg)) throw new Error('کلید API نامعتبر است');
-        if (res.status === 429) throw new Error('محدودیت نرخ درخواست — چند لحظه بعد دوباره تلاش کن');
-        throw new Error(msg);
-      }
-      return data;
+      throw lastErr || new Error('اتصال ناموفق بود');
     }
   };
 
