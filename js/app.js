@@ -338,6 +338,7 @@
         const asked = localStorage.getItem('gordol_notif_asked_v3');
         if (Notification.permission === 'granted') {
           this.startNotificationScheduler();
+          if (window.GordolPush) window.GordolPush.enable(this);
         } else if (Notification.permission === 'default' && !asked) {
           this.openNotificationPromptModal();
         } else if (Notification.permission === 'denied') {
@@ -389,6 +390,7 @@
       if (perm === 'granted') {
         this.sendLocalNotification('🏋️ گردول فعال شد!', 'یادآورهای روزانه تمرین، آب و تغذیه برای تو فعال گردید.');
         this.startNotificationScheduler();
+        if (window.GordolPush) window.GordolPush.enable(this);
       } else {
         toast('دسترسی اعلان داده نشد؛ بعداً از تنظیمات مرورگر می‌توانی فعال کنی.', false);
       }
@@ -431,8 +433,45 @@
       } catch (e) {}
     },
 
+    // جبران یادآورهای ازدست‌رفته — وقتی اپ باز می‌شود، موارد جاافتاده امروز یک‌جا اطلاع داده می‌شوند
+    catchUpNotifications() {
+      const p = this.profile;
+      if (!p || this._catchUpRunning) return;
+      this._catchUpRunning = true;
+      try {
+        const hm = new Date().toTimeString().slice(0, 5);
+        const t = this.getDayLog(todayKey());
+        const missed = [];
+        // تمرین — پنجره معمولی گذشته و هنوز ثبت نشده
+        if (hm > p.reminderTime && this.minutesBetween(hm, p.reminderTime) > 90 && !this.notifSentToday('workout')) {
+          this.markNotifSent('workout');
+          missed.push(`🏋️ تمرین روز ${faNum(p.currentDay)} هنوز انجام نشده — الان شروعش کن، فقط ${faNum(p.trainingMinutes)} دقیقه‌ست!`);
+        }
+        // آب — اسلات‌های گذشته و هدف هنوز کامل نشده
+        const passedWater = ['10:00', '13:00', '16:00', '19:00'].filter(ws =>
+          this.minutesBetween(hm, ws) > 90 && !this.notifSentToday('water-' + ws));
+        if (passedWater.length && t.waterMl < p.waterMl) {
+          const left = Math.max(0, Math.round((p.waterMl - t.waterMl) / 250));
+          passedWater.forEach(ws => this.markNotifSent('water-' + ws));
+          missed.push(`💧 ${faNum(passedWater.length)} یادآور آب از دستت رفت — ${faNum(left)} لیوان دیگر تا هدف امروز مونده!`);
+        }
+        if (missed.length) {
+          setTimeout(() => this.sendLocalNotification('🔔 گردول — یادآورهای امروز', missed.join('\n')), 1800);
+        }
+      } catch (e) { /* جلوگیری از اختلال در شروع اپ */ }
+      this._catchUpRunning = false;
+    },
+
     startNotificationScheduler() {
       if (this.notifTimer) clearInterval(this.notifTimer);
+      // هر بار اپ باز یا به آن برمی‌گردی، یادآورهای جاافتاده جبران می‌شوند
+      this.catchUpNotifications();
+      document.addEventListener('visibilitychange', () => {
+        if (document.visibilityState === 'visible') {
+          this.catchUpNotifications();
+          if (window.GordolPush) window.GordolPush.syncState(this);
+        }
+      });
       const tick = () => {
         const now = new Date();
         const hm = now.toTimeString().slice(0, 5);
@@ -3029,6 +3068,7 @@ ${mealLines}
           <input type="time" id="set-reminder" class="form-input" value="${esc((this.profile && this.profile.reminderTime) || '18:00')}"/>
         </div>
         <button class="btn-secondary" style="font-size:0.8rem;" id="set-test-notif">${GordolIcon('bell', 15)} ارسال نوتیفیکیشن تستی</button>
+        <div id="set-push-status" style="font-size:0.72rem; color:var(--text-muted); margin-top:8px; line-height:1.7;"></div>
 
         <hr style="border:0; border-top:1px solid var(--border-color); margin:14px 0;"/>
 
@@ -3131,6 +3171,19 @@ ${mealLines}
         }
       });
       document.getElementById('set-test-notif').addEventListener('click', () => this.sendTestNotification());
+      const pushBox = document.getElementById('set-push-status');
+      if (pushBox && window.GordolPush) {
+        const st = window.GordolPush.status();
+        if (st.on) {
+          pushBox.innerHTML = '📡 <b style="color:#10b981;">یادآور با اپ بسته فعال است</b> — نوتیف‌ها حتی وقتی اپ بسته باشد از سرور گردول می‌رسند.';
+        } else if (st.why.includes('Add to Home Screen')) {
+          pushBox.innerHTML = '📱 نوتیف با اپ بسته: در سافاری روی دکمه اشتراک بزن و <b>Add to Home Screen</b> را انتخاب کن، سپس اپ نصب‌شده را باز کن.';
+        } else if (st.why.includes('اجازه')) {
+          pushBox.innerHTML = '🔕 برای نوتیف با اپ بسته، اول اجازه اعلان را بده.';
+        } else {
+          pushBox.innerHTML = 'ℹ️ یادآورهای داخل اپ فعال‌اند.';
+        }
+      }
       document.getElementById('set-weight').addEventListener('click', () => { modal.classList.remove('active'); this.openWeightModal(); });
 
       document.getElementById('set-export').addEventListener('click', () => {
@@ -3225,6 +3278,7 @@ ${mealLines}
         modal.classList.remove('active');
         toast('تنظیمات ذخیره شد ✅');
         this.startNotificationScheduler();
+        if (window.GordolPush) window.GordolPush.syncState(this);
       });
     }
   };

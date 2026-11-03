@@ -1,0 +1,40 @@
+# یادآورهای گردول — فرستنده Web Push هر ۱۵ دقیقه
+# رازهای لازم در Settings → Secrets and variables → Actions:
+#   FIREBASE_DB_URL            مثل https://gordol-push-default-rtdb.firebaseio.com
+#   FIREBASE_SERVICE_ACCOUNT   کل JSON کلید سرویس‌اکانت فایربیس (یک‌خطی)
+#   VAPID_PUBLIC_KEY           کلید عمومی VAPID
+#   VAPID_PRIVATE_KEY          کلید خصوصی VAPID
+# هیچ داده شخصی کاربر در این فرایند وجود ندارد (فقط شناسه بی‌نام subscription).
+
+name: gordol-reminders
+
+on:
+  schedule:
+    - cron: '*/15 * * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: gordol-reminders
+  cancel-in-progress: true
+
+jobs:
+  send:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Install deps
+        run: npm install --no-save web-push firebase-admin
+      - name: Send due reminders
+        env:
+          FIREBASE_DB_URL: ${{ secrets.FIREBASE_DB_URL }}
+          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+          VAPID_PUBLIC_KEY: ${{ secrets.VAPID_PUBLIC_KEY }}
+          VAPID_PRIVATE_KEY: ${{ secrets.VAPID_PRIVATE_KEY }}
+        run: node scripts/push-sender.js

@@ -8,7 +8,7 @@
 //  - ویدیوها (حجیم): CACHE-FIRST بدون revalidate → جلوگیری از دانلود مجدد
 //  - skipWaiting + clients.claim → آپدیت بی‌درنگ فعال می‌شود و sw-register.js صفحه را رفرش می‌کند
 
-const CACHE_NAME = 'gordol-v25';
+const CACHE_NAME = 'gordol-v27';
 const CORE_ASSETS = [
   './',
   './index.html',
@@ -29,6 +29,7 @@ const CORE_ASSETS = [
   './js/pose-engine.js',
   './js/app.js',
   './js/sw-register.js',
+  './js/push-client.js',
   './assets/icons/favicon.svg',
   './assets/icons/icon-192.svg',
   './assets/icons/icon-512.svg',
@@ -66,6 +67,29 @@ self.addEventListener('activate', (event) => {
 // پیام اختیاری از sw-register برای اطمینان از فعال‌سازی نسخه در انتظار
 self.addEventListener('message', (event) => {
   if (event.data === 'SKIP_WAITING') self.skipWaiting();
+});
+
+// --- Web Push: نمایش نوتیفیکیشن از سرور Actions (اپ بسته / گوشی قفل) ---
+self.addEventListener('push', (event) => {
+  let d = {};
+  try { d = event.data ? event.data.json() : {}; } catch (e) { d = { body: event.data && event.data.text() }; }
+  event.waitUntil(self.registration.showNotification(d.title || '🔔 گردول', {
+    body: d.body || 'یادآور گردول',
+    icon: 'assets/icons/icon-192.svg',
+    badge: 'assets/icons/favicon.svg',
+    dir: 'rtl', lang: 'fa',
+    tag: d.tag || 'gordol',
+    data: { url: './index.html' }
+  }));
+});
+
+// لمس نوتیف → باز شدن خود اپ
+self.addEventListener('notificationclick', (event) => {
+  event.notification.close();
+  event.waitUntil(clients.matchAll({ type: 'window', includeUncontrolled: true }).then((list) => {
+    for (const c of list) { if ('focus' in c) return c.focus(); }
+    return clients.openWindow('./index.html');
+  }));
 });
 
 self.addEventListener('fetch', (event) => {
