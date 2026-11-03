@@ -530,6 +530,7 @@
     const step = pl.steps[pl.i];
     if (pl.phase === 'work' && step.timed) {
       pl.workLeft = step.sec;
+      this.drawCircle(pl.workLeft, step.sec); // نمایش فوری مقدار اولیه (بدون یک ثانیه «۰»)
       this.runCountdown(pl.workLeft, step.sec, () => {
         window.GordolApp.playBeep(880, 0.2);
         if (step.kind === 'main') this.markSetDone(pl.day.day, step.item.id, step.setIndex); // ست تایمری خودکار تیک می‌خورد

@@ -2824,11 +2824,12 @@ ${mealLines}
             const mt = mealTypes.includes(det.mealType) ? det.mealType : this.guessMealType();
             if (isAte && det.foodName) {
               const cm = (v, hi) => Math.max(0, Math.min(hi, Math.round(Number(v) || 0)));
-              this.logMeal(mt, det.foodName, cm(det.calories, 5000), cm(det.protein, 500), cm(det.carbs, 800), cm(det.fat, 400));
+              const cals = cm(det.calories, 5000);
+              this.logMeal(mt, det.foodName, cals, cm(det.protein, 500), cm(det.carbs, 800), cm(det.fat, 400));
               chatBox.insertAdjacentHTML('beforeend',
                 '<div class="chat-bubble-msg coach" style="border-color:rgba(16,185,129,0.5); background:rgba(16,185,129,0.08);">' +
                 GordolIcon('check-circle', 15) + ' «' + esc(det.foodName) + '» به‌عنوان ' + esc(this.mealTypeFa(mt)) +
-                ' ثبت شد (' + faNum(det.calories) + ' kcal) — در تب تغذیه قابل مشاهده است.</div>');
+                ' ثبت شد (' + faNum(cals) + ' kcal) — در تب تغذیه قابل مشاهده است.</div>');
               chatBox.scrollTop = chatBox.scrollHeight;
             }
           } catch (e) { /* تشخیص ناموفق — چت عادی ادامه دارد */ }
@@ -3074,7 +3075,7 @@ ${mealLines}
             // فهرست سفید کلیدهای شناخته‌شده + اعتبارسنجی نوع — ضد تزریق داده از فایل
             const allowed = {
               gordol_profile_v3: 'object', gordol_logs_v3: 'object', gordol_swaps_v3: 'object',
-              gordol_chat_v3: 'array', gordol_fasting_v3: 'object',
+              gordol_chat_v3: 'array', gordol_fasting_v3: 'object', gordol_mealplan_v1: 'object',
               gordol_notif_asked_v3: 'raw', gordol_notif_state_v3: 'object'
             };
             let restored = 0;
