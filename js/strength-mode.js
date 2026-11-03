@@ -354,6 +354,7 @@
   player: null, // {day, steps, i, round, phase, workLeft, restLeft, timerId, paused, onTimerDone}
 
   startGuidedSession(day) {
+    if (window.GordolApp.acquireWakeLock) window.GordolApp.acquireWakeLock(); // صفحه گوشی خاموش نشود
     this.player = { day, steps: this.buildSteps(day), i: 0, round: 1, phase: 'work', workLeft: 0, restLeft: 0, timerId: null, paused: false, onTimerDone: null };
     const modal = document.getElementById('session-player-modal');
     modal.querySelector('.modal-card').style.maxWidth = '480px';
@@ -602,6 +603,7 @@
   },
 
   playerFinish() {
+    if (window.GordolApp.releaseWakeLock) window.GordolApp.releaseWakeLock();
     const pl = this.player;
     if (pl.timerId) { clearInterval(pl.timerId); pl.timerId = null; }
     const day = pl.day;
@@ -618,6 +620,7 @@
   },
 
   closePlayer() {
+    if (window.GordolApp.releaseWakeLock) window.GordolApp.releaseWakeLock();
     const pl = this.player;
     if (pl && pl.timerId) { clearInterval(pl.timerId); pl.timerId = null; }
     this.player = null;

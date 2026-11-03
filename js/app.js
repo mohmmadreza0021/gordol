@@ -254,6 +254,20 @@
 
     // ================= بخش ۲: صدا و PWA =================
 
+    // صفحه گوشی در حین جلسه تمرین روشن بماند (Screen Wake Lock API)
+    async acquireWakeLock() {
+      try {
+        if ('wakeLock' in navigator && !this.wakeLock) {
+          this.wakeLock = await navigator.wakeLock.request('screen');
+          this.wakeLock.addEventListener('release', () => { this.wakeLock = null; });
+        }
+      } catch (e) { /* پشتیبانی نمی‌شود — بی‌خطر */ }
+    },
+
+    releaseWakeLock() {
+      try { if (this.wakeLock) { this.wakeLock.release(); this.wakeLock = null; } } catch (e) {}
+    },
+
     initAudioContext() {
       try {
         const AC = window.AudioContext || window.webkitAudioContext;
@@ -384,6 +398,11 @@
       }
     },
 
+    minutesBetween(hmA, hmB) {
+      const toMin = (t) => { const [h, m] = t.split(':').map(Number); return h * 60 + m; };
+      return toMin(hmA) - toMin(hmB);
+    },
+
     notifSentToday(type) {
       try {
         const s = JSON.parse(localStorage.getItem('gordol_notif_state_v3') || '{}');
@@ -421,6 +440,21 @@
             ? `${faNum(left)} لیوان دیگر تا هدف آب امروزت مونده. یک لیوان آب بنوش!`
             : 'هدف آب امروز رو زدی! عالی بودی 🎉');
         }
+        // یادآور وعده‌های غذایی (برنامه اورجینال گردول — با پنجره ۹۰ دقیقه‌ای)
+        const mealSlots = [
+          ['08:00', 'breakfast', '🍳 وقت صبحانه مقوی', 'املت اسفناج و سفیده + سنگک سبوس‌دار — پروتئین خالص برای شروع روز. وعده‌ات را ثبت کن!'],
+          ['11:00', 'snack1', '🍏 میان‌وعده صبح و مهار قند', 'یک سیب + ماست یونانی و دارچین. میل به شیرینی را کنترل کن!'],
+          ['14:00', 'lunch', '🥗 ناهار اصیل ایرانی', 'سینه مرغ گریل + برنج کته و سالاد شیرازی. وعده‌ات را در اپ ثبت کن.'],
+          ['17:30', 'snack2', '🥜 سوخت قبل تمرین', 'چای سبز + خرما و گردو — انرژی جلسه تمرین امروز.']
+        ];
+        for (const [slot, mType, nt, nb] of mealSlots) {
+          if (hm >= slot && this.minutesBetween(hm, slot) <= 90 && !this.notifSentToday('meal-' + mType)) {
+            this.markNotifSent('meal-' + mType);
+            const logged = this.getDayLog(todayKey()).meals.some(m => m.mealType === mType);
+            if (!logged) this.sendLocalNotification(nt, nb);
+          }
+        }
+
         // یادآور ثبت شام
         if (hm === '21:00' && !this.notifSentToday('dinner')) {
           this.markNotifSent('dinner');
@@ -429,6 +463,12 @@
             this.sendLocalNotification('🥗 شام رو ثبت کردی؟', 'دوربین تغذیه گردول آماده اسکن بشقاب شام شماست — فقط عکس بگیر!');
           }
         }
+        // خواب و ثبت استریک (اورجینال)
+        if (hm === '23:00' && !this.notifSentToday('sleep')) {
+          this.markNotifSent('sleep');
+          this.sendLocalNotification('🌙 خواب و ثبت استریک', 'جلسات امروز را تیک زدی؟ خواب ۷ تا ۸ ساعته کلید چربی‌سوزی پایدار است.');
+        }
+
         // هشدار استریک در خطر
         if (hm === '20:00' && !this.notifSentToday('streak')) {
           const streak = this.calcStreak();
@@ -1490,6 +1530,7 @@
         items.push({ exId: id, phase: 'کشش پایانی', kind: 'work', sec: hold || 40, round: 1, setOf: 1, setTotal: 1 });
       });
 
+      this.acquireWakeLock(); // صفحه گوشی در حین تمرین خاموش نشود
       this.sessionPlayer = {
         items, idx: -1, remaining: 0, timerId: null, paused: false,
         startedAt: Date.now(), workedTotal: 0,
@@ -1637,6 +1678,7 @@
     },
 
     endSessionPlayer(completed) {
+      this.releaseWakeLock();
       const sp = this.sessionPlayer;
       if (!sp) return;
       if (sp.timerId) clearInterval(sp.timerId);
@@ -2179,16 +2221,17 @@ ${pool}
       const loggedCount = todayLog.meals.filter(m => m.mealType === meal.id).length;
       return `
         <div class="meal-card-rich">
-          <div class="meal-card-banner" style="background:${MEAL_GRADIENT[meal.id] || 'var(--bg-elevated)'};">
-            <img src="${esc(active.image || meal.image || '')}" alt="${esc(active.name)}" loading="lazy" onerror="this.style.display='none'"/>
-            <div class="meal-badge-time">⏰ ${esc(meal.time)}</div>
-            ${loggedCount ? `<div class="meal-badge-time" style="top:10px; left:10px; right:auto; background:rgba(16,185,129,0.85); color:#0c0d14;">✓ ${faNum(loggedCount)} ثبت</div>` : ''}
-          </div>
-          <div class="meal-card-body">
-            <div style="display:flex; justify-content:space-between; align-items:center;">
-              <h4 style="font-size:0.98rem; font-weight:800; color:#fff;">${esc(active.name)}</h4>
-              <span style="font-size:0.8rem; font-weight:800; color:var(--accent-gold);">🔥 ${faNum(active.cal)} kcal</span>
+          <div class="meal-head-row">
+            <img class="meal-photo-round" src="${esc(active.image || meal.image || '')}" alt="${esc(active.name)}" loading="lazy" onerror="this.style.visibility='hidden'"/>
+            <div style="flex:1; min-width:0;">
+              <div style="display:flex; justify-content:space-between; align-items:center; gap:6px;">
+                <h4 style="font-size:0.95rem; font-weight:800; color:#fff;">${esc(active.name)}</h4>
+                <span style="font-size:0.8rem; font-weight:800; color:var(--accent-gold);">${GordolIcon('flame', 14)} ${faNum(active.cal)}</span>
+              </div>
+              <div style="font-size:0.72rem; color:var(--text-muted); margin-top:3px;">⏰ ${esc(meal.time)} ${loggedCount ? '· ✓ ثبت شده' : ''}</div>
             </div>
+          </div>
+          <div class="meal-card-body" style="padding-top:8px;">
             <p style="font-size:0.78rem; color:var(--text-muted); margin-top:6px; line-height:1.6;">${esc(active.desc)}</p>
             <div class="macro-row">
               <span class="macro-tag prot">${faNum(active.p)} گرم پروتئین</span>

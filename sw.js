@@ -1,8 +1,14 @@
 // Gordol PWA Service Worker — کش آفلاین برای GitHub Pages
 // اصول: هرگز درخواست‌های هوش مصنوعی (گوگل) کش یا دستکاری نمی‌شوند؛
 // کلید و داده‌های کاربر هیچ‌وقت از دستگاه خارج نمی‌شوند.
+//
+// استراتژی آپدیت خودکار (بدون نیاز به نصب مجدد اپ):
+//  - index.html (ناوبری): NETWORK-FIRST → همیشه تازه‌ترین نسخه وقتی اینترنت هست؛ آفلاین از کش
+//  - فایل‌های JS/CSS/دیتا: STALE-WHILE-REVALIDATE → فوری از کش، آپدیت همزمان پس‌زمینه (خود‌ترمیم)
+//  - ویدیوها (حجیم): CACHE-FIRST بدون revalidate → جلوگیری از دانلود مجدد
+//  - skipWaiting + clients.claim → آپدیت بی‌درنگ فعال می‌شود و sw-register.js صفحه را رفرش می‌کند
 
-const CACHE_NAME = 'gordol-v20';
+const CACHE_NAME = 'gordol-v21';
 const CORE_ASSETS = [
   './',
   './index.html',
@@ -38,6 +44,7 @@ self.addEventListener('install', (event) => {
       return Promise.allSettled(CORE_ASSETS.map(u => cache.add(u)));
     })
   );
+  // فعال‌سازی فوری نسخه جدید (بدون صف «در انتظار»)
   self.skipWaiting();
 });
 
@@ -50,7 +57,13 @@ self.addEventListener('activate', (event) => {
       }));
     })
   );
+  // کنترل فوری همه تب‌های باز (شامل اپ نصب‌شده)
   self.clients.claim();
+});
+
+// پیام اختیاری از sw-register برای اطمینان از فعال‌سازی نسخه در انتظار
+self.addEventListener('message', (event) => {
+  if (event.data === 'SKIP_WAITING') self.skipWaiting();
 });
 
 self.addEventListener('fetch', (event) => {
@@ -62,23 +75,50 @@ self.addEventListener('fetch', (event) => {
   // فقط درخواست‌های هم‌دامنه کش می‌شوند
   if (url.origin !== self.location.origin) return;
 
+  // --- ناوبری (باز شدن اپ): NETWORK-FIRST ---
+  // کاربر وقتی آنلاین است همیشه تازه‌ترین index.html را می‌گیرد؛ آفلاین از کش
+  if (event.request.mode === 'navigate') {
+    event.respondWith(
+      fetch(event.request).then((networkResponse) => {
+        // تازه‌سازی نسخه کش‌شده HTML
+        if (networkResponse && networkResponse.ok) {
+          const clone = networkResponse.clone();
+          caches.open(CACHE_NAME).then((cache) => cache.put('./index.html', clone)).catch(() => {});
+        }
+        return networkResponse;
+      }).catch(() =>
+        caches.match('./index.html').then((cached) => cached || caches.match('./'))
+      )
+    );
+    return;
+  }
+
+  // --- ویدیوها: CACHE-FIRST (حجیم‌اند، هرگز در پس‌زمینه دوباره دانلود نمی‌شوند) ---
+  if (/\.mp4($|\?)/i.test(url.pathname)) {
+    event.respondWith(
+      caches.match(event.request).then((cached) => cached || fetch(event.request).then((networkResponse) => {
+        if (networkResponse && networkResponse.status === 200) {
+          const clone = networkResponse.clone();
+          caches.open(CACHE_NAME).then((cache) => cache.put(event.request, clone)).catch(() => {});
+        }
+        return networkResponse;
+      }))
+    );
+    return;
+  }
+
+  // --- بقیه دارایی‌ها: STALE-WHILE-REVALIDATE ---
+  // پاسخ فوری از کش + آپدیت خودکار در پس‌زمینه → اپ خودش را ترمیم می‌کند
   event.respondWith(
     caches.match(event.request).then((cachedResponse) => {
-      if (cachedResponse) return cachedResponse;
-      return fetch(event.request).then((networkResponse) => {
-        if (!networkResponse || networkResponse.status !== 200 || networkResponse.type !== 'basic') {
-          return networkResponse;
+      const networkFetch = fetch(event.request).then((networkResponse) => {
+        if (networkResponse && networkResponse.status === 200 && networkResponse.type === 'basic') {
+          const clone = networkResponse.clone();
+          caches.open(CACHE_NAME).then((cache) => cache.put(event.request, clone)).catch(() => {});
         }
-        // کش تنبل برای ویدیوها و دارایی‌ها
-        const clone = networkResponse.clone();
-        caches.open(CACHE_NAME).then((cache) => cache.put(event.request, clone)).catch(() => {});
         return networkResponse;
-      }).catch(() => {
-        if (event.request.mode === 'navigate') {
-          return caches.match('./index.html');
-        }
-        return undefined;
-      });
+      }).catch(() => cachedResponse);
+      return cachedResponse || networkFetch;
     })
   );
 });

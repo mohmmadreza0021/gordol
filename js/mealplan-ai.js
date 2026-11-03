@@ -26,6 +26,16 @@
 
     // تولید برنامه ۷ روزه با AI کاربر
     async generate() {
+      // تلاش مجدد خودکار: پاسخ‌های بزرگ AI گاهی ناقص می‌آیند
+      let lastErr = null;
+      for (let attempt = 1; attempt <= 2; attempt++) {
+        try { return await this._generateOnce(); }
+        catch (e) { lastErr = e; if (attempt < 2) await new Promise(r => setTimeout(r, 1500)); }
+      }
+      throw new Error((lastErr && lastErr.message ? lastErr.message : 'تولید ناموفق') + ' — دوباره تلاش کن.');
+    },
+
+    async _generateOnce() {
       const app = window.GordolApp;
       const p = app.profile;
       if (!p) throw new Error('اول آنبوردینگ را کامل کن.');
