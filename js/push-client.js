@@ -14,9 +14,9 @@
   // --- کلید VAPID عمومی (امن است؛ کلید خصوصی فقط در GitHub Secrets) ---
   const VAPID_PUBLIC = 'BMbSEELogtavwvDzvLQaLNNqA3ES-owQ9Gi7ZvHBfdU7yP_NUiVtmHyrIoZyDOV2AOT4-JAdrUt_aHJFVA91jWI';
 
-  // --- تنظیمات Firebase (پس از ساخت پروژه توسط کاربر پر می‌شود؛ خالی = قابلیت غیرفعال) ---
-  const FB_API_KEY = '';   // کلید وب پروژه فایربیس (عمومی)
-  const FB_DB_URL = '';    // مثل https://gordol-push-default-rtdb.firebaseio.com
+  // --- تنظیمات Firebase (عمومی‌اند؛ امنیت با قوانین دیتابیس تضمین می‌شود) ---
+  const FB_API_KEY = 'AIzaSyAI_gQqv2kDxMiqxZsXX7lNyvhP9iuZPAk';
+  const FB_DB_URL = 'https://gordol-push-default-rtdb.firebaseio.com';
 
   const TZ = 'Asia/Tehran';
   const DEFAULT_SLOTS = {
