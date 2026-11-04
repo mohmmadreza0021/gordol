@@ -60,7 +60,12 @@
           body: JSON.stringify({ returnSecureToken: true })
         });
       }
-      if (!res.ok) return null;
+      if (!res.ok) {
+        const errText = await res.text().catch(() => '');
+        console.warn('[GordolPush] auth HTTP ' + res.status, errText.slice(0, 120));
+        window.__gordolPushErr = 'auth-http-' + res.status;
+        return null;
+      }
       const d = await res.json();
       const rec = {
         idToken: d.id_token || d.idToken,
@@ -70,7 +75,11 @@
       };
       localStorage.setItem('gordol_push_auth', JSON.stringify(rec));
       return { token: rec.idToken, uid: rec.uid };
-    } catch (e) { return null; }
+    } catch (e) {
+      console.warn('[GordolPush] auth network fail:', e && e.message);
+      window.__gordolPushErr = 'auth-network';
+      return null;
+    }
   }
 
   function buildSchedule(profile) {
@@ -127,7 +136,13 @@
           });
         }
         const auth = await fbToken();
-        if (!auth) { toast('⚠️ اتصال به سرویس یادآور برقرار نشد — دوباره تلاش می‌کنیم.', false); return false; }
+        if (!auth) {
+          const kind = window.__gordolPushErr || '';
+          toast(kind === 'auth-network'
+            ? '📡 اینترنت گوشی به سرور گوگل وصل نمی‌شود — VPN/فیلترشکن را روشن کن و دوباره تلاش کن.'
+            : '⚠️ اتصال به سرویس یادآور ناموفق (کد ' + kind + ') — دوباره تلاش کن.', false);
+          return false;
+        }
         const id = await subId(sub.endpoint);
         const rec = {
           owner: auth.uid,
@@ -139,11 +154,22 @@
         const res = await fetch(`${FB_DB_URL}/pushUsers/${id}.json?auth=${encodeURIComponent(auth.token)}`, {
           method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(rec)
         });
-        if (!res.ok) throw new Error('push upload ' + res.status);
+        if (!res.ok) {
+          const body = await res.text().catch(() => '');
+          console.warn('[GordolPush] PUT failed', res.status, body.slice(0, 120));
+          throw new Error('push upload ' + res.status);
+        }
         localStorage.setItem('gordol_push_sub', id);
         return true;
       } catch (e) {
         try { localStorage.removeItem('gordol_push_sub'); } catch (_) {}
+        const msg = (e && e.message) || '';
+        if (msg.startsWith('push upload')) {
+          toast('⚠️ ثبت اشتراک ناموفق (کد ' + msg.replace('push upload ', '') + ') — دوباره تلاش می‌کنیم.', false);
+        } else if (msg) {
+          // خطای شبکه در subscribe خود push — معمولاً دسترسی مرورگر
+          console.warn('[GordolPush] enable fail:', msg);
+        }
         return false;
       }
     },
