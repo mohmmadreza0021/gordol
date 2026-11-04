@@ -20,7 +20,11 @@ if (!DB_URL || !process.env.FIREBASE_SERVICE_ACCOUNT || !process.env.VAPID_PUBLI
 }
 
 const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT);
-admin.initializeApp({ credential: admin.credential.cert(serviceAccount), databaseURL: DB_URL });
+// سازگار با firebase-admin v13 (admin.credential.cert) و v14+ (admin.cert)
+const makeCred = () => (admin.credential && admin.credential.cert)
+  ? admin.credential.cert(serviceAccount)
+  : admin.cert(serviceAccount);
+admin.initializeApp({ credential: makeCred(), databaseURL: DB_URL });
 const db = admin.database();
 
 webpush.setVapidDetails('mailto:gordol-reminders@users.noreply.github.com',
@@ -53,13 +57,9 @@ const MEAL_TEXTS = {
   const nowMin = toMin(hm);
   const sentRef = db.ref('pushSent');
 
-  // اسلات‌های سررسیده در ۱۴ دقیقه اخیر (کرون ۱۵ دقیقه‌ای → هر اسلات دقیقاً یک‌بار)
-  const due = [];
-  const addIfDue = (key, time, tag, slotKind) => {
-    if (!time) return;
-    const d = nowMin - toMin(time);
-    if (d >= 0 && d <= 14) due.push({ key, tag, slotKind });
-  };
+  // پنجره سررسید ۷۵ دقیقه‌ای — کرون رایگان گیت‌هاب گاهی چند ساعت تأخیر/حذف دارد؛
+  // نشانگر pushSent از ارسال تکراری جلوگیری می‌کند، پس پنجره باز بی‌ضرر است
+  const DUE_WINDOW = 75;
 
   const usersSnap = await db.ref('pushUsers').once('value');
   const users = usersSnap.val() || {};
@@ -90,7 +90,7 @@ const MEAL_TEXTS = {
     for (const [key, time] of slots) {
       if (mySent[key]) { skipped++; continue; }
       const d = nowMin - toMin(time);
-      if (d < 0 || d > 14) continue;
+      if (d < 0 || d > DUE_WINDOW) continue;
 
       // سرکوب هوشمند با پرچم‌های بی‌نام (فقط اگر state امروز باشد)
       if (key === 'workout' && st.workoutDone) { skipped++; continue; }
