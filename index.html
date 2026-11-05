@@ -4,8 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 
-  <!-- امنیت: فقط اسکریپت‌های همین دامنه (بدون unsafe-inline)؛ اتصال شبکه فقط به سرور رسمی گوگل برای کلید API کاربر -->
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'wasm-unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; media-src 'self' blob:; font-src 'self'; connect-src 'self' https://generativelanguage.googleapis.com; worker-src 'self' blob:; form-action 'self'; object-src 'none'; base-uri 'self'">
+  <!-- امنیت: فقط اسکریپت‌های همین دامنه (بدون unsafe-inline)؛ اتصال فقط به سرورهای رسمی: هوش مصنوعی گوگل (کلید کاربر) + احراز بی‌نام و دیتابیس یادآور push -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'wasm-unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; media-src 'self' blob:; font-src 'self'; connect-src 'self' https://generativelanguage.googleapis.com https://identitytoolkit.googleapis.com https://securetoken.googleapis.com https://gordol-push-default-rtdb.firebaseio.com; worker-src 'self' blob:; form-action 'self'; object-src 'none'; base-uri 'self'">
 
   <title>گردول — برنامه هوشمند تمرین، چشم گردول و تغذیه</title>
   <meta name="description" content="گردول؛ مربی هوش مصنوعی ورزش و تغذیه با چشم گردول (شمارش هوشمند حرکات)، اسکن غذای ایرانی و برنامه تمرینی شخصی — تمام داده‌ها فقط روی دستگاه شما.">
@@ -21,7 +21,7 @@
   <link rel="manifest" href="manifest.json">
   <link rel="icon" type="image/svg+xml" href="assets/icons/favicon.svg">
 
-  <link rel="stylesheet" href="css/style.css?v=28">
+  <link rel="stylesheet" href="css/style.css?v=29">
 </head>
 <body>
 
@@ -85,24 +85,24 @@
   <div id="program-switcher-modal" class="modal-overlay"><div class="modal-card"></div></div>
 
   <!-- بانک داده‌های اورجینال گردول -->
-  <script src="js/exercises-data.js?v=28"></script>
-  <script src="js/plans-data.js?v=28"></script>
-  <script src="js/meals-data.js?v=28"></script>
-  <script src="js/grocery-data.js?v=28"></script>
-  <script src="js/strength-plan.js?v=28"></script>
-  <script src="js/strength-mode.js?v=28"></script>
-  <script src="js/thumbs.js?v=28"></script>
-  <script src="js/food-photos.js?v=28"></script>
-  <script src="js/mealplan-ai.js?v=28"></script>
+  <script src="js/exercises-data.js?v=29"></script>
+  <script src="js/plans-data.js?v=29"></script>
+  <script src="js/meals-data.js?v=29"></script>
+  <script src="js/grocery-data.js?v=29"></script>
+  <script src="js/strength-plan.js?v=29"></script>
+  <script src="js/strength-mode.js?v=29"></script>
+  <script src="js/thumbs.js?v=29"></script>
+  <script src="js/food-photos.js?v=29"></script>
+  <script src="js/mealplan-ai.js?v=29"></script>
 
   <!-- موتورهای اپ -->
-  <script src="js/icons.js?v=28"></script>
-  <script src="js/gemini.js?v=28"></script>
-  <script src="js/pose-engine.js?v=28"></script>
-  <script src="js/app.js?v=28"></script>
+  <script src="js/icons.js?v=29"></script>
+  <script src="js/gemini.js?v=29"></script>
+  <script src="js/pose-engine.js?v=29"></script>
+  <script src="js/app.js?v=29"></script>
 
   <!-- Service Worker برای کش آفلاین (GitHub Pages) — فایل خارجی، بدون اسکریپت inline -->
-  <script src="js/push-client.js?v=28"></script>
-  <script src="js/sw-register.js?v=28"></script>
+  <script src="js/push-client.js?v=29"></script>
+  <script src="js/sw-register.js?v=29"></script>
 </body>
 </html>
